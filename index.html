@@ -1,0 +1,1642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plataforma Universitaria de Evaluaciones Supervisadas - V4.11.2 (Producción Final)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .no-select { user-select: none; -webkit-user-select: none; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col no-select">
+
+    <!-- BARRA SUPERIOR -->
+    <header class="bg-blue-900 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div>
+                <h1 class="text-base sm:text-lg font-bold">Evaluaciones Digitales Universitarias</h1>
+                <p class="text-xs text-blue-200" id="header-docente-info">Docente: Sin configurar • Cátedras de Telemática y Redes</p>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span id="badge-eval-ciega" class="hidden sm:inline-flex items-center text-[10px] bg-emerald-950 text-emerald-200 px-2 py-1 rounded border border-emerald-700 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Bóveda Cifrada
+                </span>
+                <span id="badge-wakelock" class="hidden sm:inline-flex items-center text-[10px] bg-blue-950 text-blue-200 px-2 py-1 rounded border border-blue-700">
+                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> Pantalla Bloqueada
+                </span>
+                <button id="btn-login-docente" class="bg-blue-800 hover:bg-blue-700 text-xs px-3 py-1.5 rounded border border-blue-600 transition font-medium">
+                    Panel Docente
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-grow max-w-5xl w-full mx-auto p-4 sm:p-6">
+
+        <!-- ========================================== -->
+        <!-- VISTA 1: PORTAL DEL ESTUDIANTE (LOGIN/REG) -->
+        <!-- ========================================== -->
+        <section id="vista-estudiante-portal" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-900">Acceso Estudiantil (Biométrico)</h2>
+                    <p class="text-xs text-slate-500">Inicia sesión con tu huella dactilar o clave cifrada. Equipo monitoreado.</p>
+                </div>
+                <div class="flex space-x-1 bg-slate-100 p-1 rounded text-xs font-semibold">
+                    <button id="tab-btn-ingreso" class="px-3 py-1.5 rounded bg-white text-blue-700 shadow-sm">Iniciar Sesión</button>
+                    <button id="tab-btn-registro" class="px-3 py-1.5 rounded text-slate-600 hover:text-slate-900">Registrarse</button>
+                </div>
+            </div>
+
+            <!-- FORMULARIO LOGIN -->
+            <form id="form-login-estudiante" class="space-y-4 max-w-md mx-auto">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label>
+                    <input type="text" id="login-cedula" placeholder="Ej. 25123456" class="w-full border border-slate-300 rounded p-2 text-xs outline-none focus:ring-2 focus:ring-blue-600 font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña (Solo si no tienes huella vinculada)</label>
+                    <input type="password" id="login-password" placeholder="Tu contraseña registrada" class="w-full border border-slate-300 rounded p-2 text-xs outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+                <div class="space-y-2 pt-2">
+                    <button type="button" id="btn-iniciar-huella" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-xs transition shadow-sm flex items-center justify-center gap-2">
+                        <span class="text-lg">👆</span> Ingresar con Huella Biométrica
+                    </button>
+                    <button type="submit" id="btn-iniciar-sesion-est" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition border border-slate-300">
+                        Ingresar con Contraseña (Alternativo)
+                    </button>
+                </div>
+            </form>
+
+            <!-- FORMULARIO REGISTRO -->
+            <form id="form-registro-estudiante" class="hidden space-y-4 max-w-md mx-auto">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Nombre</label>
+                        <input type="text" id="reg-nombre" placeholder="Nombre" class="w-full border border-slate-300 rounded p-2 text-xs outline-none" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-600 mb-1">Apellido</label>
+                        <input type="text" id="reg-apellido" placeholder="Apellido" class="w-full border border-slate-300 rounded p-2 text-xs outline-none" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad (Única y No Repetible)</label>
+                    <input type="text" id="reg-cedula" placeholder="Ej. 25123456" class="w-full border border-slate-300 rounded p-2 text-xs outline-none font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Sección Académica</label>
+                    <select id="reg-seccion" class="w-full border border-slate-300 rounded p-2 text-xs outline-none bg-slate-50 font-medium" required>
+                        <option value="">-- Elige tu sección --</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña de Respaldo</label>
+                    <input type="password" id="reg-password" placeholder="Mínimo 4 caracteres" class="w-full border border-slate-300 rounded p-2 text-xs outline-none" required>
+                </div>
+
+                <!-- CHECKBOX DE TERMINOS Y DESCARGA -->
+                <div class="mt-4 bg-slate-50 border border-slate-200 p-3 rounded-lg">
+                    <label class="flex items-start space-x-2 cursor-pointer">
+                        <input type="checkbox" id="reg-terminos" class="mt-1 w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500" required>
+                        <span class="text-[10px] text-slate-600 leading-tight">
+                            He leído y acepto los <a href="#" onclick="alert('1. Tu huella no sale del teléfono.\n2. La plataforma NO realiza capturas de pantalla ni instala software malicioso.\n3. Tu cuenta quedará ANCLADA a este dispositivo.\n4. Eres responsable de tu batería e internet.\n5. Salir de la pantalla anula el examen (01).\n6. Borrar la caché o intentar hackear el sistema genera un 01 irreversible.\n7. El docente no se responsabiliza por fallas en tu equipo.')" class="text-blue-700 font-bold underline">Términos de Uso, el Sistema Anti-Fraude y Descargo</a>.
+                            <br><a href="terminos_condiciones.pdf" target="_blank" class="text-blue-700 font-bold inline-flex items-center mt-1"><span class="text-sm mr-1">📥</span> Descargar PDF Oficial</a>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <button type="button" id="btn-completar-registro-huella" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-xs transition shadow-sm flex items-center justify-center gap-2">
+                        <span class="text-lg">👆</span> Crear Cuenta y Vincular Huella
+                    </button>
+                    <button type="submit" id="btn-completar-registro" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition border border-slate-300">
+                        Crear Cuenta Solo con Contraseña
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VISTA 1.1: TABLERO DE EVALUACIONES -->
+        <!-- ========================================== -->
+        <section id="vista-estudiante-tablero" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center border-b pb-4 gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900" id="perfil-estudiante-bienvenida">Bienvenido</h2>
+                    <p class="text-xs text-slate-500" id="perfil-estudiante-seccion">Sección asignada: --</p>
+                </div>
+                <button id="btn-cerrar-sesion-est" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded self-start font-medium">
+                    Cerrar Sesión Segura
+                </button>
+            </div>
+
+            <!-- BOTÓN DE MIGRACIÓN PARA ALUMNOS ANTIGUOS -->
+            <div id="box-vincular-huella" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h4 class="font-bold text-blue-900 text-sm">Mejora la seguridad de tu cuenta</h4>
+                    <p class="text-xs text-blue-700 mt-1">Aún no has vinculado tu huella dactilar para agilizar tu acceso a la plataforma.</p>
+                </div>
+                <button id="btn-vincular-huella-dash" class="w-full sm:w-auto bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2.5 rounded text-xs flex items-center justify-center gap-2 shadow-sm whitespace-nowrap">
+                    <span class="text-base">👆</span> Vincular Huella Dactilar
+                </button>
+            </div>
+
+            <div id="banner-reanudacion-disponible" class="hidden p-4 bg-amber-50 border-2 border-amber-400 rounded-lg space-y-2">
+                <div class="flex items-center space-x-2 text-amber-800 font-bold text-xs uppercase tracking-wide">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-50 animate-ping"></span>
+                    <span>Progreso Guardado Detectado</span>
+                </div>
+                <p class="text-xs text-amber-700">Se encontró una evaluación interrumpida. Puedes continuar exactamente donde quedaste.</p>
+                <button id="btn-reanudar-examen-guardado" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded text-xs shadow-sm">Reanudar Evaluación</button>
+            </div>
+
+            <!-- DASHBOARD DE RENDIMIENTO ESTUDIANTIL -->
+            <div id="dashboard-estudiante-stats" class="grid grid-cols-2 sm:grid-cols-4 gap-3 hidden border-b border-slate-100 pb-5">
+                <!-- Se inyecta por JS -->
+            </div>
+
+            <div>
+                <h3 class="text-sm font-bold text-slate-800 mb-3">Evaluaciones Habilitadas para tu Sección</h3>
+                <div id="contenedor-evaluaciones-alumno" class="space-y-3">
+                    <p class="text-xs text-slate-400 py-4">Consultando evaluaciones...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- VISTA 2: CUESTIONARIO CON WAKELOCK Y AUTOSAVE -->
+        <!-- ========================================== -->
+        <section id="vista-examen-activo" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <div class="border-b pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                <div>
+                    <span id="badge-examen-materia" class="inline-block bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider mb-1"></span>
+                    <h2 id="txt-examen-titulo" class="text-base sm:text-lg font-bold text-slate-900"></h2>
+                    <p id="txt-examen-docente" class="text-xs text-blue-800 font-semibold mt-0.5"></p>
+                </div>
+                <div class="flex sm:flex-col items-end justify-between sm:justify-center gap-1">
+                    <div class="text-right">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 block">Tiempo Restante</span>
+                        <div id="reloj-temporizador" class="text-lg font-black font-mono text-slate-800">00:00</div>
+                    </div>
+                    <div id="indicador-strikes" class="flex items-center space-x-1 text-[11px] font-bold text-slate-600">
+                        <span>Advertencia:</span>
+                        <span id="strike-1" class="px-2 py-0.5 rounded text-[10px] bg-slate-200 text-slate-700">Sin faltas</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÁREA DE PREGUNTAS (1 POR PANTALLA) -->
+            <div id="contenedor-preguntas-examen" class="space-y-6 min-h-[150px]"></div>
+
+            <!-- CONTROLES DE PAGINACIÓN -->
+            <div id="controles-paginacion" class="flex justify-between items-center pt-2 pb-4">
+                <button id="btn-preg-anterior" class="hidden bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-5 py-2.5 rounded text-xs transition shadow-sm">⬅ Anterior</button>
+                <div class="flex-grow text-center">
+                    <span id="indicador-paginacion" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">Pregunta 1 de X</span>
+                </div>
+                <button id="btn-preg-siguiente" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded text-xs transition shadow-sm">Siguiente ➡</button>
+            </div>
+
+            <div class="pt-6 border-t flex flex-col sm:flex-row justify-between items-center gap-3">
+                <div class="flex items-center text-xs text-slate-500 space-x-2">
+                    <span id="icono-guardando" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="txt-estado-guardado">Respuestas respaldadas en la nube</span>
+                </div>
+                <button id="btn-entregar-examen-final" class="hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded text-xs transition shadow-sm">
+                    Finalizar y Entregar Evaluación
+                </button>
+            </div>
+        </section>
+
+        <!-- ========================================== -->
+        <!-- MODAL DE ADVERTENCIA Y TÉRMINOS OBLIGATORIOS -->
+        <!-- ========================================== -->
+        <div id="modal-advertencia" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-center space-y-4 border-2 border-amber-500">
+                <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-2xl font-black">!</div>
+                <div>
+                    <span class="bg-amber-100 text-amber-900 text-xs px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Advertencia de Supervisión</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-2">Incidencia de Supervisión Detectada</h3>
+                    <p id="modal-adv-motivo" class="text-xs text-slate-600 mt-1"></p>
+                </div>
+                <div class="p-3 bg-red-50 border border-red-200 rounded text-xs text-red-700 text-left space-y-1 font-medium">
+                    <p>• Tienes derecho a <strong>2 advertencias</strong> máximas.</p>
+                    <p>• A la tercera falta (cambiar de ventana, minimizar el navegador), tu examen será <strong>anulado de inmediato con nota de 01</strong>.</p>
+                    <p>• El evento ha quedado registrado en la auditoría del docente.</p>
+                </div>
+                <button id="btn-reanudar-tras-advertencia" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded text-xs transition">
+                    Entendido, Reanudar en Pantalla Completa
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL DE TÉRMINOS (PARA ALUMNOS ANTIGUOS) -->
+        <div id="modal-aceptar-terminos" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-2xl max-w-lg w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto border-t-4 border-blue-800">
+                <h3 class="text-xl font-black text-blue-900 border-b pb-2">Actualización de Normativas</h3>
+                <p class="text-sm text-slate-700">Para continuar usando la plataforma, debes aceptar los nuevos términos de evaluación:</p>
+                
+                <div class="bg-slate-50 border border-slate-200 p-4 rounded text-xs text-slate-700 space-y-2 h-48 overflow-y-auto shadow-inner">
+                    <p><strong>1. Privacidad y Cero Invasión:</strong> Tu huella dactilar se procesa en el chip de tu teléfono; no se almacena ni se transmite. Además, el sistema garantiza que <strong>NO realiza capturas de pantalla, NO espía tu cámara/micrófono, ni instala ningún tipo de software malicioso.</strong></p>
+                    <p><strong>2. Anclaje de Dispositivo:</strong> Tu cuenta quedará vinculada estrictamente al equipo desde donde inicies sesión hoy. Intentar usar otro equipo te bloqueará automáticamente.</p>
+                    <p><strong>3. Responsabilidad Técnica:</strong> Eres responsable de contar con batería e internet durante la prueba. El docente no asume responsabilidad por fallas en tu equipo.</p>
+                    <p><strong>4. Anti-Fraude (01):</strong> Cambiar de ventana, minimizar el navegador o dividir la pantalla generará advertencias y posterior anulación del examen con nota de 01.</p>
+                    <p class="text-red-700 font-bold">5. Tolerancia Cero al Fraude (01): Cualquier intento de evadir la seguridad, borrar la caché del navegador para reiniciar el examen o manipular el código, será castigado con un 01 definitivo e irreversible, sin derecho a apelación.</p>
+                    <p><strong>6. Descargo:</strong> El docente provee esta herramienta "tal cual" y no se hace responsable civil o académicamente por daños a dispositivos o pérdida de datos.</p>
+                </div>
+
+                <div class="pt-2 space-y-2">
+                    <button id="btn-aceptar-terminos-viejos" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded text-sm transition shadow-md flex justify-center items-center gap-2">
+                        <span>☑️</span> Comprendo y acepto todas las condiciones
+                    </button>
+                    <a href="terminos_condiciones.pdf" target="_blank" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 font-bold py-2 rounded text-xs transition shadow-sm flex justify-center items-center gap-2">
+                        <span>📥</span> Descargar Documento Oficial (PDF)
+                    </a>
+                    <p class="text-[10px] text-center text-slate-400 mt-2">Este paso es obligatorio y quedará registrado en tu expediente digital.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- RESULTADOS Y SANCIÓN -->
+        <!-- ========================================== -->
+        <section id="vista-resultados-fin" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center space-y-4">
+            <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✓</div>
+            <h2 class="text-2xl font-bold text-slate-900">Evaluación Entregada</h2>
+            <p id="res-estudiante-linea" class="text-slate-600 text-xs sm:text-sm"></p>
+            <div class="bg-slate-50 border border-slate-200 rounded p-6 max-w-xs mx-auto">
+                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Calificación Oficial Asentada</p>
+                <div class="text-4xl font-black text-blue-800" id="res-nota-valor">--</div>
+                <p id="res-escala-valor" class="text-xs text-slate-500 mt-1"></p>
+            </div>
+            <div id="btn-ver-reporte-final-container" class="hidden w-full mt-4 text-center">
+                <button onclick="window.verReporteEstudianteActual()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold px-6 py-2.5 rounded text-xs border border-blue-300 shadow-sm w-full max-w-xs mx-auto">🔍 Ver Detalles</button>
+            </div>
+            <button onclick="location.reload()" class="bg-blue-700 text-white px-6 py-2 rounded text-xs font-semibold mt-4">Salir</button>
+        </section>
+
+        <!-- VISTA DE SANCIÓN CERO TOLERANCIA -->
+        <section id="vista-sancion-bloqueo" class="hidden bg-white rounded-lg shadow-sm border-2 border-red-500 p-8 text-center space-y-4">
+            <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl font-bold">✕</div>
+            <h2 class="text-2xl font-bold text-red-700">Evaluación Anulada</h2>
+            <div class="bg-red-50 border border-red-200 text-red-800 font-medium text-xs p-3 rounded max-w-md mx-auto" id="sancion-detalle-final"></div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-4 max-w-xs mx-auto">
+                <p class="text-xs uppercase font-semibold text-slate-500">Calificación Asignada</p>
+                <div class="text-4xl font-black text-red-600" id="sancion-nota-final">01</div>
+                <p class="text-[11px] text-red-500 mt-1">Sanción académica asentada en Firestore</p>
+            </div>
+            <button onclick="location.reload()" class="bg-slate-700 text-white px-6 py-2 rounded text-xs font-semibold">Cerrar y Salir</button>
+        </section>
+
+        <div id="modal-ver-reporte" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b pb-2">
+                    <h3 class="text-lg font-bold text-slate-900">Reporte de Evaluación</h3>
+                    <button onclick="document.getElementById('modal-ver-reporte').classList.add('hidden')" class="text-slate-500 font-bold text-xl">&times;</button>
+                </div>
+                <div id="contenido-reporte-modal" class="w-full text-left"></div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- MODALES DOCENTE -->
+        <!-- ========================================== -->
+        
+        <!-- MODAL LOGIN DOCENTE (Reemplaza al prompt) -->
+        <div id="modal-login-docente" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 space-y-4 border-t-4 border-blue-800">
+                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Acceso Docente</h3>
+                <div class="relative">
+                    <input type="password" id="login-docente-pin" placeholder="Contraseña de acceso" class="w-full border border-slate-300 p-2.5 rounded text-sm pr-10 outline-none focus:border-blue-500">
+                    <button type="button" class="toggle-password absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-lg" data-target="login-docente-pin">👁️</button>
+                </div>
+                <div class="flex space-x-2 pt-2">
+                    <button id="btn-confirmar-login-docente" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-2 rounded text-xs transition">Ingresar</button>
+                    <button onclick="document.getElementById('modal-login-docente').classList.add('hidden')" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-editar-alumno" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Estudiante</h3>
+                <input type="hidden" id="edit-alum-id"><input type="hidden" id="edit-alum-ced-old">
+                <div class="space-y-3 text-xs">
+                    <div><label class="block font-bold">Cédula</label><input type="text" id="edit-alum-ced" class="w-full border p-2 rounded"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block font-bold">Nombre</label><input type="text" id="edit-alum-nom" class="w-full border p-2 rounded"></div>
+                        <div><label class="block font-bold">Apellido</label><input type="text" id="edit-alum-ape" class="w-full border p-2 rounded"></div>
+                    </div>
+                    <div><label class="block font-bold">Sección</label><select id="edit-alum-sec" class="w-full border p-2 rounded"></select></div>
+                </div>
+                <div class="flex space-x-2 pt-3">
+                    <button id="btn-guardar-edicion-alumno" class="w-full bg-blue-700 text-white font-bold py-2 rounded text-xs">Guardar</button>
+                    <button onclick="document.getElementById('modal-editar-alumno').classList.add('hidden')" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="modal-editar-objetivo" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
+                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Evaluación</h3>
+                <input type="hidden" id="edit-eval-id">
+                <div class="space-y-3 text-xs">
+                    <div><label class="block font-bold">Nombre</label><input type="text" id="edit-eval-nom" class="w-full border p-2 rounded"></div>
+                    <div><label class="block font-bold">Ponderación</label><input type="number" id="edit-eval-peso" class="w-full border p-2 rounded"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><label class="block font-bold">Hora Inicio</label><input type="datetime-local" id="edit-eval-hora-inicio" class="w-full border p-2 rounded"></div>
+                        <div><label class="block font-bold">Hora Cierre</label><input type="datetime-local" id="edit-eval-hora-fin" class="w-full border p-2 rounded"></div>
+                    </div>
+                </div>
+                <div class="flex space-x-2 pt-3">
+                    <button id="btn-guardar-edicion-objetivo" class="w-full bg-emerald-600 text-white font-bold py-2 rounded text-xs">Guardar</button>
+                    <button onclick="document.getElementById('modal-editar-objetivo').classList.add('hidden')" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- VISTA 5: PANEL DOCENTE INTEGRAL (8 TABS) -->
+        <!-- ========================================== -->
+        <section id="vista-docente-panel" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-4 rounded-lg border border-slate-200 gap-2">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-900">Panel de Administración de Cátedra</h2>
+                    <p class="text-xs text-slate-500" id="doc-panel-nombre">Docente Titular: Sin registrar</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-volver-estudiante-desde-docente" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-medium">Volver a Vista Estudiantes</button>
+                    <button id="btn-salir-docente" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded font-medium">Cerrar Sesión Docente</button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap border-b border-slate-200 bg-white rounded-t-lg px-4 pt-2 gap-1 text-xs font-semibold">
+                <button id="tab-btn-asistencia" class="py-2 border-b-2 border-blue-700 text-blue-700 px-3">1. Asistencia</button>
+                <button id="tab-btn-reanudacion" class="py-2 border-b-2 border-transparent text-slate-500 px-3">2. Reanudación</button>
+                <button id="tab-btn-materias" class="py-2 border-b-2 border-transparent text-slate-500 px-3">3. Materias</button>
+                <button id="tab-btn-evaluaciones" class="py-2 border-b-2 border-transparent text-slate-500 px-3">4. Evaluaciones</button>
+                <button id="tab-btn-preguntas" class="py-2 border-b-2 border-transparent text-slate-500 px-3">5. Preguntas</button>
+                <button id="tab-btn-alumnos" class="py-2 border-b-2 border-transparent text-slate-500 px-3">6. Alumnos</button>
+                <button id="tab-btn-calificaciones" class="py-2 border-b-2 border-transparent text-slate-500 px-3">7. Calificaciones</button>
+                <button id="tab-btn-perfil" class="py-2 border-b-2 border-transparent text-slate-500 px-3">8. Perfil</button>
+            </div>
+
+            <div id="tc-asistencia" class="bg-white p-6 rounded-b-lg border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between border-b pb-4 gap-2">
+                    <h3 class="text-sm font-bold">Control Presencial en Aula</h3>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                        <input type="text" id="filtro-asistencia-txt" placeholder="🔍 Buscar alumno..." class="border p-1.5 rounded text-xs w-full sm:w-48 outline-none">
+                        <select id="filtro-asistencia-seccion" class="border p-1.5 rounded text-xs bg-slate-50"></select>
+                        <button id="btn-todos-presentes" class="bg-emerald-600 text-white px-2 py-1.5 rounded text-xs">Marcar Todos</button>
+                        <button id="btn-todos-ausentes" class="bg-slate-500 text-white px-2 py-1.5 rounded text-xs">Desmarcar</button>
+                    </div>
+                </div>
+                <div id="tabla-asistencia-contenedor" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-reanudacion" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <h3 class="text-sm font-bold border-b pb-4">Desbloqueo de Exámenes Interrumpidos</h3>
+                <div id="tabla-reanudacion-contenedor" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-materias" class="hidden bg-white p-6 rounded-b-lg border space-y-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="p-4 border rounded bg-slate-50 space-y-3">
+                        <h4 class="text-xs font-bold uppercase">Nueva Materia</h4>
+                        <input type="text" id="mat-nombre" placeholder="Nombre" class="w-full border p-2 rounded text-xs">
+                        <input type="text" id="mat-codigo" placeholder="Código" class="w-full border p-2 rounded text-xs">
+                        <button id="btn-crear-materia" class="w-full bg-blue-700 text-white font-bold py-2 rounded text-xs">Registrar Materia</button>
+                    </div>
+                    <div class="p-4 border rounded bg-slate-50 space-y-3">
+                        <h4 class="text-xs font-bold uppercase">Nueva Sección</h4>
+                        <select id="sec-mat-select" class="w-full border p-2 rounded text-xs"></select>
+                        <input type="text" id="sec-nombre" placeholder="Nombre" class="w-full border p-2 rounded text-xs">
+                        <button id="btn-crear-seccion" class="w-full bg-blue-700 text-white font-bold py-2 rounded text-xs">Registrar Sección</button>
+                    </div>
+                </div>
+                <div id="tabla-materias-resumen" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-evaluaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <div class="border p-4 rounded bg-slate-50 space-y-3 text-xs">
+                    <div class="grid grid-cols-2 gap-3">
+                        <select id="eval-mat-select" class="border p-2 rounded"></select>
+                        <input type="text" id="eval-nombre" placeholder="Nombre de Evaluación" class="border p-2 rounded">
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <input type="number" id="eval-peso" placeholder="Puntos" class="border p-2 rounded">
+                        <input type="datetime-local" id="eval-hora-inicio" class="border p-2 rounded">
+                        <input type="datetime-local" id="eval-hora-fin" class="border p-2 rounded">
+                    </div>
+                    <div id="eval-secciones-checkboxes" class="flex flex-wrap gap-2 p-2 bg-white border rounded"></div>
+                    <button id="btn-guardar-evaluacion" class="bg-blue-700 text-white font-bold px-4 py-2 rounded">Guardar Evaluación</button>
+                </div>
+                <div id="tabla-evaluaciones-resumen" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-preguntas" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <div class="grid grid-cols-2 gap-3 text-xs">
+                    <select id="doc-preg-mat" class="border p-2 rounded bg-slate-50 font-semibold"></select>
+                    <select id="doc-preg-obj" class="border p-2 rounded bg-slate-50 font-semibold" disabled></select>
+                </div>
+                <div id="box-crear-pregunta" class="hidden border p-4 rounded bg-slate-50 space-y-3 text-xs">
+                    <div class="flex justify-between items-center"><span class="font-bold" id="box-preg-titulo">Agregar Pregunta</span><span id="txt-saldo-disponible" class="font-bold text-blue-800"></span></div>
+                    <textarea id="p-enunciado" rows="2" placeholder="Enunciado" class="w-full border p-2 rounded"></textarea>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="flex items-center space-x-1 border p-1 rounded bg-white"><input type="radio" name="opt_cor" value="0" checked><input type="text" id="p-opc-0" placeholder="Opc A" class="w-full outline-none"></div>
+                        <div class="flex items-center space-x-1 border p-1 rounded bg-white"><input type="radio" name="opt_cor" value="1"><input type="text" id="p-opc-1" placeholder="Opc B" class="w-full outline-none"></div>
+                        <div class="flex items-center space-x-1 border p-1 rounded bg-white"><input type="radio" name="opt_cor" value="2"><input type="text" id="p-opc-2" placeholder="Opc C" class="w-full outline-none"></div>
+                        <div class="flex items-center space-x-1 border p-1 rounded bg-white"><input type="radio" name="opt_cor" value="3"><input type="text" id="p-opc-3" placeholder="Opc D" class="w-full outline-none"></div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <input type="number" id="p-puntos" placeholder="Pts" step="0.25" class="w-20 border p-1.5 rounded">
+                        <button id="btn-agregar-pregunta" class="bg-blue-700 text-white font-bold px-4 py-2 rounded">Guardar</button>
+                        <button id="btn-cancelar-edicion-pregunta" class="hidden bg-slate-300 text-slate-800 px-3 py-2 rounded">Cancelar</button>
+                    </div>
+                </div>
+                <div id="lista-preguntas-creadas" class="space-y-2 text-xs"></div>
+            </div>
+
+            <div id="tc-alumnos" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between border-b pb-3 gap-2">
+                    <h3 class="text-sm font-bold">Gestión de Alumnos</h3>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                        <input type="text" id="filtro-alumnos-txt" placeholder="🔍 Buscar cédula o nombre..." class="border p-1.5 rounded text-xs w-full sm:w-48 outline-none">
+                        <select id="filtro-alumnos-sec" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODAS">Todas las Secciones</option></select>
+                    </div>
+                </div>
+                <div id="tabla-alumnos-gestion" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-calificaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between border-b pb-3 gap-2">
+                    <h3 class="text-sm font-bold">Calificaciones (Auditadas)</h3>
+                    <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 w-full sm:w-auto">
+                        <input type="text" id="filtro-calif-txt" placeholder="🔍 Buscar alumno..." class="border p-1.5 rounded text-xs w-full sm:w-48 outline-none">
+                        <select id="filtro-calif-mat" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODAS">Todas las Materias</option></select>
+                        <select id="filtro-calif-obj" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODOS">Todos los Objetivos</option></select>
+                    </div>
+                </div>
+                <div id="tabla-calificaciones-final" class="overflow-x-auto text-xs"></div>
+            </div>
+
+            <div id="tc-perfil" class="hidden bg-white p-6 rounded-b-lg border max-w-md space-y-4 text-xs">
+                <div class="border-b pb-3 space-y-2">
+                    <h3 class="text-sm font-bold">Perfil del Docente Titular</h3>
+                    <p class="text-[11px] text-blue-700 font-mono font-bold bg-blue-50 p-2 rounded border border-blue-200" id="doc-uid-display">UID: Cargando...</p>
+                    
+                    <input type="text" id="doc-cedula-input" placeholder="Cédula" class="w-full border p-2 rounded mt-2">
+                    <input type="text" id="doc-nombre-input" placeholder="Nombre" class="w-full border p-2 rounded">
+                    <input type="text" id="doc-apellido-input" placeholder="Apellido" class="w-full border p-2 rounded">
+                    <button id="btn-guardar-perfil" class="bg-blue-700 text-white font-bold px-4 py-2 rounded">Guardar Perfil</button>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <h3 class="text-sm font-bold border-b pb-1">Cambiar Contraseña</h3>
+                    <p class="text-[10px] text-slate-500">Mínimo 6 caracteres. Debe incluir: Mayúscula, minúscula, número y un carácter especial.</p>
+                    
+                    <div class="relative">
+                        <input type="password" id="pin-viejo" placeholder="Contraseña Actual" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                        <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-viejo">👁️</button>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="pin-nuevo" placeholder="Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                        <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-nuevo">👁️</button>
+                    </div>
+                    <div class="relative">
+                        <input type="password" id="pin-confirma" placeholder="Confirmar Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                        <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-confirma">👁️</button>
+                    </div>
+                    
+                    <button id="btn-actualizar-pin" class="bg-slate-800 text-white font-bold px-4 py-2 rounded w-full">Actualizar Contraseña</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MOTOR JAVASCRIPT Y WEBAUTHN (BIOMETRÍA) -->
+    <!-- ========================================== -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { 
+            getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, 
+            onSnapshot, query, where, arrayUnion 
+        } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+        const APP_SALT = "UNEXCA_EVAL_SECURITY_SALT_2026";
+
+        async function cifrarClave(cadena) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(cadena + APP_SALT);
+            const buffer = await crypto.subtle.digest("SHA-256", data);
+            const hashArray = Array.from(new Uint8Array(buffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function normalizarCedula(ced) {
+            return ced.trim().toUpperCase().replace(/\s+/g, '');
+        }
+
+        function bufferToBase64url(buffer) {
+            const bytes = new Uint8Array(buffer);
+            let str = '';
+            for (let char of bytes) str += String.fromCharCode(char);
+            const base64 = btoa(str);
+            return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+        }
+
+        function base64urlToBuffer(base64url) {
+            const padding = '='.repeat((4 - base64url.length % 4) % 4);
+            const base64 = (base64url + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = atob(base64);
+            const buffer = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                buffer[i] = rawData.charCodeAt(i);
+            }
+            return buffer;
+        }
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDOlulLTxj24VoF9WJDvzmcqU8_m7FxnQE",
+            authDomain: "sistema-evaluacion-f9c74.firebaseapp.com",
+            projectId: "sistema-evaluacion-f9c74",
+            storageBucket: "sistema-evaluacion-f9c74.firebasestorage.app",
+            messagingSenderId: "556053984149",
+            appId: "1:556053984149:web:2ce59b15cbd3e28c63bc9c"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                const uidDisplay = document.getElementById("doc-uid-display");
+                if (uidDisplay) uidDisplay.innerText = `UID (Para Firestore): ${user.uid}`;
+            }
+        });
+
+        signInAnonymously(auth).catch(err => console.warn("Auth Offline:", err.message));
+
+        let docentePerfil = { cedula: "", nombre: "", apellido: "", pinHash: "" };
+        let materias = []; let secciones = []; let objetivos = []; let preguntas = [];
+        let clavesDocente = {}; let estudiantes = []; let calificaciones = []; let sesionesActivas = [];
+
+        let editandoPreguntaId = null; let estudianteSesion = null; let examenEnCurso = false;
+        let objetivoActivo = null; let respuestasEstudiante = {};
+        let tiempoRestanteSegundos = 0; let tiempoUltimaIteracion = 0; 
+        
+        let timerInterval = null; let wakeLockSentinel = null; let unsubVigilanciaSesion = null;
+        let strikeCount = 0; let ultimoIncidenteTimestamp = 0;
+        let anchoInicial = window.innerWidth; let altoInicial = window.innerHeight;
+
+        // Variables de Paginación
+        let totalPreguntasActivas = 0;
+        let indicePreguntaActual = 0;
+
+        // GENERADOR DE HUELLA DE DISPOSITIVO (Sustituto de MAC Address)
+        function obtenerIdDispositivo() {
+            let deviceId = localStorage.getItem("eval_device_uuid");
+            if (!deviceId) {
+                deviceId = (crypto.randomUUID ? crypto.randomUUID() : 'dev_' + Math.random().toString(36).substring(2) + Date.now());
+                localStorage.setItem("eval_device_uuid", deviceId);
+            }
+            return deviceId;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const sdg = localStorage.getItem("docenteSesionLocal");
+            if (sdg) {
+                document.getElementById("vista-estudiante-portal").classList.add("hidden");
+                document.getElementById("vista-docente-panel").classList.remove("hidden");
+            }
+        });
+
+        // Controles de Paginación
+        document.getElementById("btn-preg-anterior").addEventListener("click", () => {
+            if (indicePreguntaActual > 0) {
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.remove("block");
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.add("hidden");
+                indicePreguntaActual--;
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.remove("hidden");
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.add("block");
+                actualizarControlesPaginacion();
+            }
+        });
+
+        document.getElementById("btn-preg-siguiente").addEventListener("click", () => {
+            if (indicePreguntaActual < totalPreguntasActivas - 1) {
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.remove("block");
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.add("hidden");
+                indicePreguntaActual++;
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.remove("hidden");
+                document.getElementById(`preg-card-${indicePreguntaActual}`).classList.add("block");
+                actualizarControlesPaginacion();
+            }
+        });
+
+        function actualizarControlesPaginacion() {
+            document.getElementById("indicador-paginacion").innerText = `Pregunta ${indicePreguntaActual + 1} de ${totalPreguntasActivas}`;
+            const btnAnt = document.getElementById("btn-preg-anterior");
+            const btnSig = document.getElementById("btn-preg-siguiente");
+            const btnEntregar = document.getElementById("btn-entregar-examen-final");
+
+            if (indicePreguntaActual === 0) btnAnt.classList.add("hidden");
+            else btnAnt.classList.remove("hidden");
+
+            if (indicePreguntaActual === totalPreguntasActivas - 1) {
+                btnSig.classList.add("hidden");
+                btnEntregar.classList.remove("hidden");
+            } else {
+                btnSig.classList.remove("hidden");
+                btnEntregar.classList.add("hidden");
+            }
+        }
+
+        const docenteRef = doc(db, "configuracion", "docente");
+        getDoc(docenteRef).then(async snap => {
+            if (!snap.exists()) {
+                const pinHashInicial = await cifrarClave("1234");
+                await setDoc(docenteRef, { cedula: "", nombre: "", apellido: "", pinHash: pinHashInicial }, { merge: true });
+            }
+        });
+        onSnapshot(docenteRef, snap => {
+            if (snap.exists()) {
+                docentePerfil = { ...docentePerfil, ...snap.data() };
+                actualizarInterfazDocente();
+            }
+        });
+
+        onSnapshot(collection(db, "materias"), snap => {
+            materias = []; snap.forEach(d => materias.push({ id: d.id, ...d.data() }));
+            renderMateriasSelectores(); renderTablaMateriasResumen();
+        });
+        onSnapshot(collection(db, "secciones"), snap => {
+            secciones = []; snap.forEach(d => secciones.push({ id: d.id, ...d.data() }));
+            renderSeccionesSelectores(); renderTablaMateriasResumen();
+        });
+        onSnapshot(collection(db, "objetivos"), snap => {
+            objetivos = []; snap.forEach(d => objetivos.push({ id: d.id, ...d.data() }));
+            renderObjetivosSelectores(); if (estudianteSesion) renderTableroEstudiante();
+        });
+        onSnapshot(collection(db, "estudiantes"), snap => {
+            estudiantes = []; snap.forEach(d => estudiantes.push({ id: d.id, ...d.data() }));
+            renderTablaAlumnos(); renderTablaAsistencia();
+        });
+        onSnapshot(collection(db, "calificaciones"), snap => {
+            calificaciones = []; snap.forEach(d => calificaciones.push({ id: d.id, ...d.data() }));
+            calificaciones.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
+            renderTablaCalificaciones(); if (estudianteSesion) renderTableroEstudiante();
+        });
+        onSnapshot(collection(db, "sesiones_examen"), snap => {
+            sesionesActivas = []; snap.forEach(d => sesionesActivas.push({ id: d.id, ...d.data() }));
+            renderTablaReanudacionDocente(); verificarSesionPendienteEstudiante(); 
+            if (estudianteSesion && !examenEnCurso) renderTableroEstudiante();
+        });
+
+        async function buscarEstudianteRobusto(cedulaIngresada) {
+            const ced = normalizarCedula(cedulaIngresada);
+            let estData = null; let estDocId = ced;
+
+            const snapEst = await getDoc(doc(db, "estudiantes", ced));
+            if (snapEst.exists()) { estData = snapEst.data(); } 
+            else {
+                const cedNum = ced.replace(/[^0-9]/g, '');
+                if (cedNum) {
+                    const estOld = estudiantes.find(e => e.cedula.replace(/[^0-9]/g, '') === cedNum);
+                    if (estOld) { estData = estOld; estDocId = estOld.id; }
+                }
+            }
+            return { estData, estDocId };
+        }
+
+        document.getElementById("tab-btn-ingreso").addEventListener("click", () => {
+            document.getElementById("form-login-estudiante").classList.remove("hidden");
+            document.getElementById("form-registro-estudiante").classList.add("hidden");
+            document.getElementById("tab-btn-ingreso").classList.add("bg-white", "text-blue-700", "shadow-sm");
+            document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm");
+        });
+
+        document.getElementById("tab-btn-registro").addEventListener("click", () => {
+            document.getElementById("form-login-estudiante").classList.add("hidden");
+            document.getElementById("form-registro-estudiante").classList.remove("hidden");
+            document.getElementById("tab-btn-registro").classList.add("bg-white", "text-blue-700", "shadow-sm");
+            document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm");
+        });
+
+        async function procesarRegistroEstudiante(huellaActiva) {
+            const nom = document.getElementById("reg-nombre").value.trim();
+            const ape = document.getElementById("reg-apellido").value.trim();
+            const rawCed = document.getElementById("reg-cedula").value;
+            const sec = document.getElementById("reg-seccion").value;
+            const pass = document.getElementById("reg-password").value.trim();
+            const ced = normalizarCedula(rawCed);
+
+            if (!nom || !ape || !ced || !sec || pass.length < 4) { return alert("Rellena todos los campos. La contraseña debe tener al menos 4 caracteres."); }
+            if (!document.getElementById("reg-terminos").checked) { return alert("Debes aceptar los términos y condiciones."); }
+
+            const { estData } = await buscarEstudianteRobusto(ced);
+            if (estData) return alert(`Error: La cédula ${ced} ya existe en el sistema.`);
+
+            let passkeyId = null;
+            if (huellaActiva) {
+                if (!window.PublicKeyCredential) return alert("Tu navegador no soporta el escáner de huellas de forma nativa.");
+                try {
+                    const publicKeyCredParams = {
+                        challenge: crypto.getRandomValues(new Uint8Array(32)),
+                        rp: { name: "Evaluaciones Telemática" },
+                        user: { id: Uint8Array.from(ced, c => c.charCodeAt(0)), name: ced, displayName: `${nom} ${ape}` },
+                        pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                        authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                        timeout: 60000, attestation: "none"
+                    };
+                    const credential = await navigator.credentials.create({ publicKey: publicKeyCredParams });
+                    passkeyId = bufferToBase64url(credential.rawId);
+                } catch(err) { return alert("Error al leer la huella dactilar. Intenta registrarte solo con contraseña."); }
+            }
+
+            const passHash = await cifrarClave(pass);
+            await setDoc(doc(db, "estudiantes", ced), {
+                nombre: nom, apellido: ape, cedula: ced, seccionId: sec,
+                passwordHash: passHash, passkeyId: passkeyId,
+                presenteAula: false, tokenSesionActivo: null, enLinea: false,
+                terminosAceptados: true,
+                fechaRegistro: new Date().toLocaleString()
+            });
+
+            alert(`Registro completado. ${huellaActiva ? '¡Huella vinculada con éxito!' : 'Usando solo clave.'}`);
+            document.getElementById("tab-btn-ingreso").click();
+            document.getElementById("login-cedula").value = ced;
+            document.getElementById("login-password").value = "";
+            
+            const nData = { nombre: nom, apellido: ape, cedula: ced, seccionId: sec, passwordHash: passHash, passkeyId: passkeyId, presenteAula: false, terminosAceptados: true };
+            iniciarSesionEstudianteExitoso(ced, nData);
+        }
+
+        document.getElementById("btn-completar-registro-huella").addEventListener("click", () => procesarRegistroEstudiante(true));
+        document.getElementById("form-registro-estudiante").addEventListener("submit", (e) => { e.preventDefault(); procesarRegistroEstudiante(false); });
+
+        document.getElementById("form-login-estudiante").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const cedIngresada = document.getElementById("login-cedula").value;
+            const pass = document.getElementById("login-password").value.trim();
+            if (!cedIngresada || !pass) return alert("Ingresa tu cédula y contraseña.");
+            const { estData, estDocId } = await buscarEstudianteRobusto(cedIngresada);
+            if (!estData) return alert("Cédula no registrada en el sistema.");
+            const passHash = await cifrarClave(pass);
+            if (estData.passwordHash !== passHash && estData.password !== pass) return alert("Contraseña incorrecta.");
+            iniciarSesionEstudianteExitoso(estDocId, estData);
+        });
+
+        document.getElementById("btn-iniciar-huella").addEventListener("click", async () => {
+            const cedIngresada = document.getElementById("login-cedula").value;
+            if (!cedIngresada) return alert("Primero escribe tu cédula de identidad para buscar tu huella.");
+            const { estData, estDocId } = await buscarEstudianteRobusto(cedIngresada);
+            if (!estData) return alert("Cédula no registrada en el sistema.");
+            if (!estData.passkeyId) return alert("No tienes ninguna huella registrada. Ingresa con contraseña.");
+
+            try {
+                const publicKeyRequestParams = {
+                    challenge: crypto.getRandomValues(new Uint8Array(32)),
+                    allowCredentials: [{ id: base64urlToBuffer(estData.passkeyId), type: 'public-key', transports: ['internal'] }],
+                    userVerification: "required", timeout: 60000
+                };
+                await navigator.credentials.get({ publicKey: publicKeyRequestParams });
+                document.getElementById("login-password").value = ""; 
+                iniciarSesionEstudianteExitoso(estDocId, estData);
+            } catch(err) { alert("Huella no reconocida o escáner cancelado."); }
+        });
+
+        document.getElementById("btn-vincular-huella-dash").addEventListener("click", async () => {
+            if (!window.PublicKeyCredential) return alert("Tu navegador no soporta WebAuthn.");
+            try {
+                const publicKeyCredParams = {
+                    challenge: crypto.getRandomValues(new Uint8Array(32)),
+                    rp: { name: "Evaluaciones Telemática" },
+                    user: { id: Uint8Array.from(estudianteSesion.cedula, c => c.charCodeAt(0)), name: estudianteSesion.cedula, displayName: `${estudianteSesion.nombre} ${estudianteSesion.apellido}` },
+                    pubKeyCredParams: [{ alg: -7, type: "public-key" }],
+                    authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
+                    timeout: 60000, attestation: "none"
+                };
+                const credential = await navigator.credentials.create({ publicKey: publicKeyCredParams });
+                const nuevoPasskeyId = bufferToBase64url(credential.rawId);
+                await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { passkeyId: nuevoPasskeyId });
+                estudianteSesion.passkeyId = nuevoPasskeyId;
+                document.getElementById("box-vincular-huella").classList.add("hidden");
+                alert("¡Huella vinculada exitosamente!");
+            } catch(err) { alert("Proceso cancelado."); }
+        });
+
+        async function iniciarSesionEstudianteExitoso(cedID, estData) {
+            const currentDeviceId = obtenerIdDispositivo();
+            
+            // 🛡️ BLOQUEO DE SEGUNDO EQUIPO (Anclaje Estricto)
+            if (estData.dispositivoVinculado && estData.dispositivoVinculado !== currentDeviceId) {
+                alert("⛔ ACCESO DENEGADO: Tu cuenta ya está anclada a otro dispositivo. Por medidas anti-fraude, no puedes iniciar sesión desde este equipo.\n\nSi cambiaste de teléfono o perdiste el acceso, notifícalo al Docente para que libere tu equipo.");
+                return; 
+            }
+            
+            // Si es la primera vez que entra, anclamos este equipo a su base de datos
+            if (!estData.dispositivoVinculado) {
+                await updateDoc(doc(db, "estudiantes", cedID), { dispositivoVinculado: currentDeviceId });
+                estData.dispositivoVinculado = currentDeviceId;
+            }
+
+            const tokenNuevo = (crypto.randomUUID ? crypto.randomUUID() : 'tok_' + Math.random().toString(36).substring(2) + Date.now());
+            sessionStorage.setItem("token_sesion_estudiante", tokenNuevo);
+            await updateDoc(doc(db, "estudiantes", cedID), { tokenSesionActivo: tokenNuevo, enLinea: true });
+            estudianteSesion = { id: cedID, ...estData, cedula: estData.cedula };
+            activarVigilanciaConexionUnica(cedID, tokenNuevo);
+            mostrarTableroEstudiante();
+        }
+
+        function activarVigilanciaConexionUnica(estDocId, tokenLocal) {
+            if (unsubVigilanciaSesion) unsubVigilanciaSesion();
+            unsubVigilanciaSesion = onSnapshot(doc(db, "estudiantes", estDocId), snap => {
+                if (!snap.exists()) return expulsarPorViolacionSesion("Tu cuenta de estudiante ha sido eliminada.");
+                const data = snap.data();
+                if (data.tokenSesionActivo && data.tokenSesionActivo !== tokenLocal) {
+                    expulsarPorViolacionSesion("Conexiones simultáneas prohibidas. Sesión cerrada.");
+                } else if (data.tokenSesionActivo === null && !examenEnCurso) {
+                    expulsarPorViolacionSesion("Tu sesión ha sido finalizada remotamente.");
+                }
+            });
+        }
+
+        function expulsarPorViolacionSesion(motivo) {
+            if (unsubVigilanciaSesion) { unsubVigilanciaSesion(); unsubVigilanciaSesion = null; }
+            examenEnCurso = false; clearInterval(timerInterval); desactivarListenersSupervision(); liberarWakeLock();
+            if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+            sessionStorage.removeItem("token_sesion_estudiante"); estudianteSesion = null;
+            document.getElementById("vista-examen-activo").classList.add("hidden");
+            document.getElementById("vista-estudiante-tablero").classList.add("hidden");
+            document.getElementById("vista-estudiante-portal").classList.remove("hidden");
+            alert(`⚠️ CIERRE DE SESIÓN:\n\n${motivo}`);
+        }
+
+        document.getElementById("btn-cerrar-sesion-est").addEventListener("click", async () => {
+            if (estudianteSesion) {
+                if (unsubVigilanciaSesion) { unsubVigilanciaSesion(); unsubVigilanciaSesion = null; }
+                await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { tokenSesionActivo: null, enLinea: false }).catch(() => {});
+            }
+            sessionStorage.removeItem("token_sesion_estudiante"); estudianteSesion = null;
+            document.getElementById("vista-estudiante-tablero").classList.add("hidden");
+            document.getElementById("vista-estudiante-portal").classList.remove("hidden");
+        });
+
+        // 🔴 CONTROL DE MURO DE TÉRMINOS
+        function mostrarTableroEstudiante() {
+            document.getElementById("vista-estudiante-portal").classList.add("hidden");
+            document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
+            const sec = secciones.find(s => s.id === estudianteSesion.seccionId);
+            document.getElementById("perfil-estudiante-bienvenida").innerText = `Hola, ${estudianteSesion.nombre} ${estudianteSesion.apellido}`;
+            document.getElementById("perfil-estudiante-seccion").innerText = `C.I: ${estudianteSesion.cedula} • Sección: ${sec ? sec.nombre : 'No asignada'}`;
+            
+            if (!estudianteSesion.terminosAceptados) {
+                document.getElementById("modal-aceptar-terminos").classList.remove("hidden");
+            }
+
+            if (!estudianteSesion.passkeyId && window.PublicKeyCredential) {
+                document.getElementById("box-vincular-huella").classList.remove("hidden");
+                document.getElementById("box-vincular-huella").classList.add("flex");
+            } else {
+                document.getElementById("box-vincular-huella").classList.add("hidden");
+                document.getElementById("box-vincular-huella").classList.remove("flex");
+            }
+            renderTableroEstudiante();
+            verificarSesionPendienteEstudiante();
+        }
+
+        // Aceptar términos viejos
+        document.getElementById("btn-aceptar-terminos-viejos").addEventListener("click", async () => {
+            await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { terminosAceptados: true });
+            estudianteSesion.terminosAceptados = true; 
+            document.getElementById("modal-aceptar-terminos").classList.add("hidden");
+        });
+
+        function renderTableroEstudiante() {
+            const cont = document.getElementById("contenedor-evaluaciones-alumno");
+            const dashCont = document.getElementById("dashboard-estudiante-stats");
+            
+            const misCalificaciones = calificaciones.filter(c => c.cedula === estudianteSesion.cedula);
+            let totalPresentadas = misCalificaciones.length;
+            let notaAcumulada = 0; let ponderacionAcumulada = 0;
+            
+            misCalificaciones.forEach(c => { notaAcumulada += parseFloat(c.nota) || 0; ponderacionAcumulada += parseFloat(c.ponderacionTotal) || 0; });
+            
+            if (dashCont) {
+                if (totalPresentadas > 0) {
+                    dashCont.classList.remove("hidden");
+                    let porcentaje = ponderacionAcumulada > 0 ? Math.round((notaAcumulada * 100) / ponderacionAcumulada) : 0;
+                    let colorRendimiento = porcentaje >= 50 ? 'text-emerald-700' : 'text-red-600';
+                    dashCont.innerHTML = `
+                        <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg text-center shadow-sm">
+                            <p class="text-[10px] font-bold text-blue-600 uppercase tracking-wide">Evaluaciones</p>
+                            <p class="text-3xl font-black text-blue-900 mt-1">${totalPresentadas}</p>
+                        </div>
+                        <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-center shadow-sm">
+                            <p class="text-[10px] font-bold text-indigo-600 uppercase tracking-wide">Puntos Logrados</p>
+                            <p class="text-3xl font-black text-indigo-900 mt-1">${notaAcumulada.toFixed(2)}</p>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-200 p-4 rounded-lg text-center shadow-sm">
+                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Puntos Posibles</p>
+                            <p class="text-3xl font-black text-slate-700 mt-1">${ponderacionAcumulada.toFixed(2)}</p>
+                        </div>
+                        <div class="bg-white border ${porcentaje >= 50 ? 'border-emerald-200' : 'border-red-200'} p-4 rounded-lg text-center shadow-sm">
+                            <p class="text-[10px] font-bold ${porcentaje >= 50 ? 'text-emerald-600' : 'text-red-500'} uppercase tracking-wide">Rendimiento</p>
+                            <p class="text-3xl font-black ${colorRendimiento} mt-1">${porcentaje}%</p>
+                        </div>
+                    `;
+                } else {
+                    dashCont.classList.add("hidden"); dashCont.innerHTML = "";
+                }
+            }
+
+            const objs = objetivos.filter(o => o.activo && o.seccionesAutorizadas && o.seccionesAutorizadas.includes(estudianteSesion.seccionId));
+            if (objs.length === 0) return cont.innerHTML = '<p class="text-xs text-slate-400 py-3">No hay evaluaciones programadas para tu sección.</p>';
+
+            let h = ''; const ahora = Date.now();
+            objs.forEach(obj => {
+                const mat = materias.find(m => m.id === obj.materiaId);
+                const calif = calificaciones.find(c => c.cedula === estudianteSesion.cedula && c.objetivoId === obj.id);
+                const sesionPrevia = sesionesActivas.find(s => s.cedula === estudianteSesion.cedula && s.objetivoId === obj.id);
+                const presente = estudianteSesion.presenteAula === true;
+                const inicioFormat = obj.horaInicio ? new Date(obj.horaInicio).toLocaleString() : 'N/A';
+                const finFormat = obj.horaFin ? new Date(obj.horaFin).toLocaleString() : 'N/A';
+
+                h += `<div class="border rounded-lg p-4 bg-slate-50 flex flex-col sm:flex-row justify-between sm:items-center gap-3 shadow-sm">
+                        <div class="w-full sm:w-auto">
+                            <span class="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">${mat ? mat.nombre : 'Cátedra'}</span>
+                            <h4 class="font-bold text-sm text-slate-800 mt-1">${obj.nombre}</h4>
+                            <p class="text-[11px] text-slate-500 mt-1 bg-white inline-block p-1.5 border rounded"><span class="text-emerald-700 font-bold">Inicia:</span> ${inicioFormat} <br><span class="text-red-700 font-bold">Cierra:</span> ${finFormat}</p>
+                        </div><div class="w-full sm:w-auto mt-2 sm:mt-0">`;
+                
+                if (calif) {
+                    h += `<div class="flex flex-col sm:flex-row items-center gap-2"><span class="bg-emerald-100 text-emerald-800 font-bold text-xs px-3 py-1.5 rounded text-center border border-emerald-200">✅ Calificado: ${calif.nota} / ${calif.ponderacionTotal} pts</span><button onclick="window.verReporteEstudiante('${estudianteSesion.cedula}_${obj.id}')" class="bg-white hover:bg-slate-50 text-slate-800 font-bold text-[11px] px-3 py-1.5 rounded border border-slate-300 shadow-sm transition">Ver Corrección</button></div>`;
+                } else if (sesionPrevia && sesionPrevia.estado === "entregado") {
+                    h += `<span class="text-xs text-blue-700 bg-blue-50 border border-blue-200 px-3 py-2 rounded font-bold text-center block">Evaluación entregada (Pendiente calificación)</span>`;
+                } else if (sesionPrevia && (sesionPrevia.estado === "bloqueado_por_infracciones" || sesionPrevia.estado === "bloqueado_por_fraude")) {
+                    h += `<span class="text-xs text-red-700 bg-red-100 border border-red-300 px-3 py-2 rounded font-bold text-center block">Examen Anulado</span>`;
+                } else if (sesionPrevia && (sesionPrevia.estado === "en_curso" || sesionPrevia.estado === "reanudacion_permitida")) {
+                    h += `<span class="text-xs text-amber-700 bg-amber-50 border border-amber-300 px-3 py-2 rounded font-bold text-center block">Intento Interrumpido (Reanuda arriba)</span>`;
+                } else if (!presente) {
+                    h += `<span class="text-xs text-amber-700 bg-amber-100 border border-amber-300 px-3 py-1.5 rounded font-semibold text-center block">⚠️ Requiere Asistencia Aula</span>`;
+                } else if (obj.horaInicio && ahora < obj.horaInicio) {
+                    h += `<span class="text-xs text-blue-700 bg-blue-100 border border-blue-300 px-3 py-2 rounded font-semibold text-center block shadow-sm">🕒 Inicia: ${new Date(obj.horaInicio).toLocaleTimeString()}</span>`;
+                } else if (obj.horaFin && ahora > obj.horaFin) {
+                    h += `<span class="text-xs text-red-700 bg-red-100 border border-red-300 px-3 py-2 rounded font-semibold text-center block shadow-sm">Cerrado</span>`;
+                } else {
+                    h += `<button onclick="window.iniciarExamenAlumno('${obj.id}')" class="bg-blue-700 text-white font-bold px-4 py-2.5 rounded text-xs w-full shadow-sm">Comenzar Evaluación</button>`;
+                }
+                h += `</div></div>`;
+            });
+            cont.innerHTML = h;
+        }
+
+        function verificarSesionPendienteEstudiante() {
+            if (!estudianteSesion) return;
+            const sesion = sesionesActivas.find(s => s.cedula === estudianteSesion.cedula && (s.estado === "en_curso" || s.estado === "reanudacion_permitida"));
+            const banner = document.getElementById("banner-reanudacion-disponible");
+            if (sesion) {
+                banner.classList.remove("hidden");
+                document.getElementById("btn-reanudar-examen-guardado").onclick = () => reanudarExamenExistente(sesion);
+            } else { banner.classList.add("hidden"); }
+        }
+
+        async function reanudarExamenExistente(sesion) {
+            objetivoActivo = objetivos.find(o => o.id === sesion.objetivoId);
+            if (!objetivoActivo) return;
+            respuestasEstudiante = sesion.respuestas || {};
+            strikeCount = sesion.strikes || 0;
+            const ahora = Date.now();
+            tiempoRestanteSegundos = Math.floor((objetivoActivo.horaFin - ahora) / 1000);
+            if (tiempoRestanteSegundos <= 0) {
+                alert("El periodo finalizó. El examen se entregará.");
+                autoEntregarPorTiempoAgotado(); return;
+            }
+            const q = query(collection(db, "preguntas"), where("objetivoId", "==", objetivoActivo.id));
+            const snaps = await getDocs(q);
+            const pregs = []; snaps.forEach(d => pregs.push({ id: d.id, ...d.data() }));
+            ejecutarPantallaExamen(pregs, true);
+        }
+
+        window.iniciarExamenAlumno = async function(objId) {
+            const sesionId = `${estudianteSesion.cedula}_${objId}`;
+            const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId));
+            if (sSnap.exists()) {
+                const sData = sSnap.data();
+                if (sData.estado === "en_curso" || sData.estado === "reanudacion_permitida") {
+                    alert("Tienes un intento interrumpido. Utiliza el botón amarillo de 'Reanudar Evaluación'.");
+                    verificarSesionPendienteEstudiante(); renderTableroEstudiante(); return;
+                }
+                objetivoActivo = objetivos.find(o => o.id === objId);
+                const matObj = materias.find(m => m.id === objetivoActivo?.materiaId);
+                
+                // TRAMPA MORTAL (01) POR INTENTO DE FRAUDE
+                await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "bloqueado_por_fraude", strikes: 99, calificado: true, notaFinal: 1.0 });
+                const qC = query(collection(db, "calificaciones"), where("cedula", "==", estudianteSesion.cedula), where("objetivoId", "==", objId));
+                const snapC = await getDocs(qC);
+                snapC.forEach(async (d) => await deleteDoc(d.ref));
+                await addDoc(collection(db, "calificaciones"), {
+                    fecha: new Date().toLocaleString(), cedula: estudianteSesion.cedula, estudiante: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`,
+                    materiaNombre: matObj ? matObj.nombre : 'Cátedra', objetivoId: objId, objetivoNombre: objetivoActivo ? objetivoActivo.nombre : 'Examen',
+                    nota: 1.0, ponderacionTotal: objetivoActivo ? objetivoActivo.ponderacion : 20,
+                    sancionado: true, motivoSancion: "FRAUDE GRAVE: Intento de evadir la seguridad borrando caché."
+                });
+
+                document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-sancion-bloqueo").classList.remove("hidden");
+                document.getElementById("sancion-nota-final").innerText = "01";
+                document.getElementById("sancion-detalle-final").innerText = "VIOLACIÓN CRÍTICA: Intento de vulnerar el sistema borrando caché. Evaluación reprobada con 01 sin derecho a apelación.";
+                return;
+            }
+
+            objetivoActivo = objetivos.find(o => o.id === objId);
+            respuestasEstudiante = {}; strikeCount = 0;
+            const ahora = Date.now();
+            tiempoRestanteSegundos = Math.floor((objetivoActivo.horaFin - ahora) / 1000);
+            if (tiempoRestanteSegundos <= 0) { alert("Periodo finalizado."); renderTableroEstudiante(); return; }
+            
+            const q = query(collection(db, "preguntas"), where("objetivoId", "==", objId));
+            const snaps = await getDocs(q);
+            const pregs = []; snaps.forEach(d => pregs.push({ id: d.id, ...d.data() }));
+            if (pregs.length === 0) return alert("Evaluación sin preguntas.");
+            
+            const matObj = materias.find(m => m.id === objetivoActivo.materiaId);
+            await setDoc(doc(db, "sesiones_examen", sesionId), {
+                cedula: estudianteSesion.cedula, estudianteNombre: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`,
+                materiaNombre: matObj ? matObj.nombre : 'Cátedra',
+                objetivoId: objetivoActivo.id, objetivoNombre: objetivoActivo.nombre,
+                seccionId: estudianteSesion.seccionId, respuestas: {}, strikes: 0, estado: "en_curso",
+                calificado: false, fechaInicio: new Date().toLocaleString(), historialIncidencias: []
+            });
+
+            ejecutarPantallaExamen(pregs, false);
+        };
+
+        function ejecutarPantallaExamen(pregs, esReanudacion) {
+            examenEnCurso = true; solicitarWakeLock(); solicitarPantallaCompleta();
+            document.getElementById("vista-estudiante-tablero").classList.add("hidden");
+            document.getElementById("vista-examen-activo").classList.remove("hidden");
+            document.getElementById("badge-eval-ciega").classList.remove("hidden");
+            document.getElementById("txt-examen-titulo").innerText = objetivoActivo.nombre;
+            actualizarIndicadorStrikesVisual();
+
+            totalPreguntasActivas = pregs.length;
+            indicePreguntaActual = 0; // Reset index for pagination
+
+            const cont = document.getElementById("contenedor-preguntas-examen");
+            let h = '';
+            pregs.forEach((p, idx) => {
+                const valG = respuestasEstudiante[p.id];
+                const displayClass = idx === 0 ? "block" : "hidden"; // Hide all except the first one
+                
+                h += `<div id="preg-card-${idx}" class="pregunta-card ${displayClass} p-4 border border-slate-200 rounded-lg bg-slate-50 space-y-2">
+                        <p class="font-bold text-xs sm:text-sm text-slate-800">${idx+1}. ${p.enunciado} <span class="text-blue-600 font-normal">(${p.valor} pts)</span></p>
+                        <div class="space-y-1.5 text-xs">`;
+                p.opciones.forEach((opc, oi) => {
+                    const chk = (valG !== undefined && parseInt(valG) === oi) ? 'checked' : '';
+                    h += `<label class="flex items-center space-x-2 p-2 bg-white border rounded cursor-pointer hover:bg-slate-100"><input type="radio" name="preg_${p.id}" value="${oi}" onchange="window.guardarRespuestaAutoguardado('${p.id}', ${oi})" ${chk}><span>${opc}</span></label>`;
+                });
+                h += `</div></div>`;
+            });
+            cont.innerHTML = h;
+            
+            actualizarControlesPaginacion();
+
+            if (timerInterval) clearInterval(timerInterval);
+            actualizarRelojTexto(); tiempoUltimaIteracion = performance.now();
+            timerInterval = setInterval(() => {
+                const ahoraP = performance.now(); tiempoRestanteSegundos -= (ahoraP - tiempoUltimaIteracion) / 1000; tiempoUltimaIteracion = ahoraP;
+                if (tiempoRestanteSegundos <= 0) { tiempoRestanteSegundos = 0; clearInterval(timerInterval); autoEntregarPorTiempoAgotado(); } 
+                else { actualizarRelojTexto(); }
+            }, 1000);
+            activarListenersSupervision();
+        }
+
+        async function solicitarWakeLock() { try { if ('wakeLock' in navigator) { wakeLockSentinel = await navigator.wakeLock.request('screen'); document.getElementById("badge-wakelock").classList.remove("hidden"); } } catch (e) {} }
+        function liberarWakeLock() { if (wakeLockSentinel) { wakeLockSentinel.release(); wakeLockSentinel = null; document.getElementById("badge-wakelock").classList.add("hidden"); } }
+        function solicitarPantallaCompleta() { const el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(()=>{}); anchoInicial = window.innerWidth; altoInicial = window.innerHeight; }
+
+        function actualizarRelojTexto() {
+            const trs = Math.max(0, Math.floor(tiempoRestanteSegundos));
+            const min = Math.floor(trs / 60); const seg = trs % 60;
+            const el = document.getElementById("reloj-temporizador");
+            el.innerText = min >= 60 ? `${Math.floor(min/60).toString().padStart(2,'0')}:${(min%60).toString().padStart(2,'0')}:${seg.toString().padStart(2,'0')}` : `${min.toString().padStart(2,'0')}:${seg.toString().padStart(2,'0')}`;
+            if (trs < 300) el.classList.add("text-amber-600");
+            if (trs < 60) { el.classList.remove("text-amber-600"); el.classList.add("text-red-600", "animate-pulse"); }
+        }
+
+        window.guardarRespuestaAutoguardado = async function(pregId, opcionIdx) {
+            respuestasEstudiante[pregId] = opcionIdx;
+            const sesionId = `${estudianteSesion.cedula}_${objetivoActivo.id}`;
+            await updateDoc(doc(db, "sesiones_examen", sesionId), { respuestas: respuestasEstudiante, ultimaPreguntaId: pregId }).catch(()=>{});
+        };
+
+        function activarListenersSupervision() {
+            document.addEventListener("visibilitychange", onCambioPestana); window.addEventListener("blur", onPerdidaFoco);
+            document.addEventListener("fullscreenchange", onSalidaPantallaCompleta); window.addEventListener("resize", onResizeVentana);
+        }
+        function desactivarListenersSupervision() {
+            document.removeEventListener("visibilitychange", onCambioPestana); window.removeEventListener("blur", onPerdidaFoco);
+            document.removeEventListener("fullscreenchange", onSalidaPantallaCompleta); window.removeEventListener("resize", onResizeVentana);
+        }
+        function onCambioPestana() { if (document.hidden) registrarIncidencia("tab_change", "Navegador minimizado."); }
+        function onPerdidaFoco() { registrarIncidencia("window_blur", "Pérdida de foco."); }
+        function onSalidaPantallaCompleta() { if (!document.fullscreenElement) registrarIncidencia("fullscreen_exit", "Salida de pantalla completa."); }
+        function onResizeVentana() { if (window.innerWidth < anchoInicial * 0.75 || window.innerHeight < altoInicial * 0.75) registrarIncidencia("split_screen", "Pantalla dividida."); }
+
+        function registrarIncidencia(tipo, desc) {
+            if (!examenEnCurso) return;
+            const ahora = Date.now(); if (ahora - ultimoIncidenteTimestamp < 2000) return;
+            ultimoIncidenteTimestamp = ahora; strikeCount++; actualizarIndicadorStrikesVisual();
+            const sesionId = `${estudianteSesion.cedula}_${objetivoActivo.id}`;
+            updateDoc(doc(db, "sesiones_examen", sesionId), { strikes: strikeCount }).catch(()=>{});
+            
+            if (strikeCount >= 3) ejecutarSancionDefinitiva01(desc);
+            else { document.getElementById("modal-adv-motivo").innerText = desc; document.getElementById("modal-advertencia").classList.remove("hidden"); }
+        }
+        function actualizarIndicadorStrikesVisual() {
+            const el = document.getElementById("strike-1");
+            if (strikeCount === 0) el.innerText = "Sin faltas";
+            else if (strikeCount === 1) { el.innerText = "1 Advertencia"; el.className = "px-2 py-0.5 rounded text-[10px] bg-amber-500 text-white font-bold animate-pulse"; }
+            else if (strikeCount === 2) { el.innerText = "2 Advertencias (Peligro)"; el.className = "px-2 py-0.5 rounded text-[10px] bg-orange-600 text-white font-bold animate-pulse"; }
+            else el.innerText = "Bloqueado";
+        }
+        document.getElementById("btn-reanudar-tras-advertencia").addEventListener("click", () => {
+            document.getElementById("modal-advertencia").classList.add("hidden"); solicitarPantallaCompleta(); solicitarWakeLock();
+        });
+
+        async function ejecutarSancionDefinitiva01(motivo) {
+            examenEnCurso = false; clearInterval(timerInterval); desactivarListenersSupervision(); liberarWakeLock();
+            if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+            const sId = `${estudianteSesion.cedula}_${objetivoActivo.id}`;
+            await updateDoc(doc(db, "sesiones_examen", sId), { estado: "bloqueado_por_infracciones", strikes: strikeCount }).catch(()=>{});
+            await addDoc(collection(db, "calificaciones"), { fecha: new Date().toLocaleString(), cedula: estudianteSesion.cedula, estudiante: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, objetivoId: objetivoActivo.id, nota: 1.0, ponderacionTotal: objetivoActivo.ponderacion, sancionado: true, motivoSancion: "Anulado por reincidencia." });
+            document.getElementById("modal-advertencia").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-sancion-bloqueo").classList.remove("hidden");
+            document.getElementById("sancion-nota-final").innerText = "01"; document.getElementById("sancion-detalle-final").innerText = motivo;
+        }
+
+        // ==========================================
+        // 13. ENTREGA Y CALIFICACIÓN AUTOMÁTICA CLIENTE
+        // ==========================================
+        document.getElementById("btn-entregar-examen-final").addEventListener("click", () => procesarEntregaFinalCiega(false));
+        function autoEntregarPorTiempoAgotado() { procesarEntregaFinalCiega(true); }
+
+        async function procesarEntregaFinalCiega(esPorTiempo) {
+            examenEnCurso = false; clearInterval(timerInterval); desactivarListenersSupervision(); liberarWakeLock();
+            if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
+
+            const sesionId = `${estudianteSesion.cedula}_${objetivoActivo.id}`;
+            const matObj = materias.find(m => m.id === objetivoActivo.materiaId);
+            
+            document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-resultados-fin").classList.remove("hidden");
+            document.getElementById("res-estudiante-linea").innerText = `${estudianteSesion.nombre} ${estudianteSesion.apellido} (C.I: ${estudianteSesion.cedula})`;
+            document.getElementById("res-nota-valor").innerHTML = `<span class="animate-pulse text-2xl text-blue-600">Evaluando...</span>`;
+            document.getElementById("res-escala-valor").innerText = "Procesando calificación automática...";
+            
+            try {
+                const snapClave = await getDoc(doc(db, "claves_examen", objetivoActivo.id));
+                const claves = snapClave.exists() ? (snapClave.data().respuestas || {}) : {};
+                const qP = query(collection(db, "preguntas"), where("objetivoId", "==", objetivoActivo.id));
+                const snapshotPregs = await getDocs(qP);
+                
+                let totalNota = 0; let aprobadas = []; let reprobadas = [];
+                snapshotPregs.forEach(docP => {
+                    const pData = docP.data(); const seleccion = respuestasEstudiante[docP.id]; const correcta = claves[docP.id];
+                    if (seleccion !== undefined && parseInt(seleccion) === parseInt(correcta)) { totalNota += parseFloat(pData.valor || 0); aprobadas.push(`<li class="text-sm">✅ ${pData.enunciado} <span class="font-bold text-emerald-600">(+${pData.valor} pts)</span></li>`); } 
+                    else { reprobadas.push(`<li class="text-sm">❌ ${pData.enunciado} <span class="font-bold text-red-500">(${seleccion===undefined?'Vacía':'Mala'})</span></li>`); }
+                });
+
+                let htmlReporte = `<div class="bg-white border p-4 rounded text-left">`;
+                if (aprobadas.length > 0) htmlReporte += `<h4 class="font-bold text-emerald-700">Acertadas:</h4><ul class="mb-4">${aprobadas.join('')}</ul>`;
+                if (reprobadas.length > 0) htmlReporte += `<h4 class="font-bold text-red-700">Erradas/Vacías:</h4><ul>${reprobadas.join('')}</ul>`;
+                htmlReporte += `</div>`;
+                
+                let notaCalculada = totalNota < 1.0 ? 1.0 : totalNota;
+                const notaFinal = notaCalculada.toFixed(2);
+
+                await addDoc(collection(db, "calificaciones"), { 
+                    fecha: new Date().toLocaleString(), cedula: estudianteSesion.cedula, estudiante: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, 
+                    materiaNombre: matObj ? matObj.nombre : 'Cátedra', objetivoId: objetivoActivo.id, objetivoNombre: objetivoActivo.nombre, 
+                    nota: parseFloat(notaFinal), ponderacionTotal: objetivoActivo.ponderacion, sancionado: false, motivoSancion: esPorTiempo ? "Tiempo agotado" : "Entrega manual" 
+                });
+                
+                await updateDoc(doc(db, "sesiones_examen", sesionId), { 
+                    estado: "entregado", entregaAutomatica: esPorTiempo, fechaEntrega: new Date().toISOString(),
+                    calificado: true, notaFinal: parseFloat(notaFinal), reporteHtml: htmlReporte 
+                });
+
+                document.getElementById("res-nota-valor").innerText = notaFinal;
+                document.getElementById("res-escala-valor").innerText = `Calificación generada automáticamente`;
+                document.getElementById("btn-ver-reporte-final-container").classList.remove("hidden");
+                window.reporteHtmlActual = htmlReporte;
+
+            } catch (error) {
+                document.getElementById("res-nota-valor").innerText = "Error";
+                document.getElementById("res-escala-valor").innerText = "Fallo al calificar. El docente revisará tu intento.";
+                await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "entregado", entregaAutomatica: esPorTiempo, fechaEntrega: new Date().toISOString() }).catch(()=>{});
+            }
+        }
+
+        async function evaluarSesionesEntregadasEnServidor() { return; } // Retirado, auto-corrección en cliente
+
+        window.verReporteEstudianteActual = function() {
+            if (window.reporteHtmlActual) { document.getElementById("contenido-reporte-modal").innerHTML = window.reporteHtmlActual; document.getElementById("modal-ver-reporte").classList.remove("hidden"); }
+        };
+        window.verReporteEstudiante = async function(sesionId) {
+            const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId));
+            if (sSnap.exists() && sSnap.data().reporteHtml) { document.getElementById("contenido-reporte-modal").innerHTML = sSnap.data().reporteHtml; document.getElementById("modal-ver-reporte").classList.remove("hidden"); }
+        };
+
+        // ==========================================
+        // LOGIN DOCENTE Y GESTIÓN DE CONTRASEÑA
+        // ==========================================
+        
+        document.querySelectorAll('.toggle-password').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.innerText = '🙈';
+                } else {
+                    input.type = 'password';
+                    this.innerText = '👁️';
+                }
+            });
+        });
+
+        document.getElementById("btn-login-docente").addEventListener("click", () => {
+            document.getElementById("login-docente-pin").value = "";
+            document.getElementById("login-docente-pin").type = "password"; 
+            document.querySelector('[data-target="login-docente-pin"]').innerText = "👁️";
+            document.getElementById("modal-login-docente").classList.remove("hidden");
+            document.getElementById("login-docente-pin").focus();
+        });
+
+        document.getElementById("btn-confirmar-login-docente").addEventListener("click", async () => {
+            const p = document.getElementById("login-docente-pin").value; 
+            if (!p) return;
+            
+            if (await cifrarClave(p) === docentePerfil.pinHash) {
+                localStorage.setItem("docenteSesionLocal", "true");
+                document.getElementById("modal-login-docente").classList.add("hidden");
+                document.getElementById("vista-estudiante-portal").classList.add("hidden"); 
+                document.getElementById("vista-estudiante-tablero").classList.add("hidden"); 
+                document.getElementById("vista-docente-panel").classList.remove("hidden");
+            } else {
+                alert("Contraseña incorrecta.");
+            }
+        });
+
+        document.getElementById("btn-volver-estudiante-desde-docente").addEventListener("click", () => {
+            document.getElementById("vista-docente-panel").classList.add("hidden");
+            if (estudianteSesion) document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
+            else document.getElementById("vista-estudiante-portal").classList.remove("hidden");
+        });
+        document.getElementById("btn-salir-docente").addEventListener("click", () => {
+            localStorage.removeItem("docenteSesionLocal"); document.getElementById("vista-docente-panel").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden");
+        });
+
+        function actualizarInterfazDocente() {
+            const nom = docentePerfil.nombre ? `Prof. ${docentePerfil.nombre} ${docentePerfil.apellido}` : "Sin configurar";
+            document.getElementById("header-docente-info").innerText = `Docente: ${nom}`;
+            document.getElementById("doc-panel-nombre").innerText = `Docente Titular: ${nom}`;
+            const user = auth.currentUser;
+            if (user) { const uidDisplay = document.getElementById("doc-uid-display"); if (uidDisplay) uidDisplay.innerText = `UID (Para Firestore): ${user.uid}`; }
+            if (!document.getElementById("doc-cedula-input").value && docentePerfil.cedula) { document.getElementById("doc-cedula-input").value = docentePerfil.cedula; document.getElementById("doc-nombre-input").value = docentePerfil.nombre; document.getElementById("doc-apellido-input").value = docentePerfil.apellido; }
+        }
+
+        const tabsDoc = ["asistencia", "reanudacion", "materias", "evaluaciones", "preguntas", "alumnos", "calificaciones", "perfil"];
+        tabsDoc.forEach(t => {
+            document.getElementById(`tab-btn-${t}`).addEventListener("click", () => {
+                tabsDoc.forEach(item => {
+                    document.getElementById(`tc-${item}`).classList.add("hidden");
+                    const b = document.getElementById(`tab-btn-${item}`);
+                    b.classList.remove("border-blue-700", "text-blue-700"); b.classList.add("border-transparent", "text-slate-500");
+                });
+                document.getElementById(`tc-${t}`).classList.remove("hidden");
+                const act = document.getElementById(`tab-btn-${t}`);
+                act.classList.remove("border-transparent", "text-slate-500"); act.classList.add("border-blue-700", "text-blue-700");
+            });
+        });
+
+        document.getElementById("filtro-asistencia-seccion").addEventListener("change", renderTablaAsistencia);
+        document.getElementById("filtro-asistencia-txt").addEventListener("input", renderTablaAsistencia);
+        
+        function renderTablaAsistencia() {
+            const secId = document.getElementById("filtro-asistencia-seccion").value;
+            const txt = (document.getElementById("filtro-asistencia-txt").value || "").toLowerCase();
+            const cont = document.getElementById("tabla-asistencia-contenedor");
+            if (!secId) return cont.innerHTML = '<p class="text-slate-400 py-3">Selecciona una sección para listar alumnos.</p>';
+            let alums = estudiantes.filter(e => e.seccionId === secId);
+            if(txt) alums = alums.filter(e => e.cedula.toLowerCase().includes(txt) || e.nombre.toLowerCase().includes(txt) || e.apellido.toLowerCase().includes(txt));
+            if (alums.length === 0) return cont.innerHTML = '<p class="text-slate-400 py-3">No hay estudiantes que coincidan.</p>';
+            let h = `<table class="w-full border-collapse border"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Estudiante</th><th class="border p-2 text-center">Asistencia</th></tr></thead><tbody>`;
+            alums.forEach(a => { h += `<tr><td class="border p-2">${a.cedula}</td><td class="border p-2">${a.nombre} ${a.apellido}</td><td class="border p-2 text-center"><input type="checkbox" onchange="window.toggleAsistencia('${a.id}', this.checked)" ${a.presenteAula ? 'checked' : ''}></td></tr>`; });
+            cont.innerHTML = h + '</tbody></table>';
+        }
+        window.toggleAsistencia = async (id, st) => await updateDoc(doc(db, "estudiantes", id), { presenteAula: st });
+        document.getElementById("btn-todos-presentes").addEventListener("click", async () => { const s = document.getElementById("filtro-asistencia-seccion").value; estudiantes.filter(e=>e.seccionId===s).forEach(async a=>await updateDoc(doc(db,"estudiantes",a.id),{presenteAula:true}));});
+        document.getElementById("btn-todos-ausentes").addEventListener("click", async () => { const s = document.getElementById("filtro-asistencia-seccion").value; estudiantes.filter(e=>e.seccionId===s).forEach(async a=>await updateDoc(doc(db,"estudiantes",a.id),{presenteAula:false}));});
+
+        function renderTablaReanudacionDocente() {
+            const cont = document.getElementById("tabla-reanudacion-contenedor");
+            if (sesionesActivas.length === 0) return cont.innerHTML = '<p class="text-slate-400 py-3">No hay sesiones activas.</p>';
+            let h = `<table class="w-full border-collapse border"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Estudiante</th><th class="border p-2">Eval</th><th class="border p-2">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            sesionesActivas.forEach(s => {
+                h += `<tr><td class="border p-2">${s.cedula}</td><td class="border p-2">${s.estudianteNombre}</td><td class="border p-2">${s.objetivoNombre}</td><td class="border p-2 text-center">${s.estado}</td>
+                <td class="border p-2 text-center space-x-1"><button onclick="window.desbloquearReanudacionSesion('${s.id}')" class="bg-amber-600 text-white px-2 py-1 rounded text-[11px]">Desbloquear</button><button onclick="window.eliminarSesionExamen('${s.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-[11px]">Reiniciar</button></td></tr>`;
+            });
+            cont.innerHTML = h + '</tbody></table>';
+        }
+        window.desbloquearReanudacionSesion = async (id) => {
+            const sSnap = await getDoc(doc(db, "sesiones_examen", id));
+            if (sSnap.exists()) {
+                await updateDoc(doc(db, "sesiones_examen", id), { estado: "reanudacion_permitida", strikes: 0, calificado: false });
+                const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId));
+                (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref));
+                alert("Desbloqueado.");
+            }
+        };
+        window.eliminarSesionExamen = async (id) => {
+            if(!confirm("¿Reiniciar intento?")) return;
+            const sSnap = await getDoc(doc(db, "sesiones_examen", id));
+            if (sSnap.exists()) {
+                await deleteDoc(doc(db, "sesiones_examen", id));
+                const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId));
+                (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref));
+                alert("Reiniciado.");
+            }
+        };
+
+        document.getElementById("btn-crear-materia").addEventListener("click", async () => {
+            const n = document.getElementById("mat-nombre").value; const c = document.getElementById("mat-codigo").value;
+            if(!n) return; await addDoc(collection(db, "materias"), { nombre: n, codigo: c });
+            document.getElementById("mat-nombre").value = ""; document.getElementById("mat-codigo").value = "";
+        });
+        document.getElementById("btn-crear-seccion").addEventListener("click", async () => {
+            const m = document.getElementById("sec-mat-select").value; const n = document.getElementById("sec-nombre").value;
+            if(!m||!n) return; await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n });
+            document.getElementById("sec-nombre").value = "";
+        });
+        function renderMateriasSelectores() {
+            const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
+            document.getElementById("sec-mat-select").innerHTML = h; document.getElementById("eval-mat-select").innerHTML = h; document.getElementById("doc-preg-mat").innerHTML = h;
+            document.getElementById("filtro-calif-mat").innerHTML = '<option value="TODAS">Todas las Materias</option>' + h;
+        }
+        function renderSeccionesSelectores() {
+            const h = '<option value="">-- Elige --</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+            document.getElementById("reg-seccion").innerHTML = h; document.getElementById("filtro-asistencia-seccion").innerHTML = h; document.getElementById("edit-alum-sec").innerHTML = h;
+            document.getElementById("filtro-alumnos-sec").innerHTML = '<option value="TODAS">Todas las Secciones</option>' + h;
+            renderCheckboxesSeccionesObjetivo();
+        }
+        function renderTablaMateriasResumen() {
+            let h = ''; materias.forEach(m => {
+                const s = secciones.filter(x=>x.materiaId===m.id).map(x=>`<div class="border p-1 bg-white text-xs inline-block mr-1 mb-1">${x.nombre} <button onclick="window.eliminarSeccion('${x.id}')" class="text-red-500 ml-1">x</button></div>`).join('');
+                h += `<div class="border p-3 mb-2 bg-slate-50"><div class="font-bold flex justify-between">${m.nombre} <button onclick="window.eliminarMateria('${m.id}')" class="text-red-500 font-normal">Borrar Materia</button></div><div class="mt-2">${s}</div></div>`;
+            });
+            document.getElementById("tabla-materias-resumen").innerHTML = h;
+        }
+        window.eliminarMateria = async (id) => { if(confirm("¿Borrar materia?")) await deleteDoc(doc(db,"materias",id)); };
+        window.eliminarSeccion = async (id) => { if(confirm("¿Borrar sección?")) await deleteDoc(doc(db,"secciones",id)); };
+        document.getElementById("eval-mat-select").addEventListener("change", renderCheckboxesSeccionesObjetivo);
+        function renderCheckboxesSeccionesObjetivo() {
+            const mId = document.getElementById("eval-mat-select").value;
+            const c = document.getElementById("eval-secciones-checkboxes");
+            if(!mId) return c.innerHTML = 'Elige materia';
+            c.innerHTML = secciones.filter(s=>s.materiaId===mId).map(s=>`<label class="border p-1 text-xs"><input type="checkbox" name="sec_eval" value="${s.id}" checked> ${s.nombre}</label>`).join('');
+        }
+
+        document.getElementById("btn-guardar-evaluacion").addEventListener("click", async () => {
+            const m = document.getElementById("eval-mat-select").value; const n = document.getElementById("eval-nombre").value;
+            const p = parseFloat(document.getElementById("eval-peso").value); const hi = document.getElementById("eval-hora-inicio").value;
+            const hf = document.getElementById("eval-hora-fin").value; const cb = Array.from(document.querySelectorAll("input[name='sec_eval']:checked")).map(x=>x.value);
+            if(!m||!n||!p||!hi||!hf||!cb.length) return alert("Faltan datos");
+            const ti = new Date(hi).getTime(); const tf = new Date(hf).getTime();
+            if(tf <= ti) return alert("Cierre debe ser mayor");
+            await addDoc(collection(db, "objetivos"), { materiaId: m, nombre: n, ponderacion: p, horaInicio: ti, horaFin: tf, seccionesAutorizadas: cb, activo: true });
+        });
+        
+        function renderObjetivosSelectores() {
+            const m = document.getElementById("filtro-calif-mat").value;
+            const objSel = document.getElementById("filtro-calif-obj");
+            const valActual = objSel.value;
+            
+            let obs = objetivos;
+            if (m !== "TODAS") obs = objetivos.filter(o => o.materiaId === m);
+            objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + obs.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join('');
+            if(obs.find(o => o.id === valActual)) objSel.value = valActual;
+
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Nombre</th><th class="border p-2">Puntos</th><th class="border p-2">Ventana</th><th class="border p-2">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            objetivos.forEach(o => {
+                h += `<tr><td class="border p-2 font-bold">${o.nombre}</td><td class="border p-2 text-center">${o.ponderacion}</td>
+                <td class="border p-2 text-[9px]">Desde: ${new Date(o.horaInicio).toLocaleString()}<br>Hasta: ${new Date(o.horaFin).toLocaleString()}</td>
+                <td class="border p-2 text-center"><button onclick="window.toggleEstadoObjetivo('${o.id}', ${!o.activo})" class="bg-emerald-100 px-2 py-1 rounded w-full mb-1">${o.activo?'Activo':'Inactivo'}</button>
+                <button onclick="window.republicarExamen('${o.id}')" class="bg-amber-100 px-2 py-1 rounded w-full">Reiniciar para Todos</button></td>
+                <td class="border p-2 text-center"><button onclick="window.editarObjetivo('${o.id}')" class="bg-blue-100 px-2 py-1 rounded w-full mb-1">Editar</button>
+                <button onclick="window.eliminarObjetivo('${o.id}')" class="bg-red-100 text-red-700 px-2 py-1 rounded w-full">Borrar</button></td></tr>`;
+            });
+            document.getElementById("tabla-evaluaciones-resumen").innerHTML = h + `</tbody></table>`;
+        }
+        window.toggleEstadoObjetivo = async (id, st) => await updateDoc(doc(db, "objetivos", id), { activo: st });
+        window.republicarExamen = async (id) => {
+            if(!confirm("¿Reiniciar para todos? Borra notas e intentos.")) return;
+            (await getDocs(query(collection(db, "sesiones_examen"), where("objetivoId", "==", id)))).forEach(async d=>await deleteDoc(d.ref));
+            (await getDocs(query(collection(db, "calificaciones"), where("objetivoId", "==", id)))).forEach(async d=>await deleteDoc(d.ref));
+            alert("Reiniciado");
+        };
+
+        window.editarObjetivo = async (id) => {
+            const o = objetivos.find(x => x.id === id);
+            if(!o) return;
+            document.getElementById("edit-eval-id").value = o.id;
+            document.getElementById("edit-eval-nom").value = o.nombre;
+            document.getElementById("edit-eval-peso").value = o.ponderacion;
+            
+            const ofs = (new Date()).getTimezoneOffset() * 60000;
+            
+            if (o.horaInicio) { document.getElementById("edit-eval-hora-inicio").value = new Date(o.horaInicio - ofs).toISOString().slice(0,16); } 
+            else { document.getElementById("edit-eval-hora-inicio").value = ''; }
+            
+            if (o.horaFin) { document.getElementById("edit-eval-hora-fin").value = new Date(o.horaFin - ofs).toISOString().slice(0,16); } 
+            else { document.getElementById("edit-eval-hora-fin").value = ''; }
+            
+            document.getElementById("modal-editar-objetivo").classList.remove("hidden");
+        };
+
+        document.getElementById("btn-guardar-edicion-objetivo").addEventListener("click", async () => {
+            const id = document.getElementById("edit-eval-id").value;
+            const n = document.getElementById("edit-eval-nom").value;
+            const p = parseFloat(document.getElementById("edit-eval-peso").value);
+            const valInicio = document.getElementById("edit-eval-hora-inicio").value;
+            const valFin = document.getElementById("edit-eval-hora-fin").value;
+            
+            if(!n || !p || !valInicio || !valFin) { return alert("⚠️ Faltan datos: Asegúrate de llenar el nombre, puntos y ambas fechas."); }
+            
+            const ti = new Date(valInicio).getTime();
+            const tf = new Date(valFin).getTime();
+            
+            if(tf <= ti) { return alert("⚠️ Error lógico: La hora de cierre debe ser posterior a la hora de inicio."); }
+            
+            try {
+                await updateDoc(doc(db, "objetivos", id), { nombre: n, ponderacion: p, horaInicio: ti, horaFin: tf });
+                document.getElementById("modal-editar-objetivo").classList.add("hidden");
+                alert("✅ Fechas y evaluación actualizadas correctamente.");
+            } catch (error) {
+                alert("❌ ERROR AL GUARDAR:\n\n" + error.message);
+            }
+        });
+        window.eliminarObjetivo = async (id) => { if(confirm("¿Borrar Evaluación?")) await deleteDoc(doc(db,"objetivos",id)); };
+
+        document.getElementById("doc-preg-mat").addEventListener("change", (e) => {
+            const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden");
+            s.disabled = !id; s.innerHTML = '<option value="">Objetivo...</option>' + objetivos.filter(x=>x.materiaId===id).map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
+        });
+        let unsubPreguntas = null;
+        document.getElementById("doc-preg-obj").addEventListener("change", async (e) => {
+            const id = e.target.value; if(!id) return document.getElementById("box-crear-pregunta").classList.add("hidden");
+            document.getElementById("box-crear-pregunta").classList.remove("hidden");
+            if(unsubPreguntas) unsubPreguntas();
+            const sC = await getDoc(doc(db, "claves_examen", id)); clavesDocente = sC.exists() ? sC.data().respuestas : {};
+            unsubPreguntas = onSnapshot(query(collection(db, "preguntas"), where("objetivoId", "==", id)), snap => {
+                preguntas = []; snap.forEach(d => preguntas.push({id: d.id, ...d.data()})); renderListaPregs(id);
+            });
+        });
+        function renderListaPregs(objId) {
+            const ob = objetivos.find(x=>x.id===objId); const ac = preguntas.reduce((s,p)=>s+parseFloat(p.valor),0);
+            document.getElementById("txt-saldo-disponible").innerText = `${ac}/${ob.ponderacion}`;
+            let h='';
+            preguntas.forEach((p,i) => {
+                h+=`<div class="border p-2 bg-white flex justify-between"><div class="space-y-1"><div class="font-bold">${i+1}. ${p.enunciado} (${p.valor}pts)</div><div class="text-[10px] text-emerald-600">Clave Bóveda: ${p.opciones[clavesDocente[p.id]]||'--'}</div></div><div><button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-500 ml-2">x</button></div></div>`;
+            });
+            document.getElementById("lista-preguntas-creadas").innerHTML = h;
+        }
+        document.getElementById("btn-agregar-pregunta").addEventListener("click", async () => {
+            const objId = document.getElementById("doc-preg-obj").value; const ob = objetivos.find(x=>x.id===objId);
+            const e = document.getElementById("p-enunciado").value; const o0 = document.getElementById("p-opc-0").value; const o1 = document.getElementById("p-opc-1").value; const o2 = document.getElementById("p-opc-2").value; const o3 = document.getElementById("p-opc-3").value;
+            const c = parseInt(document.querySelector("input[name='opt_cor']:checked").value); const v = parseFloat(document.getElementById("p-puntos").value);
+            if(!e||!o0||!o1||!o2||!o3||!v) return alert("Completa");
+            const docR = await addDoc(collection(db,"preguntas"), {objetivoId:objId, materiaId:ob.materiaId, enunciado:e, opciones:[o0,o1,o2,o3], valor:v});
+            clavesDocente[docR.id] = c; await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
+            document.getElementById("p-enunciado").value="";
+        });
+        window.eliminarPregunta = async (pId, oId) => { await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
+
+        document.getElementById("filtro-alumnos-sec").addEventListener("change", renderTablaAlumnos);
+        document.getElementById("filtro-alumnos-txt").addEventListener("input", renderTablaAlumnos);
+        function renderTablaAlumnos() {
+            const sec = document.getElementById("filtro-alumnos-sec").value;
+            const txt = (document.getElementById("filtro-alumnos-txt").value || "").toLowerCase();
+            let fs = estudiantes; 
+            if(sec !== "TODAS") fs = fs.filter(x=>x.seccionId===sec);
+            if(txt) fs = fs.filter(x => x.cedula.toLowerCase().includes(txt) || x.nombre.toLowerCase().includes(txt) || x.apellido.toLowerCase().includes(txt));
+            const cont = document.getElementById("tabla-alumnos-gestion");
+            if(fs.length === 0) return cont.innerHTML = '<p class="text-slate-400 py-3">No hay alumnos que coincidan.</p>';
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Estudiante</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            fs.forEach(e => {
+                h += `<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido} ${e.passkeyId ? '🛡️' : ''}</td>
+                <td class="border p-2 text-center space-x-1">
+                <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Editar</button>
+                <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-amber-100 px-2 py-1 rounded border">Liberar Eq.</button>
+                <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border">Borrar</button>
+                </td></tr>`;
+            });
+            cont.innerHTML = h + `</tbody></table>`;
+        }
+        
+        window.forzarCierreSesionAlumno = async (id) => { 
+            await updateDoc(doc(db, "estudiantes", id), {
+                tokenSesionActivo: null, 
+                enLinea: false,
+                dispositivoVinculado: null 
+            }); 
+            alert("Dispositivo y Sesiones liberados. El alumno ya puede ingresar desde un equipo nuevo."); 
+        };
+        
+        window.eliminarAlumno = async (id) => { if(confirm("Borrar alumno?")) await deleteDoc(doc(db, "estudiantes", id)); };
+        window.editarDatosAlumnoModal = (id) => {
+            const e = estudiantes.find(x=>x.id===id);
+            document.getElementById("edit-alum-id").value=e.id; document.getElementById("edit-alum-ced-old").value=e.cedula; document.getElementById("edit-alum-ced").value=e.cedula; document.getElementById("edit-alum-nom").value=e.nombre; document.getElementById("edit-alum-ape").value=e.apellido;
+            document.getElementById("modal-editar-alumno").classList.remove("hidden");
+        };
+        document.getElementById("btn-guardar-edicion-alumno").addEventListener("click", async () => {
+            const id = document.getElementById("edit-alum-id").value;
+            await updateDoc(doc(db,"estudiantes",id), {cedula: normalizarCedula(document.getElementById("edit-alum-ced").value), nombre: document.getElementById("edit-alum-nom").value, apellido: document.getElementById("edit-alum-ape").value, seccionId: document.getElementById("edit-alum-sec").value});
+            document.getElementById("modal-editar-alumno").classList.add("hidden");
+        });
+
+        document.getElementById("filtro-calif-txt").addEventListener("input", renderTablaCalificaciones);
+        document.getElementById("filtro-calif-obj").addEventListener("change", renderTablaCalificaciones);
+        document.getElementById("filtro-calif-mat").addEventListener("change", (e) => {
+            const matId = e.target.value; const objSel = document.getElementById("filtro-calif-obj");
+            if (matId === "TODAS") { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); } 
+            else { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.filter(o=>o.materiaId===matId).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); }
+            renderTablaCalificaciones();
+        });
+
+        function renderTablaCalificaciones() {
+            const matFiltro = document.getElementById("filtro-calif-mat")?.value || "TODAS";
+            const objFiltro = document.getElementById("filtro-calif-obj")?.value || "TODOS";
+            const txtFiltro = (document.getElementById("filtro-calif-txt")?.value || "").toLowerCase();
+
+            let filtradas = calificaciones;
+            if (matFiltro !== "TODAS") {
+                const objsDeMateria = objetivos.filter(o => o.materiaId === matFiltro).map(o => o.id);
+                filtradas = filtradas.filter(c => objsDeMateria.includes(c.objetivoId));
+            }
+            if (objFiltro !== "TODOS") { filtradas = filtradas.filter(c => c.objetivoId === objFiltro); }
+            if (txtFiltro) {
+                filtradas = filtradas.filter(c => c.cedula.toLowerCase().includes(txtFiltro) || c.estudiante.toLowerCase().includes(txtFiltro));
+            }
+
+            const cont = document.getElementById("tabla-calificaciones-final");
+            if (filtradas.length === 0) { cont.innerHTML = '<p class="text-slate-400 py-3">No hay notas que coincidan.</p>'; return; }
+
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Alumno</th><th class="border p-2">Materia</th><th class="border p-2">Nota</th><th class="border p-2">Obs</th><th class="border p-2">🗑️</th></tr></thead><tbody>`;
+            filtradas.forEach(c => {
+                h += `<tr><td class="border p-2 font-mono">${c.cedula}</td><td class="border p-2 font-medium">${c.estudiante}</td><td class="border p-2">${c.materiaNombre}</td><td class="border p-2 font-bold text-center text-blue-700">${c.nota}</td><td class="border p-2 text-[10px] text-slate-500">${c.motivoSancion}</td>
+                <td class="border p-2 text-center"><button onclick="window.eliminarNotaOficial('${c.id}')" class="text-red-500 font-bold bg-red-50 px-2 py-1 border rounded">X</button></td></tr>`;
+            });
+            cont.innerHTML = h + `</tbody></table>`;
+        }
+        window.eliminarNotaOficial = async (id) => { if(confirm("Borrar nota oficial?")) await deleteDoc(doc(db,"calificaciones",id)); };
+
+        document.getElementById("btn-guardar-perfil").addEventListener("click", async () => {
+            await updateDoc(doc(db, "configuracion", "docente"), { cedula: document.getElementById("doc-cedula-input").value, nombre: document.getElementById("doc-nombre-input").value, apellido: document.getElementById("doc-apellido-input").value });
+            alert("Guardado");
+        });
+        
+        document.getElementById("btn-actualizar-pin").addEventListener("click", async () => {
+            const v = document.getElementById("pin-viejo").value; 
+            const n = document.getElementById("pin-nuevo").value; 
+            const c = document.getElementById("pin-confirma").value;
+            
+            if(await cifrarClave(v) !== docentePerfil.pinHash) return alert("Contraseña actual incorrecta.");
+            if(n !== c) return alert("Las contraseñas nuevas no coinciden.");
+            
+            const regexComplejidad = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+            
+            if(!regexComplejidad.test(n)) {
+                return alert("⚠️ La contraseña no cumple con los requisitos de seguridad.\nDebe incluir mayúscula, minúscula, número y un carácter especial (ej. @, #, $, -, _).");
+            }
+
+            await updateDoc(doc(db, "configuracion", "docente"), { pinHash: await cifrarClave(n), pin: null });
+            alert("Contraseña actualizada con nivel de seguridad Alto."); 
+            
+            document.getElementById("pin-viejo").value = ""; 
+            document.getElementById("pin-nuevo").value = ""; 
+            document.getElementById("pin-confirma").value = "";
+            document.querySelectorAll('.toggle-password').forEach(b => {
+                b.innerText = '👁️';
+                document.getElementById(b.getAttribute('data-target')).type = 'password';
+            });
+        });
+    </script>
+</body>
+</html>
