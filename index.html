@@ -25,9 +25,7 @@
                 <span id="badge-wakelock" class="hidden sm:inline-flex items-center text-[10px] bg-blue-950 text-blue-200 px-2 py-1 rounded border border-blue-700">
                     <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> Pantalla Bloqueada
                 </span>
-                <button id="btn-login-docente" class="bg-blue-800 hover:bg-blue-700 text-xs px-3 py-1.5 rounded border border-blue-600 transition font-medium">
-                    Panel Docente
-                </button>
+                <button id="btn-login-docente" class="bg-blue-800 hover:bg-blue-700 text-xs px-3 py-1.5 rounded border border-blue-600 transition font-medium">Panel Docente</button>
             </div>
         </div>
     </header>
@@ -49,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO LOGIN -->
+            <!-- LOGIN -->
             <form id="form-login-estudiante" class="space-y-4 max-w-md mx-auto">
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label>
@@ -63,16 +61,12 @@
                     </div>
                 </div>
                 <div class="space-y-2 pt-2">
-                    <button type="button" id="btn-iniciar-huella" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-xs transition shadow-sm flex items-center justify-center gap-2">
-                        <span class="text-lg">👆</span> Ingresar con Huella Biométrica
-                    </button>
-                    <button type="submit" id="btn-iniciar-sesion-est" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition border border-slate-300">
-                        Ingresar con Contraseña
-                    </button>
+                    <button type="button" id="btn-iniciar-huella" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-xs transition shadow-sm flex items-center justify-center gap-2"><span class="text-lg">👆</span> Ingresar con Huella Biométrica</button>
+                    <button type="submit" id="btn-iniciar-sesion-est" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition border border-slate-300">Ingresar con Contraseña</button>
                 </div>
             </form>
 
-            <!-- FORMULARIO REGISTRO -->
+            <!-- REGISTRO -->
             <form id="form-registro-estudiante" class="hidden space-y-4 max-w-md mx-auto">
                 <div class="grid grid-cols-2 gap-3">
                     <div><label class="block text-xs font-semibold text-slate-600 mb-1">Nombre</label><input type="text" id="reg-nombre" class="w-full border p-2 text-xs" required></div>
@@ -149,7 +143,7 @@
         </section>
 
         <!-- ========================================== -->
-        <!-- MODALES ESTUDIANTE -->
+        <!-- MODALES ESTUDIANTE: ADVERTENCIA / RESULTADOS -->
         <!-- ========================================== -->
         <div id="modal-advertencia" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-center space-y-4 border-2 border-amber-500">
@@ -171,7 +165,7 @@
         <section id="vista-resultados-fin" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center space-y-4">
             <h2 class="text-2xl font-bold">Evaluación Entregada</h2>
             <div class="bg-slate-50 border rounded p-6 max-w-xs mx-auto">
-                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Puntos Alcanzados (Se sumarán a tu Corte)</p>
+                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Puntos Alcanzados</p>
                 <div class="text-4xl font-black text-blue-800" id="res-nota-valor">--</div>
             </div>
             <div id="btn-ver-reporte-final-container" class="hidden w-full mt-4 text-center">
@@ -258,12 +252,30 @@
             </div>
 
             <div id="tc-evaluaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
+                <!-- PANEL DE CONTROL DE FASE SEMESTRAL -->
+                <div class="flex flex-col sm:flex-row justify-between items-center bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-xs gap-3 shadow-sm">
+                    <div class="text-indigo-900">
+                        <h4 class="font-bold text-sm">Fase Académica Actual</h4>
+                        <p class="text-[11px] mt-0.5">Al avanzar, las evaluaciones del corte anterior quedarán inhabilitadas para los alumnos.</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span id="txt-fase-semestre" class="font-black text-lg bg-indigo-200 text-indigo-900 px-3 py-1 rounded-lg">Corte 1</span>
+                        <button id="btn-avanzar-corte" class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded font-bold shadow-sm transition">
+                            Finalizar Corte 1 e Iniciar Corte 2 ⏩
+                        </button>
+                    </div>
+                </div>
+
                 <div class="border p-4 rounded bg-slate-50 space-y-3 text-xs">
                     <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
                         <select id="eval-mat-select" class="border p-2 rounded sm:col-span-1"></select>
                         <input type="text" id="eval-nombre" placeholder="Nombre (Ej. Lab Redes)" class="border p-2 rounded sm:col-span-1">
-                        <select id="eval-tipo" class="border p-2 rounded font-semibold text-blue-800 bg-blue-50"><option value="online">💻 Examen en Línea</option><option value="manual">📝 Evaluación Manual (Lab)</option></select>
-                        <select id="eval-corte" class="border p-2 rounded font-semibold"><option value="1">Corte Semestral 1</option><option value="2">Corte Semestral 2</option></select>
+                        <select id="eval-tipo" class="border p-2 rounded font-semibold text-blue-800 bg-blue-50">
+                            <option value="online">💻 Examen en Línea</option><option value="manual">📝 Evaluación Manual (Lab)</option>
+                        </select>
+                        <select id="eval-corte" class="border p-2 rounded font-semibold">
+                            <option value="1">Corte Semestral 1</option><option value="2">Corte Semestral 2</option>
+                        </select>
                     </div>
                     <div class="grid grid-cols-3 gap-3" id="eval-fechas-container">
                         <input type="number" id="eval-peso" placeholder="Porcentaje %" class="border p-2 rounded">
@@ -311,34 +323,34 @@
                 <div id="tabla-calificaciones-final" class="overflow-x-auto text-xs">Consultando notas...</div>
             </div>
 
-            <!-- Tab 8: Perfil (Corregido con campos de datos y visibilidad de contraseña) -->
-            <div id="tc-perfil" class="hidden bg-white p-6 rounded-b-lg border space-y-6">
+            <!-- Tab 8: Perfil Docente -->
+            <div id="tc-perfil" class="hidden bg-white p-6 rounded-b-lg border space-y-6 text-xs">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div class="space-y-3">
                         <h3 class="text-sm font-bold border-b pb-2">Perfil del Docente Titular</h3>
                         <p class="text-[11px] text-blue-700 font-mono font-bold bg-blue-50 p-2 rounded border border-blue-200" id="doc-uid-display">UID: Cargando...</p>
-                        <div><label class="block text-xs font-bold mb-1">Cédula</label><input type="text" id="doc-cedula-input" placeholder="Cédula" class="w-full border p-2 rounded text-xs"></div>
-                        <div><label class="block text-xs font-bold mb-1">Nombre</label><input type="text" id="doc-nombre-input" placeholder="Nombre" class="w-full border p-2 rounded text-xs"></div>
-                        <div><label class="block text-xs font-bold mb-1">Apellido</label><input type="text" id="doc-apellido-input" placeholder="Apellido" class="w-full border p-2 rounded text-xs"></div>
-                        <button id="btn-guardar-perfil" class="bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded text-xs w-full shadow-sm">Guardar Información</button>
+                        <div><label class="block font-bold mb-1">Cédula</label><input type="text" id="doc-cedula-input" placeholder="Cédula" class="w-full border p-2 rounded"></div>
+                        <div><label class="block font-bold mb-1">Nombre</label><input type="text" id="doc-nombre-input" placeholder="Nombre" class="w-full border p-2 rounded"></div>
+                        <div><label class="block font-bold mb-1">Apellido</label><input type="text" id="doc-apellido-input" placeholder="Apellido" class="w-full border p-2 rounded"></div>
+                        <button id="btn-guardar-perfil" class="bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded w-full shadow-sm">Guardar Información</button>
                     </div>
                     
                     <div class="space-y-3">
                         <h3 class="text-sm font-bold border-b pb-2">Cambiar Contraseña</h3>
                         <p class="text-[10px] text-slate-500">Mínimo 6 caracteres. Debe incluir: Mayúscula, minúscula, número y un carácter especial.</p>
                         <div class="relative">
-                            <input type="password" id="pin-viejo" placeholder="Contraseña Actual" class="w-full border p-2 rounded text-xs pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-viejo">👁️</button>
+                            <input type="password" id="pin-viejo" placeholder="Contraseña Actual" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-viejo">👁️</button>
                         </div>
                         <div class="relative">
-                            <input type="password" id="pin-nuevo" placeholder="Nueva Contraseña" class="w-full border p-2 rounded text-xs pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-nuevo">👁️</button>
+                            <input type="password" id="pin-nuevo" placeholder="Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-nuevo">👁️</button>
                         </div>
                         <div class="relative">
-                            <input type="password" id="pin-confirma" placeholder="Confirmar Nueva Contraseña" class="w-full border p-2 rounded text-xs pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400 hover:text-slate-600 text-base" data-target="pin-confirma">👁️</button>
+                            <input type="password" id="pin-confirma" placeholder="Confirmar Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
+                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-confirma">👁️</button>
                         </div>
-                        <button id="btn-actualizar-pin" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded text-xs w-full shadow-sm">Actualizar Contraseña</button>
+                        <button id="btn-actualizar-pin" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded w-full shadow-sm">Actualizar Contraseña</button>
                     </div>
                 </div>
             </div>
@@ -431,8 +443,7 @@
         // Funciones de Seguridad de Interfaz (Ojitos Contraseña)
         document.querySelectorAll('.toggle-password').forEach(btn => {
             btn.addEventListener('click', function() {
-                const targetId = this.getAttribute('data-target');
-                const input = document.getElementById(targetId);
+                const targetId = this.getAttribute('data-target'); const input = document.getElementById(targetId);
                 if (input.type === 'password') { input.type = 'text'; this.innerText = '🙈'; } 
                 else { input.type = 'password'; this.innerText = '👁️'; }
             });
@@ -448,12 +459,10 @@
         
         function bufferToBase64url(buffer) {
             const bytes = new Uint8Array(buffer); let str = '';
-            for (let char of bytes) str += String.fromCharCode(char);
-            return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+            for (let char of bytes) str += String.fromCharCode(char); return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
         }
         function base64urlToBuffer(base64url) {
-            const padding = '='.repeat((4 - base64url.length % 4) % 4);
-            const base64 = (base64url + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const padding = '='.repeat((4 - base64url.length % 4) % 4); const base64 = (base64url + padding).replace(/-/g, '+').replace(/_/g, '/');
             const rawData = atob(base64); const buffer = new Uint8Array(rawData.length);
             for (let i = 0; i < rawData.length; ++i) { buffer[i] = rawData.charCodeAt(i); }
             return buffer;
@@ -473,15 +482,9 @@
         const db = getFirestore(app);
         signInAnonymously(auth).catch(()=>{});
 
-        // Capturar UID de sesión para el panel Docente
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                const uidDisplay = document.getElementById("doc-uid-display");
-                if (uidDisplay) uidDisplay.innerText = `UID (Para Firestore): ${user.uid}`;
-            }
-        });
+        auth.onAuthStateChanged(user => { if (user) { const uidDisplay = document.getElementById("doc-uid-display"); if (uidDisplay) uidDisplay.innerText = `UID (Para Firestore): ${user.uid}`; } });
 
-        let docentePerfil = { pinHash: "", cedula: "", nombre: "", apellido: "" };
+        let docentePerfil = { pinHash: "", cedula: "", nombre: "", apellido: "", corteActivo: 1 };
         let materias = [], secciones = [], objetivos = [], preguntas = [], estudiantes = [], calificaciones = [], sesionesActivas = [];
         let clavesDocente = {}; 
         let estudianteSesion = null, objetivoActivo = null, examenEnCurso = false;
@@ -502,22 +505,20 @@
         function calcularNotaSegunGaceta(pctAcumulado) {
             if (!pctAcumulado || pctAcumulado <= 0) return 1; 
             const p = Math.max(0, Math.min(100, parseFloat(pctAcumulado)));
-            let nota = Math.ceil(p / 5);
-            return nota < 1 ? 1 : nota;
+            let nota = Math.ceil(p / 5); return nota < 1 ? 1 : nota;
         }
 
         document.addEventListener("DOMContentLoaded", () => {
             const sdg = localStorage.getItem("docenteSesionLocal");
             if (sdg) {
-                document.getElementById("vista-estudiante-portal").classList.add("hidden");
-                document.getElementById("vista-docente-panel").classList.remove("hidden");
+                document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-docente-panel").classList.remove("hidden");
                 const tabC = document.getElementById("tc-asistencia"); if(tabC) tabC.classList.remove("hidden");
             }
         });
 
         // ----------------- SUBSCRIPCIONES A FIRESTORE -----------------
         const docenteRef = doc(db, "configuracion", "docente");
-        getDoc(docenteRef).then(async snap => { if (!snap.exists()) await setDoc(docenteRef, { pinHash: await cifrarClave("1234"), cedula: "", nombre: "", apellido: "" }); });
+        getDoc(docenteRef).then(async snap => { if (!snap.exists()) await setDoc(docenteRef, { pinHash: await cifrarClave("1234"), cedula: "", nombre: "", apellido: "", corteActivo: 1 }); });
         onSnapshot(docenteRef, snap => { if (snap.exists()) { docentePerfil = { ...docentePerfil, ...snap.data() }; actualizarInterfazDocente(); } });
         
         onSnapshot(collection(db, "materias"), snap => { materias = []; snap.forEach(d => materias.push({ id: d.id, ...d.data() })); renderMateriasSelectores(); renderTablaMateriasResumen(); });
@@ -635,7 +636,7 @@
             sessionStorage.removeItem("token_sesion_estudiante"); estudianteSesion = null; document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden");
         });
 
-        // ----------------- TABLERO L.M.S. DEL ESTUDIANTE -----------------
+        // ----------------- TABLERO L.M.S. DEL ESTUDIANTE (BLOQUEO DINÁMICO) -----------------
         function mostrarTableroEstudiante() {
             document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
             const sec = secciones.find(s => s.id === estudianteSesion.seccionId);
@@ -657,6 +658,7 @@
             if(misMaterias.length === 0) return cont.innerHTML = "No hay materias asignadas.";
 
             let htmlFull = ''; const ahora = Date.now();
+            const corteGlobalActual = docentePerfil.corteActivo || 1; // Para el bloqueo dinamico
             
             misMaterias.forEach(mat => {
                 const objsMateria = objetivos.filter(o => o.materiaId === mat.id && o.seccionesAutorizadas && o.seccionesAutorizadas.includes(sec.id) && o.activo);
@@ -669,6 +671,7 @@
                     const miNota = misNotasMat.find(c => c.objetivoId === obj.id);
                     const sesionPrevia = sesionesActivas.find(s => s.cedula === estudianteSesion.cedula && s.objetivoId === obj.id);
                     const presente = estudianteSesion.presenteAula === true;
+                    const esCorteCerrado = (obj.corte < corteGlobalActual); // Magia: Bloquea intentos si el profe avanzó
                     
                     let notaDisplay = miNota ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-1 rounded border border-emerald-200">${miNota.nota} % logrados</span>` : `<span class="text-slate-400">Sin evaluar</span>`;
                     
@@ -680,6 +683,7 @@
                     let btnAccion = '';
                     if (miNota && obj.tipo === 'online') { btnAccion = `<button onclick="window.verReporteEstudiante('${estudianteSesion.cedula}_${obj.id}')" class="bg-white text-slate-800 font-bold text-[11px] px-2 py-1 border shadow-sm rounded">Ver Reporte</button>`; }
                     else if (miNota && obj.tipo === 'manual') { btnAccion = `<span class="text-[10px] text-emerald-600 font-bold">Evaluado ✓</span>`; }
+                    else if (esCorteCerrado) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded font-bold border border-red-200">Expirado (Corte Cerrado)</span>`; }
                     else if (sesionPrevia && sesionPrevia.estado === "entregado") { btnAccion = `<span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-1 rounded">Entregado</span>`; }
                     else if (sesionPrevia && (sesionPrevia.estado === "bloqueado_por_infracciones" || sesionPrevia.estado === "bloqueado_por_fraude")) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded">Anulado 01</span>`; }
                     else if (sesionPrevia && (sesionPrevia.estado === "en_curso" || sesionPrevia.estado === "reanudacion_permitida")) { btnAccion = `<span class="text-[10px] text-amber-700 bg-amber-50 px-2 py-1 rounded">Reanuda arriba ☝️</span>`; }
@@ -757,6 +761,15 @@
         }
 
         window.iniciarExamenAlumno = async function(objId) {
+            const objLocal = objetivos.find(o => o.id === objId);
+            const corteGlobalActual = docentePerfil.corteActivo || 1;
+            
+            // EL SEGURO DE CORTE CERRADO: Si alguien hackea el HTML y da clic, esto lo frena.
+            if (objLocal && objLocal.corte < corteGlobalActual) {
+                alert("Este examen pertenece a un Corte Semestral cerrado. Ya no puede ser presentado.");
+                return;
+            }
+
             const sesionId = `${estudianteSesion.cedula}_${objId}`;
             const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId));
             if (sSnap.exists()) {
@@ -985,6 +998,17 @@
             if(e.target.value === 'manual') { document.getElementById("eval-hora-inicio").classList.add("hidden"); document.getElementById("eval-hora-fin").classList.add("hidden"); container.classList.replace("grid-cols-3", "grid-cols-1"); } 
             else { document.getElementById("eval-hora-inicio").classList.remove("hidden"); document.getElementById("eval-hora-fin").classList.remove("hidden"); container.classList.replace("grid-cols-1", "grid-cols-3"); }
         });
+
+        // EL BOTÓN DEL AVANCE DE CORTE
+        const btnAvanzarCorte = document.getElementById("btn-avanzar-corte");
+        if(btnAvanzarCorte) {
+            btnAvanzarCorte.addEventListener("click", async () => {
+                if((docentePerfil.corteActivo || 1) === 2) return;
+                if(!confirm("⚠️ ATENCIÓN: ¿Está seguro de Cerrar el Corte 1 e Iniciar el Corte 2?\n\n- Todas las evaluaciones del Corte 1 quedarán INHABILITADAS automáticamente para los alumnos.\n- Las notas de ese corte ya no podrán ser alteradas por nuevos exámenes.")) return;
+                await updateDoc(doc(db, "configuracion", "docente"), { corteActivo: 2 });
+                alert("✅ Corte 2 Iniciado con éxito. Evaluaciones del Corte 1 inhabilitadas.");
+            });
+        }
         
         // Editar Evaluacion Modal
         window.editarObjetivo = async (id) => {
@@ -1151,10 +1175,32 @@
             const nom = docentePerfil.nombre ? `Prof. ${docentePerfil.nombre} ${docentePerfil.apellido}` : "Sin configurar"; 
             document.getElementById("header-docente-info").innerText = `Docente: ${nom} • Entorno de Pruebas V5.0`; 
             document.getElementById("doc-panel-nombre").innerText = `Docente Titular: ${nom}`; 
+            
+            // Perfil inputs
             if (!document.getElementById("doc-cedula-input").value && docentePerfil.cedula) { 
                 document.getElementById("doc-cedula-input").value = docentePerfil.cedula; 
                 document.getElementById("doc-nombre-input").value = docentePerfil.nombre; 
                 document.getElementById("doc-apellido-input").value = docentePerfil.apellido; 
+            }
+
+            // UI del Botón de Corte Semestral
+            const corteActual = docentePerfil.corteActivo || 1; 
+            const txtFase = document.getElementById("txt-fase-semestre");
+            const btnAvanzar = document.getElementById("btn-avanzar-corte");
+            const selectCorte = document.getElementById("eval-corte");
+            
+            if (txtFase && btnAvanzar && selectCorte) {
+                txtFase.innerText = `Corte ${corteActual}`;
+                if (corteActual === 2) {
+                    btnAvanzar.classList.replace("bg-indigo-700", "bg-slate-400"); btnAvanzar.classList.replace("hover:bg-indigo-800", "cursor-not-allowed");
+                    btnAvanzar.innerText = "Corte 2 Activo (Semestre Final)"; btnAvanzar.disabled = true;
+                    selectCorte.value = "2"; 
+                    if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = true; 
+                } else {
+                    btnAvanzar.classList.replace("bg-slate-400", "bg-indigo-700"); btnAvanzar.classList.replace("cursor-not-allowed", "hover:bg-indigo-800");
+                    btnAvanzar.innerText = "Finalizar Corte 1 e Iniciar Corte 2 ⏩"; btnAvanzar.disabled = false;
+                    if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = false;
+                }
             }
         }
         function renderMateriasSelectores() { const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
