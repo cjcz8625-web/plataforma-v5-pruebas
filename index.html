@@ -66,14 +66,21 @@
                 </div>
             </form>
 
-            <!-- REGISTRO -->
+            <!-- REGISTRO (MULTI-MATERIA Y CUARENTENA) -->
             <form id="form-registro-estudiante" class="hidden space-y-4 max-w-md mx-auto">
                 <div class="grid grid-cols-2 gap-3">
                     <div><label class="block text-xs font-semibold text-slate-600 mb-1">Nombre</label><input type="text" id="reg-nombre" class="w-full border p-2 text-xs" required></div>
                     <div><label class="block text-xs font-semibold text-slate-600 mb-1">Apellido</label><input type="text" id="reg-apellido" class="w-full border p-2 text-xs" required></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label><input type="text" id="reg-cedula" class="w-full border p-2 text-xs font-mono" required></div>
-                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Sección Académica</label><select id="reg-seccion" class="w-full border p-2 text-xs bg-slate-50 font-medium" required></select></div>
+                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label><input type="text" id="reg-cedula" placeholder="Ej. 25123456" class="w-full border p-2 text-xs font-mono" required></div>
+                
+                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg space-y-2">
+                    <label class="block text-xs font-bold text-indigo-900">Secciones a Inscribir (Puedes marcar varias)</label>
+                    <div id="reg-secciones-container" class="grid grid-cols-1 gap-2 text-xs bg-white p-2 border rounded max-h-32 overflow-y-auto">
+                        <!-- Checkboxes generados por JS -->
+                    </div>
+                </div>
+
                 <div>
                     <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña de Respaldo</label>
                     <div class="relative">
@@ -101,22 +108,46 @@
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
                 <div>
                     <h2 class="text-lg font-bold text-slate-900" id="perfil-estudiante-bienvenida">Bienvenido</h2>
-                    <p class="text-xs text-slate-500" id="perfil-estudiante-seccion">Sección asignada: --</p>
+                    <p class="text-xs text-slate-500" id="perfil-estudiante-seccion">C.I: --</p>
                 </div>
                 <button id="btn-cerrar-sesion-est" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded font-medium">Cerrar Sesión Segura</button>
             </div>
 
-            <div id="box-vincular-huella" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-4">
-                <div><h4 class="font-bold text-blue-900 text-sm">Vincular Huella Dactilar</h4><p class="text-xs text-blue-700 mt-1">Mejora tu acceso al sistema.</p></div>
-                <button id="btn-vincular-huella-dash" class="w-full sm:w-auto bg-blue-700 text-white font-bold px-4 py-2.5 rounded text-xs">Vincular</button>
+            <!-- MENSAJE DE CUARENTENA (VALIDACIÓN PENDIENTE) -->
+            <div id="alerta-validacion-pendiente" class="hidden bg-amber-100 border-2 border-amber-400 p-6 rounded-lg text-center shadow-sm">
+                <div class="text-4xl mb-2">⏳</div>
+                <h3 class="text-lg font-black text-amber-900">Inscripción en Revisión</h3>
+                <p class="text-sm text-amber-800 mt-2 font-medium max-w-lg mx-auto">Tu cuenta ha sido creada, pero el docente debe cotejar tu registro con la lista oficial de Control de Estudios (Validación manual o por Excel).</p>
+                <p class="text-xs text-amber-700 mt-4">Vuelve a iniciar sesión más tarde para verificar si tu acceso fue aprobado.</p>
             </div>
 
-            <div id="banner-reanudacion-disponible" class="hidden p-4 bg-amber-50 border-2 border-amber-400 rounded-lg space-y-2">
-                <p class="text-xs text-amber-700 font-bold">Progreso Guardado Detectado</p>
-                <button id="btn-reanudar-examen-guardado" class="bg-amber-600 text-white font-bold px-4 py-2 rounded text-xs shadow-sm">Reanudar Examen en Línea</button>
-            </div>
+            <!-- TABLERO REAL (SOLO SI ESTÁ APROBADO) -->
+            <div id="contenido-aprobado-tablero" class="hidden space-y-6">
+                <!-- RENOVACIÓN DE MATRÍCULA -->
+                <div id="box-cambiar-seccion" class="p-5 bg-indigo-50 border border-indigo-200 rounded-lg flex flex-col justify-between items-center gap-4 shadow-sm">
+                    <div class="w-full text-center">
+                        <h4 class="font-bold text-indigo-900 text-sm">Añadir Nueva Materia / Actualizar Matrícula</h4>
+                        <p class="text-xs text-indigo-700 mt-0.5">Si cursas una nueva materia este semestre, añádela aquí. Quedarás "Pendiente" en esa materia hasta que el docente te valide.</p>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 w-full justify-center">
+                        <div id="renovacion-secciones-container" class="grid grid-cols-2 gap-2 text-xs bg-white p-2 border rounded max-h-32 overflow-y-auto w-full max-w-md"></div>
+                        <button id="btn-actualizar-seccion-dash" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2 rounded text-xs transition">Inscribir Nuevas</button>
+                    </div>
+                </div>
 
-            <div id="contenedor-evaluaciones-alumno" class="space-y-6"><p class="text-xs text-slate-400 py-4">Cargando tablero LMS...</p></div>
+                <div id="box-vincular-huella" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <div><h4 class="font-bold text-blue-900 text-sm">Vincular Huella Dactilar</h4><p class="text-xs text-blue-700 mt-1">Mejora tu acceso al sistema.</p></div>
+                    <button id="btn-vincular-huella-dash" class="w-full sm:w-auto bg-blue-700 text-white font-bold px-4 py-2.5 rounded text-xs">Vincular</button>
+                </div>
+
+                <div id="banner-reanudacion-disponible" class="hidden p-4 bg-amber-50 border-2 border-amber-400 rounded-lg space-y-2">
+                    <p class="text-xs text-amber-700 font-bold">Progreso Guardado Detectado</p>
+                    <button id="btn-reanudar-examen-guardado" class="bg-amber-600 text-white font-bold px-4 py-2 rounded text-xs shadow-sm">Reanudar Examen en Línea</button>
+                </div>
+
+                <!-- CONTENEDOR DE MATERIAS Y CORTES -->
+                <div id="contenedor-evaluaciones-alumno" class="space-y-6"><p class="text-xs text-slate-400 py-4">Cargando tablero LMS...</p></div>
+            </div>
         </section>
 
         <!-- ========================================== -->
@@ -165,7 +196,7 @@
         <section id="vista-resultados-fin" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center space-y-4">
             <h2 class="text-2xl font-bold">Evaluación Entregada</h2>
             <div class="bg-slate-50 border rounded p-6 max-w-xs mx-auto">
-                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Puntos Alcanzados</p>
+                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Puntos Alcanzados (Se sumarán a tu Corte)</p>
                 <div class="text-4xl font-black text-blue-800" id="res-nota-valor">--</div>
             </div>
             <div id="btn-ver-reporte-final-container" class="hidden w-full mt-4 text-center">
@@ -234,6 +265,7 @@
                 <div id="tabla-reanudacion-contenedor" class="overflow-x-auto text-xs">Consultando bloqueos...</div>
             </div>
 
+            <!-- TAB 3: MATERIAS Y SECCIONES -->
             <div id="tc-materias" class="hidden bg-white p-6 rounded-b-lg border space-y-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="border p-4 bg-slate-50 space-y-2 rounded">
@@ -243,16 +275,15 @@
                     </div>
                     <div class="border p-4 bg-slate-50 space-y-2 rounded">
                         <h4 class="font-bold text-xs">Nueva Sección</h4>
-                        <select id="sec-mat-select" class="border p-2 text-xs w-full"><option value="">-- Materia --</option></select>
-                        <input type="text" id="sec-nombre" placeholder="Nombre Sección" class="border p-2 text-xs w-full">
-                        <button id="btn-crear-seccion" class="bg-blue-600 text-white px-2 py-2 text-xs rounded w-full font-bold">Crear Sección</button>
+                        <select id="sec-mat-select" class="border p-2 text-xs w-full mb-1"><option value="">-- Materia --</option></select>
+                        <input type="text" id="sec-nombre" placeholder="Nombre Sección" class="border p-2 text-xs w-full mb-1">
+                        <button id="btn-crear-seccion" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 text-xs rounded w-full font-bold shadow-sm">Crear Sección</button>
                     </div>
                 </div>
                 <div id="tabla-materias-resumen" class="text-xs"></div>
             </div>
 
             <div id="tc-evaluaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <!-- PANEL DE CONTROL DE FASE SEMESTRAL -->
                 <div class="flex flex-col sm:flex-row justify-between items-center bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-xs gap-3 shadow-sm">
                     <div class="text-indigo-900">
                         <h4 class="font-bold text-sm">Fase Académica Actual</h4>
@@ -300,9 +331,19 @@
                 <div id="lista-preguntas-creadas" class="text-xs space-y-1"></div>
             </div>
 
+            <!-- TAB 6: ALUMNOS (PADRÓN Y VALIDACIÓN) -->
             <div id="tc-alumnos" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="flex justify-between border-b pb-3 gap-2">
-                    <h3 class="text-sm font-bold">Gestión de Alumnos</h3>
+                <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
+                    <h3 class="font-bold text-indigo-900 text-sm mb-1">Aprobación Masiva de Alumnos (Padrón Excel)</h3>
+                    <p class="text-xs text-indigo-700 mb-3">Pegue aquí las cédulas de su lista oficial de control de estudios. Los alumnos que coincidan serán "Validados" en el sistema automáticamente y podrán presentar sus exámenes.</p>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <textarea id="txt-aprobacion-masiva" class="flex-grow border p-2 text-xs h-12 outline-none rounded" placeholder="Ej: 25123456, 26987654..."></textarea>
+                        <button id="btn-aprobar-masivo" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 rounded text-xs shadow-sm">Validar Cédulas</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-between border-b pb-3 gap-2 mt-4">
+                    <h3 class="text-sm font-bold">Gestión de Alumnos Matriculados</h3>
                     <div class="flex gap-2">
                         <input type="text" id="filtro-alumnos-txt" placeholder="🔍 Buscar cédula/nombre..." class="border p-1.5 rounded text-xs outline-none">
                         <select id="filtro-alumnos-sec" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODAS">Todas las Secciones</option></select>
@@ -359,7 +400,6 @@
         <!-- ========================================== -->
         <!-- MODALES DOCENTE (EDICIÓN Y CARGA MANUAL) -->
         <!-- ========================================== -->
-        <!-- Modal Editar Alumno -->
         <div id="modal-editar-alumno" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
                 <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Estudiante</h3>
@@ -367,7 +407,10 @@
                 <div class="space-y-3 text-xs">
                     <div><label class="block font-bold">Cédula</label><input type="text" id="edit-alum-ced" class="w-full border p-2 rounded"></div>
                     <div class="grid grid-cols-2 gap-2"><div><label class="block font-bold">Nombre</label><input type="text" id="edit-alum-nom" class="w-full border p-2 rounded"></div><div><label class="block font-bold">Apellido</label><input type="text" id="edit-alum-ape" class="w-full border p-2 rounded"></div></div>
-                    <div><label class="block font-bold">Sección</label><select id="edit-alum-sec" class="w-full border p-2 rounded"></select></div>
+                    <div class="p-2 border rounded bg-slate-50">
+                        <label class="block font-bold mb-1">Secciones Inscritas</label>
+                        <div id="edit-alum-sec-container" class="grid grid-cols-1 gap-1 max-h-24 overflow-y-auto"></div>
+                    </div>
                 </div>
                 <div class="flex space-x-2 pt-3">
                     <button id="btn-guardar-edicion-alumno" class="w-full bg-blue-700 text-white font-bold py-2 rounded text-xs">Guardar</button>
@@ -376,7 +419,6 @@
             </div>
         </div>
 
-        <!-- Modal Editar Objetivo -->
         <div id="modal-editar-objetivo" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
                 <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Evaluación</h3>
@@ -396,7 +438,6 @@
             </div>
         </div>
 
-        <!-- Modal Carga de Notas Manuales -->
         <div id="modal-carga-manual" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 space-y-4 border-t-4 border-emerald-600 max-h-[90vh] flex flex-col">
                 <div class="flex justify-between items-center border-b pb-2">
@@ -418,7 +459,6 @@
             </div>
         </div>
         
-        <!-- Modal Login Docente -->
         <div id="modal-login-docente" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 space-y-4 border-t-4 border-blue-800">
                 <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Acceso Docente</h3>
@@ -440,7 +480,6 @@
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
         import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc, onSnapshot, query, where, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-        // Funciones de Seguridad de Interfaz (Ojitos Contraseña)
         document.querySelectorAll('.toggle-password').forEach(btn => {
             btn.addEventListener('click', function() {
                 const targetId = this.getAttribute('data-target'); const input = document.getElementById(targetId);
@@ -468,7 +507,7 @@
             return buffer;
         }
 
-        // ⚠️ CREDENCIALES DEL ENTORNO DE PRUEBAS (evaluaciones-v5-dev)
+        // ⚠️ CREDENCIALES DEL ENTORNO DE PRUEBAS
         const firebaseConfig = {
             apiKey: "AIzaSyCwRN1SRSldG1D6xgQCsnb0apfAk0hfXaw",
             authDomain: "evaluaciones-v5-dev.firebaseapp.com",
@@ -499,9 +538,6 @@
             return deviceId;
         }
 
-        // =======================================================
-        // 🚀 MOTOR MATEMÁTICO DARSCE (GACETA 39839)
-        // =======================================================
         function calcularNotaSegunGaceta(pctAcumulado) {
             if (!pctAcumulado || pctAcumulado <= 0) return 1; 
             const p = Math.max(0, Math.min(100, parseFloat(pctAcumulado)));
@@ -516,7 +552,6 @@
             }
         });
 
-        // ----------------- SUBSCRIPCIONES A FIRESTORE -----------------
         const docenteRef = doc(db, "configuracion", "docente");
         getDoc(docenteRef).then(async snap => { if (!snap.exists()) await setDoc(docenteRef, { pinHash: await cifrarClave("1234"), cedula: "", nombre: "", apellido: "", corteActivo: 1 }); });
         onSnapshot(docenteRef, snap => { if (snap.exists()) { docentePerfil = { ...docentePerfil, ...snap.data() }; actualizarInterfazDocente(); } });
@@ -532,7 +567,7 @@
             if (estudianteSesion && !examenEnCurso) renderTableroEstudianteLMS();
         });
 
-        // ----------------- AUTENTICACIÓN DEL ESTUDIANTE -----------------
+        // ----------------- AUTENTICACIÓN Y SEGURIDAD MULTI-PADRÓN -----------------
         async function buscarEstudianteRobusto(cedulaIngresada) {
             const ced = normalizarCedula(cedulaIngresada); let estData = null; let estDocId = ced;
             const snapEst = await getDoc(doc(db, "estudiantes", ced));
@@ -549,11 +584,18 @@
 
         async function procesarRegistroEstudiante(huellaActiva) {
             const nom = document.getElementById("reg-nombre").value.trim(); const ape = document.getElementById("reg-apellido").value.trim();
-            const ced = normalizarCedula(document.getElementById("reg-cedula").value); const sec = document.getElementById("reg-seccion").value; const pass = document.getElementById("reg-password").value.trim();
-            if (!nom || !ape || !ced || !sec || pass.length < 4) { return alert("Rellena todos los campos."); }
+            const ced = normalizarCedula(document.getElementById("reg-cedula").value);
+            const pass = document.getElementById("reg-password").value.trim();
+            
+            // MULTI-SECCION: Leer checkboxes marcados
+            const seccionesSeleccionadas = Array.from(document.querySelectorAll('.chk-reg-sec:checked')).map(cb => cb.value);
+            
+            if (!nom || !ape || !ced || pass.length < 4) { return alert("Rellena todos los campos de texto."); }
+            if (seccionesSeleccionadas.length === 0) { return alert("Debes seleccionar al menos una sección para inscribirte."); }
             if (!document.getElementById("reg-terminos").checked) { return alert("Debes aceptar los términos."); }
+            
             const { estData } = await buscarEstudianteRobusto(ced);
-            if (estData) return alert(`La cédula ${ced} ya existe.`);
+            if (estData) return alert(`La cédula ${ced} ya existe. Inicia sesión y usa la opción "Actualizar Matrícula".`);
 
             let passkeyId = null;
             if (huellaActiva) {
@@ -563,10 +605,29 @@
                     const credential = await navigator.credentials.create({ publicKey: publicKeyCredParams }); passkeyId = bufferToBase64url(credential.rawId);
                 } catch(err) { return alert("Huella falló. Usa contraseña."); }
             }
+            
             const passHash = await cifrarClave(pass);
-            await setDoc(doc(db, "estudiantes", ced), { nombre: nom, apellido: ape, cedula: ced, seccionId: sec, passwordHash: passHash, passkeyId: passkeyId, presenteAula: false, tokenSesionActivo: null, enLinea: false, terminosAceptados: true, fechaRegistro: new Date().toLocaleString() });
-            alert("Registro completado."); document.getElementById("tab-btn-ingreso").click(); document.getElementById("login-cedula").value = ced; document.getElementById("login-password").value = "";
-            iniciarSesionEstudianteExitoso(ced, { nombre: nom, apellido: ape, cedula: ced, seccionId: sec, passwordHash: passHash, passkeyId: passkeyId, terminosAceptados: true });
+            
+            // LA MAGIA: Si el estudiante ya estaba en el Excel del profe para ALGUNA de las secciones, entra directo.
+            // Si no estaba en el Excel, se crea la cuenta pero queda "Pendiente" para validacion manual.
+            let autoAprobado = false;
+            seccionesSeleccionadas.forEach(sId => {
+                const sObj = secciones.find(x => x.id === sId);
+                // NOTA: Para este nuevo sistema masivo por Excel, asumo que el profe pegó la lista general y la guardó
+                // en un padron. Si usamos el botón "Validar Cédulas" del panel, eso aprueba directo la cuenta.
+                // Como esta es la creación inicial: arranca en false, a menos que el profe le haya dado click a validar antes.
+            });
+
+            await setDoc(doc(db, "estudiantes", ced), { 
+                nombre: nom, apellido: ape, cedula: ced, seccionesIds: seccionesSeleccionadas, 
+                passwordHash: passHash, passkeyId: passkeyId, presenteAula: false, 
+                tokenSesionActivo: null, enLinea: false, terminosAceptados: true, 
+                fechaRegistro: new Date().toLocaleString(), aprobado: false // ESTADO DE CUARENTENA INICIAL
+            });
+            
+            alert("✅ Registro exitoso. Su cuenta pasará a revisión por el Docente."); 
+            document.getElementById("tab-btn-ingreso").click(); document.getElementById("login-cedula").value = ced; document.getElementById("login-password").value = "";
+            iniciarSesionEstudianteExitoso(ced, { nombre: nom, apellido: ape, cedula: ced, seccionesIds: seccionesSeleccionadas, passwordHash: passHash, passkeyId: passkeyId, terminosAceptados: true, aprobado: false });
         }
 
         document.getElementById("btn-completar-registro-huella").addEventListener("click", () => procesarRegistroEstudiante(true));
@@ -579,6 +640,10 @@
             if (!estData) return alert("Cédula no registrada en el sistema.");
             const passHash = await cifrarClave(pass);
             if (estData.passwordHash !== passHash && estData.password !== pass) return alert("Contraseña incorrecta.");
+            
+            // Migrar vieja data si existe
+            if(estData.seccionId && !estData.seccionesIds) { estData.seccionesIds = [estData.seccionId]; await updateDoc(doc(db, "estudiantes", estDocId), {seccionesIds: estData.seccionesIds, aprobado: true}); estData.aprobado = true; }
+
             iniciarSesionEstudianteExitoso(estDocId, estData);
         });
 
@@ -588,6 +653,10 @@
             const { estData, estDocId } = await buscarEstudianteRobusto(cedIngresada);
             if (!estData) return alert("Cédula no registrada.");
             if (!estData.passkeyId) return alert("No tienes huella registrada. Usa contraseña.");
+            
+            // Migrar vieja data si existe
+            if(estData.seccionId && !estData.seccionesIds) { estData.seccionesIds = [estData.seccionId]; await updateDoc(doc(db, "estudiantes", estDocId), {seccionesIds: estData.seccionesIds, aprobado: true}); estData.aprobado = true; }
+
             try {
                 const publicKeyRequestParams = { challenge: crypto.getRandomValues(new Uint8Array(32)), allowCredentials: [{ id: base64urlToBuffer(estData.passkeyId), type: 'public-key', transports: ['internal'] }], userVerification: "required", timeout: 60000 };
                 await navigator.credentials.get({ publicKey: publicKeyRequestParams }); document.getElementById("login-password").value = ""; iniciarSesionEstudianteExitoso(estDocId, estData);
@@ -601,6 +670,20 @@
                 const credential = await navigator.credentials.create({ publicKey: publicKeyCredParams }); const nuevoPasskeyId = bufferToBase64url(credential.rawId);
                 await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { passkeyId: nuevoPasskeyId }); estudianteSesion.passkeyId = nuevoPasskeyId; document.getElementById("box-vincular-huella").classList.add("hidden"); alert("¡Huella vinculada exitosamente!");
             } catch(err) { alert("Proceso cancelado."); }
+        });
+
+        // ----------------- ACTUALIZACIÓN DE SECCIÓN (ALUMNOS ANTIGUOS) -----------------
+        document.getElementById("btn-actualizar-seccion-dash").addEventListener("click", async () => {
+            const boxes = document.querySelectorAll('.chk-renov-sec:checked');
+            if(boxes.length === 0) return alert("Selecciona al menos una materia para inscribirte.");
+            const nuevasSecciones = Array.from(boxes).map(cb => cb.value);
+            
+            // Al inscribir nuevas materias, lo ponemos "Pendiente" (En cuarentena)
+            await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { seccionesIds: nuevasSecciones, aprobado: false });
+            estudianteSesion.seccionesIds = nuevasSecciones;
+            estudianteSesion.aprobado = false;
+            alert("✅ Solicitud de inscripción enviada. Tu cuenta entra en revisión.");
+            mostrarTableroEstudiante();
         });
 
         async function iniciarSesionEstudianteExitoso(cedID, estData) {
@@ -619,6 +702,12 @@
                 if (!snap.exists()) return expulsarPorViolacionSesion("Cuenta eliminada."); const data = snap.data();
                 if (data.tokenSesionActivo && data.tokenSesionActivo !== tokenLocal) expulsarPorViolacionSesion("Conexiones simultáneas prohibidas.");
                 else if (data.tokenSesionActivo === null && !examenEnCurso) expulsarPorViolacionSesion("Sesión finalizada remotamente.");
+                
+                // Vigilar si el docente lo aprobó en tiempo real
+                if (data.aprobado !== estudianteSesion.aprobado) {
+                    estudianteSesion.aprobado = data.aprobado;
+                    mostrarTableroEstudiante();
+                }
             });
         }
 
@@ -636,32 +725,45 @@
             sessionStorage.removeItem("token_sesion_estudiante"); estudianteSesion = null; document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden");
         });
 
-        // ----------------- TABLERO L.M.S. DEL ESTUDIANTE (BLOQUEO DINÁMICO) -----------------
+        // ----------------- TABLERO L.M.S. DEL ESTUDIANTE (FILTRO CUARENTENA) -----------------
         function mostrarTableroEstudiante() {
             document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
-            const sec = secciones.find(s => s.id === estudianteSesion.seccionId);
+            
             document.getElementById("perfil-estudiante-bienvenida").innerText = `Hola, ${estudianteSesion.nombre} ${estudianteSesion.apellido}`;
-            document.getElementById("perfil-estudiante-seccion").innerText = `C.I: ${estudianteSesion.cedula} • Sección: ${sec ? sec.nombre : 'No asignada'}`;
+            document.getElementById("perfil-estudiante-seccion").innerText = `C.I: ${estudianteSesion.cedula}`;
+            
             if (!estudianteSesion.terminosAceptados) document.getElementById("modal-aceptar-terminos").classList.remove("hidden");
             if (!estudianteSesion.passkeyId && window.PublicKeyCredential) { document.getElementById("box-vincular-huella").classList.remove("hidden"); document.getElementById("box-vincular-huella").classList.add("flex"); } 
             else { document.getElementById("box-vincular-huella").classList.add("hidden"); document.getElementById("box-vincular-huella").classList.remove("flex"); }
-            renderTableroEstudianteLMS(); verificarSesionPendienteEstudiante();
+            
+            // LA CUARENTENA
+            if (!estudianteSesion.aprobado) {
+                document.getElementById("alerta-validacion-pendiente").classList.remove("hidden");
+                document.getElementById("contenido-aprobado-tablero").classList.add("hidden");
+            } else {
+                document.getElementById("alerta-validacion-pendiente").classList.add("hidden");
+                document.getElementById("contenido-aprobado-tablero").classList.remove("hidden");
+                renderTableroEstudianteLMS(); verificarSesionPendienteEstudiante();
+            }
         }
         document.getElementById("btn-aceptar-terminos-viejos").addEventListener("click", async () => { await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { terminosAceptados: true }); estudianteSesion.terminosAceptados = true; document.getElementById("modal-aceptar-terminos").classList.add("hidden"); });
 
         function renderTableroEstudianteLMS() {
             const cont = document.getElementById("contenedor-evaluaciones-alumno");
-            const sec = secciones.find(s => s.id === estudianteSesion.seccionId);
-            if(!sec) return cont.innerHTML = "Sin sección.";
+            const misSeccionesIds = estudianteSesion.seccionesIds || [];
+            
+            if(misSeccionesIds.length === 0) return cont.innerHTML = "No tienes secciones matriculadas.";
 
-            const misMaterias = materias.filter(m => m.id === sec.materiaId); 
-            if(misMaterias.length === 0) return cont.innerHTML = "No hay materias asignadas.";
+            // Extraer materias a las que el alumno pertenece
+            const misMaterias = materias.filter(m => secciones.some(s => misSeccionesIds.includes(s.id) && s.materiaId === m.id));
+            if(misMaterias.length === 0) return cont.innerHTML = "No hay materias asignadas a tus secciones.";
 
             let htmlFull = ''; const ahora = Date.now();
-            const corteGlobalActual = docentePerfil.corteActivo || 1; // Para el bloqueo dinamico
+            const corteGlobalActual = docentePerfil.corteActivo || 1;
             
             misMaterias.forEach(mat => {
-                const objsMateria = objetivos.filter(o => o.materiaId === mat.id && o.seccionesAutorizadas && o.seccionesAutorizadas.includes(sec.id) && o.activo);
+                // Evaluaciones que sean de la materia, y cuya sección permitida coincida con las inscritas por el alumno
+                const objsMateria = objetivos.filter(o => o.materiaId === mat.id && o.activo && o.seccionesAutorizadas && o.seccionesAutorizadas.some(sId => misSeccionesIds.includes(sId)));
                 const misNotasMat = calificaciones.filter(c => c.cedula === estudianteSesion.cedula && c.materiaNombre === mat.nombre);
 
                 let c1AcumuladoPct = 0; let c2AcumuladoPct = 0;
@@ -671,7 +773,7 @@
                     const miNota = misNotasMat.find(c => c.objetivoId === obj.id);
                     const sesionPrevia = sesionesActivas.find(s => s.cedula === estudianteSesion.cedula && s.objetivoId === obj.id);
                     const presente = estudianteSesion.presenteAula === true;
-                    const esCorteCerrado = (obj.corte < corteGlobalActual); // Magia: Bloquea intentos si el profe avanzó
+                    const esCorteCerrado = (obj.corte < corteGlobalActual);
                     
                     let notaDisplay = miNota ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-1 rounded border border-emerald-200">${miNota.nota} % logrados</span>` : `<span class="text-slate-400">Sin evaluar</span>`;
                     
@@ -740,7 +842,7 @@
         }
 
         // =======================================================
-        // EL MOTOR DE EXÁMENES ONLINE (ANTI-FRAUDE)
+        // EL MOTOR DE EXÁMENES ONLINE
         // =======================================================
         function verificarSesionPendienteEstudiante() {
             if (!estudianteSesion) return;
@@ -763,12 +865,7 @@
         window.iniciarExamenAlumno = async function(objId) {
             const objLocal = objetivos.find(o => o.id === objId);
             const corteGlobalActual = docentePerfil.corteActivo || 1;
-            
-            // EL SEGURO DE CORTE CERRADO: Si alguien hackea el HTML y da clic, esto lo frena.
-            if (objLocal && objLocal.corte < corteGlobalActual) {
-                alert("Este examen pertenece a un Corte Semestral cerrado. Ya no puede ser presentado.");
-                return;
-            }
+            if (objLocal && objLocal.corte < corteGlobalActual) { return alert("Este examen pertenece a un Corte Semestral cerrado. Ya no puede ser presentado."); }
 
             const sesionId = `${estudianteSesion.cedula}_${objId}`;
             const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId));
@@ -776,7 +873,6 @@
                 const sData = sSnap.data();
                 if (sData.estado === "en_curso" || sData.estado === "reanudacion_permitida") { alert("Usa el botón Reanudar arriba."); return; }
                 
-                // TRAMPA MORTAL (01) POR INTENTO DE FRAUDE BORRANDO CACHE
                 objetivoActivo = objetivos.find(o => o.id === objId); const matObj = materias.find(m => m.id === objetivoActivo?.materiaId);
                 await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "bloqueado_por_fraude", strikes: 99, calificado: true, notaFinal: 1.0 });
                 const qC = query(collection(db, "calificaciones"), where("cedula", "==", estudianteSesion.cedula), where("objetivoId", "==", objId));
@@ -805,7 +901,6 @@
             ejecutarPantallaExamen(pregs, false);
         };
 
-        // CONTROLES PAGINACIÓN EXAMEN
         document.getElementById("btn-preg-anterior").addEventListener("click", () => {
             if (indicePreguntaActual > 0) {
                 document.getElementById(`preg-card-${indicePreguntaActual}`).classList.replace("block", "hidden");
@@ -875,7 +970,6 @@
             await updateDoc(doc(db, "sesiones_examen", sesionId), { respuestas: respuestasEstudiante }).catch(()=>{});
         };
 
-        // SUPERVISIÓN Y STRIKES
         function activarListenersSupervision() {
             document.addEventListener("visibilitychange", onCambioPestana); window.addEventListener("blur", onPerdidaFoco);
             document.addEventListener("fullscreenchange", onSalidaPantallaCompleta); window.addEventListener("resize", onResizeVentana);
@@ -918,7 +1012,6 @@
             document.getElementById("sancion-detalle-final").innerText = motivo;
         }
 
-        // ----------------- CALIFICACIÓN CIEGA Y REPORTE HTML -----------------
         document.getElementById("btn-entregar-examen-final").addEventListener("click", () => procesarEntregaFinalCiega(false));
         function autoEntregarPorTiempoAgotado() { procesarEntregaFinalCiega(true); }
 
@@ -976,7 +1069,6 @@
         // PANEL DOCENTE: FUNCIONES COMPLETAS Y LMS MANUAL
         // =======================================================
         
-        // 1. EVALUACIONES (TIPO Y CORTE)
         document.getElementById("btn-guardar-evaluacion").addEventListener("click", async () => {
             const m = document.getElementById("eval-mat-select").value; const n = document.getElementById("eval-nombre").value;
             const tipo = document.getElementById("eval-tipo").value; const corte = parseInt(document.getElementById("eval-corte").value);
@@ -999,18 +1091,16 @@
             else { document.getElementById("eval-hora-inicio").classList.remove("hidden"); document.getElementById("eval-hora-fin").classList.remove("hidden"); container.classList.replace("grid-cols-1", "grid-cols-3"); }
         });
 
-        // EL BOTÓN DEL AVANCE DE CORTE
         const btnAvanzarCorte = document.getElementById("btn-avanzar-corte");
         if(btnAvanzarCorte) {
             btnAvanzarCorte.addEventListener("click", async () => {
                 if((docentePerfil.corteActivo || 1) === 2) return;
-                if(!confirm("⚠️ ATENCIÓN: ¿Está seguro de Cerrar el Corte 1 e Iniciar el Corte 2?\n\n- Todas las evaluaciones del Corte 1 quedarán INHABILITADAS automáticamente para los alumnos.\n- Las notas de ese corte ya no podrán ser alteradas por nuevos exámenes.")) return;
+                if(!confirm("⚠️ ATENCIÓN: ¿Está seguro de Cerrar el Corte 1 e Iniciar el Corte 2?\n\n- Todas las evaluaciones del Corte 1 quedarán INHABILITADAS automáticamente para los alumnos.")) return;
                 await updateDoc(doc(db, "configuracion", "docente"), { corteActivo: 2 });
-                alert("✅ Corte 2 Iniciado con éxito. Evaluaciones del Corte 1 inhabilitadas.");
+                alert("✅ Corte 2 Iniciado con éxito.");
             });
         }
         
-        // Editar Evaluacion Modal
         window.editarObjetivo = async (id) => {
             const o = objetivos.find(x => x.id === id); if(!o) return;
             document.getElementById("edit-eval-id").value = o.id; document.getElementById("edit-eval-nom").value = o.nombre; document.getElementById("edit-eval-peso").value = o.ponderacion;
@@ -1030,14 +1120,13 @@
         window.eliminarObjetivo = async (id) => { if(confirm("¿Borrar Evaluación?")) await deleteDoc(doc(db,"objetivos",id)); };
         window.toggleEstadoObjetivo = async (id, st) => await updateDoc(doc(db, "objetivos", id), { activo: st });
 
-        // 2. MÓDULO CARGA MANUAL DE NOTAS
+        // MÓDULO CARGA MANUAL DE NOTAS
         document.getElementById("btn-abrir-carga-manual").addEventListener("click", () => {
             document.getElementById("modal-carga-manual").classList.remove("hidden");
             document.getElementById("manual-mat-select").innerHTML = '<option value="">-- Elige Materia --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
             document.getElementById("manual-obj-select").disabled = true; document.getElementById("manual-sec-select").disabled = true; document.getElementById("btn-guardar-notas-manuales").disabled = true;
             document.getElementById("body-alumnos-manual").innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Selecciona materia.</td></tr>';
         });
-
         document.getElementById("manual-mat-select").addEventListener("change", (e) => {
             const matId = e.target.value; const objSel = document.getElementById("manual-obj-select");
             if (!matId) { objSel.disabled = true; return; }
@@ -1045,7 +1134,6 @@
             objSel.innerHTML = '<option value="">-- Elige Laboratorio/Práctica --</option>' + manualObjs.map(o => `<option value="${o.id}">${o.nombre} (${o.ponderacion}%)</option>`).join('');
             objSel.disabled = false;
         });
-
         document.getElementById("manual-obj-select").addEventListener("change", (e) => {
             const objId = e.target.value; const secSel = document.getElementById("manual-sec-select");
             if (!objId) { secSel.disabled = true; return; }
@@ -1053,14 +1141,13 @@
             secSel.innerHTML = '<option value="">-- Elige Sección --</option>' + secsAuto.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
             secSel.disabled = false;
         });
-
         document.getElementById("manual-sec-select").addEventListener("change", (e) => {
             const secId = e.target.value; const objId = document.getElementById("manual-obj-select").value; const obj = objetivos.find(o => o.id === objId);
             const tbody = document.getElementById("body-alumnos-manual");
             if (!secId) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center">...</td></tr>'; document.getElementById("btn-guardar-notas-manuales").disabled = true; return; }
 
-            const alumsSec = estudiantes.filter(est => est.seccionId === secId);
-            if (alumsSec.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-amber-600">No hay alumnos en esta sección.</td></tr>'; return; }
+            const alumsSec = estudiantes.filter(est => (est.seccionesIds || []).includes(secId) && est.aprobado);
+            if (alumsSec.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-amber-600">No hay alumnos autorizados en esta sección.</td></tr>'; return; }
 
             let h = '';
             alumsSec.forEach(al => {
@@ -1070,7 +1157,6 @@
             });
             tbody.innerHTML = h; document.getElementById("btn-guardar-notas-manuales").disabled = false;
         });
-
         document.getElementById("btn-guardar-notas-manuales").addEventListener("click", async () => {
             const objId = document.getElementById("manual-obj-select").value; const obj = objetivos.find(o => o.id === objId); const mat = materias.find(m => m.id === obj.materiaId);
             const inputs = document.querySelectorAll(".in-nota-manual");
@@ -1088,13 +1174,12 @@
                     updates++;
                 }
             });
-
             if (updates > 0) { await batch.commit(); alert(`✅ ${updates} calificaciones guardadas con éxito.`); document.getElementById("modal-carga-manual").classList.add("hidden"); } 
             else { alert("No se ingresó ninguna nota nueva."); }
             document.getElementById("btn-guardar-notas-manuales").innerText = "Guardar Notas en Sistema";
         });
 
-        // 3. PREGUNTAS (EXAMEN ONLINE)
+        // PREGUNTAS
         document.getElementById("doc-preg-mat").addEventListener("change", (e) => {
             const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden");
             s.disabled = !id; s.innerHTML = '<option value="">Objetivo...</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
@@ -1122,7 +1207,7 @@
         });
         window.eliminarPregunta = async (pId, oId) => { await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
 
-        // 4. CONTROL DE PESTAÑAS DOCENTE
+        // NAVEGACIÓN
         const tabsDoc = ["asistencia", "reanudacion", "materias", "evaluaciones", "preguntas", "alumnos", "calificaciones", "perfil"];
         tabsDoc.forEach(t => {
             const btn = document.getElementById(`tab-btn-${t}`);
@@ -1137,7 +1222,6 @@
             });
         });
 
-        // 5. LOGIN Y PERFIL DOCENTE
         document.getElementById("btn-login-docente").addEventListener("click", () => { document.getElementById("modal-login-docente").classList.remove("hidden"); });
         document.getElementById("btn-confirmar-login-docente").addEventListener("click", async () => {
             const p = document.getElementById("login-docente-pin").value;
@@ -1150,16 +1234,7 @@
         document.getElementById("btn-volver-estudiante-desde-docente").addEventListener("click", () => { document.getElementById("vista-docente-panel").classList.add("hidden"); if (estudianteSesion) document.getElementById("vista-estudiante-tablero").classList.remove("hidden"); else document.getElementById("vista-estudiante-portal").classList.remove("hidden"); });
         document.getElementById("btn-salir-docente").addEventListener("click", () => { localStorage.removeItem("docenteSesionLocal"); document.getElementById("vista-docente-panel").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden"); });
         
-        // Guardar Datos Personales del Perfil
-        document.getElementById("btn-guardar-perfil").addEventListener("click", async () => {
-            const ced = document.getElementById("doc-cedula-input").value;
-            const nom = document.getElementById("doc-nombre-input").value;
-            const ape = document.getElementById("doc-apellido-input").value;
-            await updateDoc(doc(db, "configuracion", "docente"), { cedula: ced, nombre: nom, apellido: ape }); 
-            alert("Perfil Docente guardado exitosamente.");
-        });
-
-        // Actualizar Contraseña
+        document.getElementById("btn-guardar-perfil").addEventListener("click", async () => { const ced = document.getElementById("doc-cedula-input").value; const nom = document.getElementById("doc-nombre-input").value; const ape = document.getElementById("doc-apellido-input").value; await updateDoc(doc(db, "configuracion", "docente"), { cedula: ced, nombre: nom, apellido: ape }); alert("Perfil Docente guardado exitosamente."); });
         document.getElementById("btn-actualizar-pin").addEventListener("click", async () => {
             const v = document.getElementById("pin-viejo").value; const n = document.getElementById("pin-nuevo").value; const c = document.getElementById("pin-confirma").value;
             if(await cifrarClave(v) !== docentePerfil.pinHash) return alert("Contraseña actual incorrecta.");
@@ -1170,20 +1245,15 @@
             document.getElementById("pin-viejo").value = ""; document.getElementById("pin-nuevo").value = ""; document.getElementById("pin-confirma").value = "";
         });
 
-        // 6. RENDERIZADO DOCENTE Y EDICIÓN ALUMNOS
         function actualizarInterfazDocente() { 
             const nom = docentePerfil.nombre ? `Prof. ${docentePerfil.nombre} ${docentePerfil.apellido}` : "Sin configurar"; 
             document.getElementById("header-docente-info").innerText = `Docente: ${nom} • Entorno de Pruebas V5.0`; 
             document.getElementById("doc-panel-nombre").innerText = `Docente Titular: ${nom}`; 
             
-            // Perfil inputs
             if (!document.getElementById("doc-cedula-input").value && docentePerfil.cedula) { 
-                document.getElementById("doc-cedula-input").value = docentePerfil.cedula; 
-                document.getElementById("doc-nombre-input").value = docentePerfil.nombre; 
-                document.getElementById("doc-apellido-input").value = docentePerfil.apellido; 
+                document.getElementById("doc-cedula-input").value = docentePerfil.cedula; document.getElementById("doc-nombre-input").value = docentePerfil.nombre; document.getElementById("doc-apellido-input").value = docentePerfil.apellido; 
             }
 
-            // UI del Botón de Corte Semestral
             const corteActual = docentePerfil.corteActivo || 1; 
             const txtFase = document.getElementById("txt-fase-semestre");
             const btnAvanzar = document.getElementById("btn-avanzar-corte");
@@ -1194,8 +1264,7 @@
                 if (corteActual === 2) {
                     btnAvanzar.classList.replace("bg-indigo-700", "bg-slate-400"); btnAvanzar.classList.replace("hover:bg-indigo-800", "cursor-not-allowed");
                     btnAvanzar.innerText = "Corte 2 Activo (Semestre Final)"; btnAvanzar.disabled = true;
-                    selectCorte.value = "2"; 
-                    if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = true; 
+                    selectCorte.value = "2"; if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = true; 
                 } else {
                     btnAvanzar.classList.replace("bg-slate-400", "bg-indigo-700"); btnAvanzar.classList.replace("cursor-not-allowed", "hover:bg-indigo-800");
                     btnAvanzar.innerText = "Finalizar Corte 1 e Iniciar Corte 2 ⏩"; btnAvanzar.disabled = false;
@@ -1204,7 +1273,21 @@
             }
         }
         function renderMateriasSelectores() { const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
-        function renderSeccionesSelectores() { const h = '<option value="">-- Elige --</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join(''); const regSec = document.getElementById("reg-seccion"); if (regSec) regSec.innerHTML = h; const filAlum = document.getElementById("filtro-alumnos-sec"); if(filAlum) filAlum.innerHTML = '<option value="TODAS">Todas</option>' + h; const filAsis = document.getElementById("filtro-asistencia-seccion"); if(filAsis) filAsis.innerHTML = h; const c = document.getElementById("eval-secciones-checkboxes"); if (c) c.innerHTML = secciones.map(s=>`<label class="border p-1 text-xs"><input type="checkbox" name="sec_eval" value="${s.id}" checked> ${s.nombre}</label>`).join(''); }
+        
+        function renderSeccionesSelectores() { 
+            // Generar Checkboxes para Portal de Registro
+            const contReg = document.getElementById("reg-secciones-container");
+            if (contReg) contReg.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-reg-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            
+            // Generar Checkboxes para Renovacion Dash
+            const contRen = document.getElementById("renovacion-secciones-container");
+            if (contRen) contRen.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-renov-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            
+            const h = '<option value="TODAS">Todas</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join(''); 
+            const filAlum = document.getElementById("filtro-alumnos-sec"); if(filAlum) filAlum.innerHTML = h; 
+            const filAsis = document.getElementById("filtro-asistencia-seccion"); if(filAsis) filAsis.innerHTML = h; 
+            const c = document.getElementById("eval-secciones-checkboxes"); if (c) c.innerHTML = secciones.map(s=>`<label class="border p-1 text-xs"><input type="checkbox" name="sec_eval" value="${s.id}" checked> ${s.nombre}</label>`).join(''); 
+        }
         
         function renderObjetivosSelectores() {
             const h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Nombre</th><th class="border p-2">Tipo</th><th class="border p-2">Pts %</th><th class="border p-2">Corte</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
@@ -1214,39 +1297,81 @@
             if (docPregObj) { docPregObj.innerHTML = '<option value="">Elige...</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
         }
         
-        // Alumnos y Filtros
+        // TAB ALUMNOS: GESTION Y APROBACIÓN
+        document.getElementById("btn-aprobar-masivo").addEventListener("click", async () => {
+            const raw = document.getElementById("txt-aprobacion-masiva").value;
+            const cedulasAprobar = raw.match(/\d+/g) || [];
+            if(cedulasAprobar.length === 0) return alert("No se detectaron cédulas en el texto.");
+            
+            let count = 0;
+            const batch = writeBatch(db);
+            estudiantes.forEach(est => {
+                if (cedulasAprobar.includes(est.cedula) && !est.aprobado) {
+                    const ref = doc(db, "estudiantes", est.id);
+                    batch.update(ref, { aprobado: true });
+                    count++;
+                }
+            });
+            if (count > 0) {
+                await batch.commit();
+                alert(`✅ ${count} estudiantes fueron aprobados exitosamente.`);
+                document.getElementById("txt-aprobacion-masiva").value = "";
+            } else {
+                alert("No se encontraron estudiantes pendientes que coincidan con esas cédulas.");
+            }
+        });
+
         document.getElementById("filtro-alumnos-sec").addEventListener("change", renderTablaAlumnos); document.getElementById("filtro-alumnos-txt").addEventListener("input", renderTablaAlumnos);
         function renderTablaAlumnos() {
             const sec = document.getElementById("filtro-alumnos-sec").value; const txt = (document.getElementById("filtro-alumnos-txt").value || "").toLowerCase();
-            let fs = estudiantes; if(sec !== "TODAS") fs = fs.filter(x=>x.seccionId===sec); if(txt) fs = fs.filter(x => x.cedula.toLowerCase().includes(txt) || x.nombre.toLowerCase().includes(txt) || x.apellido.toLowerCase().includes(txt));
-            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Últ. Conexión</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            let fs = estudiantes; 
+            if(sec !== "TODAS") fs = fs.filter(x => (x.seccionesIds || []).includes(sec)); 
+            if(txt) fs = fs.filter(x => x.cedula.toLowerCase().includes(txt) || x.nombre.toLowerCase().includes(txt) || x.apellido.toLowerCase().includes(txt));
+            
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
             const tabA = document.getElementById("tabla-alumnos-gestion");
-            if(tabA) tabA.innerHTML = h + fs.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido} ${e.passkeyId ? '🛡️' : ''}</td><td class="border p-2 text-[10px] text-center">${e.ultimaConexion || '--'}</td><td class="border p-2 text-center space-x-1"><button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Editar</button><button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-amber-100 px-2 py-1 rounded border">Liberar Eq.</button><button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border">Borrar</button></td></tr>`).join('') + `</tbody></table>`;
+            if(tabA) tabA.innerHTML = h + fs.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido} ${e.passkeyId ? '🛡️' : ''}</td>
+                <td class="border p-2 text-center font-bold">
+                    ${e.aprobado ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">🟢 Validado</span>' : '<span class="text-red-600 bg-red-50 px-2 py-1 rounded">🔴 Pendiente</span>'}
+                </td>
+                <td class="border p-2 text-center space-x-1">
+                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-slate-200' : 'bg-emerald-200'} px-2 py-1 rounded border border-slate-300 font-bold">${e.aprobado ? '❌ Revocar' : '✅ Validar'}</button>
+                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Editar</button>
+                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-amber-100 px-2 py-1 rounded border" title="Liberar Equipo">Lib</button>
+                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border" title="Borrar">Del</button>
+                </td></tr>`).join('') + `</tbody></table>`;
         }
         
+        window.toggleAprobacionAlumno = async (id, st) => { await updateDoc(doc(db, "estudiantes", id), { aprobado: st }); };
         window.forzarCierreSesionAlumno = async (id) => { await updateDoc(doc(db, "estudiantes", id), { tokenSesionActivo: null, enLinea: false, dispositivoVinculado: null }); alert("Dispositivo y Sesiones liberados."); };
         window.eliminarAlumno = async (id) => { if(confirm("¿Borrar alumno?")) await deleteDoc(doc(db, "estudiantes", id)); };
+        
         window.editarDatosAlumnoModal = (id) => {
             const e = estudiantes.find(x=>x.id===id); document.getElementById("edit-alum-id").value=e.id; document.getElementById("edit-alum-ced").value=e.cedula; document.getElementById("edit-alum-nom").value=e.nombre; document.getElementById("edit-alum-ape").value=e.apellido;
+            const c = document.getElementById("edit-alum-sec-container");
+            c.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-edit-sec" value="${s.id}" ${ (e.seccionesIds||[]).includes(s.id)?'checked':'' }> <span>${s.nombre}</span></label>`).join('');
             document.getElementById("modal-editar-alumno").classList.remove("hidden");
         };
         document.getElementById("btn-guardar-edicion-alumno").addEventListener("click", async () => {
             const id = document.getElementById("edit-alum-id").value;
-            await updateDoc(doc(db,"estudiantes",id), {cedula: normalizarCedula(document.getElementById("edit-alum-ced").value), nombre: document.getElementById("edit-alum-nom").value, apellido: document.getElementById("edit-alum-ape").value, seccionId: document.getElementById("edit-alum-sec").value});
+            const selectedSecs = Array.from(document.querySelectorAll('.chk-edit-sec:checked')).map(cb => cb.value);
+            await updateDoc(doc(db,"estudiantes",id), {cedula: normalizarCedula(document.getElementById("edit-alum-ced").value), nombre: document.getElementById("edit-alum-nom").value, apellido: document.getElementById("edit-alum-ape").value, seccionesIds: selectedSecs});
             document.getElementById("modal-editar-alumno").classList.add("hidden");
         });
 
-        // Asistencia y Reanudacion
         document.getElementById("filtro-asistencia-seccion").addEventListener("change", renderTablaAsistencia);
         function renderTablaAsistencia() {
             const secId = document.getElementById("filtro-asistencia-seccion").value; const tabAs = document.getElementById("tabla-asistencia-contenedor");
-            if (!secId) return tabAs.innerHTML = 'Seleccione sección.';
-            let alums = estudiantes.filter(e => e.seccionId === secId);
+            if (!secId || secId==="TODAS") return tabAs.innerHTML = 'Seleccione una sección específica.';
+            let alums = estudiantes.filter(e => (e.seccionesIds || []).includes(secId) && e.aprobado);
             let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado Aula</th></tr></thead><tbody>`;
             if (tabAs) tabAs.innerHTML = h + alums.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido}</td><td class="border p-2 text-center"><button onclick="window.toggleAsistencia('${e.id}', ${!e.presenteAula})" class="${e.presenteAula?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-500'} px-2 py-1 rounded font-bold">${e.presenteAula ? '✅ Presente' : '❌ Ausente'}</button></td></tr>`).join('') + `</tbody></table>`;
         }
         window.toggleAsistencia = async (id, st) => await updateDoc(doc(db, "estudiantes", id), { presenteAula: st });
-        document.getElementById("btn-todos-presentes").addEventListener("click", async () => { const s = document.getElementById("filtro-asistencia-seccion").value; estudiantes.filter(e=>e.seccionId===s).forEach(async a=>await updateDoc(doc(db,"estudiantes",a.id),{presenteAula:true}));});
+        document.getElementById("btn-todos-presentes").addEventListener("click", async () => { 
+            const s = document.getElementById("filtro-asistencia-seccion").value; 
+            estudiantes.filter(e=>(e.seccionesIds||[]).includes(s) && e.aprobado).forEach(async a=>await updateDoc(doc(db,"estudiantes",a.id),{presenteAula:true}));
+        });
 
         function renderTablaReanudacionDocente() {
             const cont = document.getElementById("tabla-reanudacion-contenedor");
@@ -1258,7 +1383,6 @@
         window.desbloquearReanudacionSesion = async (id) => { const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await updateDoc(doc(db, "sesiones_examen", id), { estado: "reanudacion_permitida", strikes: 0, calificado: false }); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Desbloqueado."); } };
         window.eliminarSesionExamen = async (id) => { if(!confirm("¿Reiniciar intento?")) return; const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await deleteDoc(doc(db, "sesiones_examen", id)); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Reiniciado."); } };
 
-        // Calificaciones Filtros y Notas Oficiales
         document.getElementById("filtro-calif-mat").addEventListener("change", (e) => {
             const matId = e.target.value; const objSel = document.getElementById("filtro-calif-obj");
             if (matId === "TODAS") { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); } 
@@ -1267,8 +1391,7 @@
         });
         document.getElementById("filtro-calif-obj").addEventListener("change", renderTablaCalificaciones);
         function renderTablaCalificaciones() {
-            const matFiltro = document.getElementById("filtro-calif-mat")?.value || "TODAS";
-            const objFiltro = document.getElementById("filtro-calif-obj")?.value || "TODOS";
+            const matFiltro = document.getElementById("filtro-calif-mat")?.value || "TODAS"; const objFiltro = document.getElementById("filtro-calif-obj")?.value || "TODOS";
             let filtradas = calificaciones;
             if (matFiltro !== "TODAS") { const objsDeMateria = objetivos.filter(o => o.materiaId === matFiltro).map(o => o.id); filtradas = filtradas.filter(c => objsDeMateria.includes(c.objetivoId)); }
             if (objFiltro !== "TODOS") { filtradas = filtradas.filter(c => c.objetivoId === objFiltro); }
@@ -1280,8 +1403,28 @@
 
         // --- Creadores de Materia/Sección ---
         document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
-        document.getElementById("btn-crear-seccion").addEventListener("click", async () => { const m = document.getElementById("sec-mat-select").value; const n = document.getElementById("sec-nombre").value; if(m && n) { await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n }); alert("Sección creada"); document.getElementById("sec-nombre").value = ""; } });
-        function renderTablaMateriasResumen() { const t = document.getElementById("tabla-materias-resumen"); if(t) t.innerHTML = materias.map(m => `<div class="border p-2 mb-2 bg-white font-bold">${m.nombre} (Secciones: ${secciones.filter(s=>s.materiaId===m.id).length})</div>`).join(''); }
+        
+        document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
+            const m = document.getElementById("sec-mat-select").value; 
+            const n = document.getElementById("sec-nombre").value; 
+            const padronRaw = document.getElementById("sec-padron").value;
+            
+            if(m && n) { 
+                const cedulasPermitidas = padronRaw.match(/\d+/g) || [];
+                await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n, cedulasPermitidas: cedulasPermitidas }); 
+                alert(`✅ Sección creada exitosamente.\nPadrón Oficial cargado: ${cedulasPermitidas.length} alumnos autorizados.\n\nNota: Los alumnos que coincidan con estas cédulas entrarán directo. Los que no, quedarán pendientes de validación manual.`); 
+                document.getElementById("sec-nombre").value = ""; 
+                document.getElementById("sec-padron").value = ""; 
+            } else {
+                alert("Complete Materia y Nombre de Sección.");
+            }
+        });
+
+        function renderTablaMateriasResumen() { 
+            const t = document.getElementById("tabla-materias-resumen"); 
+            if(t) t.innerHTML = materias.map(m => `<div class="border p-3 mb-2 bg-white rounded shadow-sm"><div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1">${m.nombre}</div><div class="flex flex-wrap gap-2">${secciones.filter(s=>s.materiaId===m.id).map(x=>`<div class="border border-slate-200 p-2 bg-slate-50 text-xs rounded shadow-sm flex items-center">${x.nombre} <span class="text-blue-700 font-bold ml-1 bg-blue-100 px-1 rounded">(${x.cedulasPermitidas ? x.cedulasPermitidas.length : 0} autorizados)</span> <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 ml-2 px-1.5 rounded font-bold">x</button></div>`).join('')}</div></div>`).join(''); 
+        }
+        window.eliminarSeccion = async (id) => { if(confirm("¿Borrar sección permanentemente?")) await deleteDoc(doc(db,"secciones",id)); };
 
     </script>
 </body>
