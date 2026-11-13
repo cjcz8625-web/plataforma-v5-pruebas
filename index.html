@@ -1352,16 +1352,167 @@
                 }
             }
         }
+        function renderMateriasSelectores() { const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
         
-        // --- Creadores y Gestores de Materia/Sección (CRUD Completo) ---
-        document.getElementById("btn-crear-materia").addEventListener("click", async () => { 
-            const n = document.getElementById("mat-nombre").value; 
-            if(n) { 
-                await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); 
-                alert("Materia creada"); 
-                document.getElementById("mat-nombre").value = ""; 
-            } 
+        function renderSeccionesSelectores() { 
+            const contReg = document.getElementById("reg-secciones-container");
+            if (contReg) contReg.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-reg-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            
+            const contRen = document.getElementById("renovacion-secciones-container");
+            if (contRen) contRen.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-renov-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            
+            const h = '<option value="TODAS">Todas</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join(''); 
+            const filAlum = document.getElementById("filtro-alumnos-sec"); if(filAlum) filAlum.innerHTML = h; 
+            const filAsis = document.getElementById("filtro-asistencia-seccion"); if(filAsis) filAsis.innerHTML = h; 
+            const c = document.getElementById("eval-secciones-checkboxes"); if (c) c.innerHTML = secciones.map(s=>`<label class="border p-1 text-xs"><input type="checkbox" name="sec_eval" value="${s.id}" checked> ${s.nombre}</label>`).join(''); 
+        }
+        
+        function renderObjetivosSelectores() {
+            const h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Nombre</th><th class="border p-2">Tipo</th><th class="border p-2">Pts %</th><th class="border p-2">Corte</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            const tEval = document.getElementById("tabla-evaluaciones-resumen");
+            if (tEval) tEval.innerHTML = h + objetivos.map(o=>`<tr><td class="border p-2">${o.nombre}</td><td class="border p-2 text-center text-[10px]">${o.tipo==='online'?'💻 Online':'📝 Manual'}</td><td class="border p-2 text-center">${o.ponderacion}%</td><td class="border p-2 text-center font-bold">Corte ${o.corte}</td><td class="border p-2 text-center space-x-1"><button onclick="window.editarObjetivo('${o.id}')" class="bg-blue-100 px-2 py-1 rounded">Editar</button><button onclick="window.eliminarObjetivo('${o.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded">Borrar</button></td></tr>`).join('') + `</tbody></table>`;
+            const docPregObj = document.getElementById("doc-preg-obj");
+            if (docPregObj) { docPregObj.innerHTML = '<option value="">Elige...</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
+        }
+        
+        document.getElementById("btn-aprobar-masivo").addEventListener("click", async () => {
+            const raw = document.getElementById("txt-aprobacion-masiva").value;
+            const cedulasAprobar = raw.match(/\d+/g) || [];
+            if(cedulasAprobar.length === 0) return alert("No se detectaron cédulas en el texto.");
+            
+            let count = 0;
+            const batch = writeBatch(db);
+            estudiantes.forEach(est => {
+                if (cedulasAprobar.includes(est.cedula) && !est.aprobado) {
+                    const ref = doc(db, "estudiantes", est.id);
+                    batch.update(ref, { aprobado: true });
+                    count++;
+                }
+            });
+            if (count > 0) {
+                await batch.commit();
+                alert(`✅ ${count} estudiantes fueron aprobados exitosamente.`);
+                document.getElementById("txt-aprobacion-masiva").value = "";
+            } else {
+                alert("No se encontraron estudiantes pendientes que coincidan con esas cédulas.");
+            }
         });
+
+        document.getElementById("filtro-alumnos-sec").addEventListener("change", renderTablaAlumnos); document.getElementById("filtro-alumnos-txt").addEventListener("input", renderTablaAlumnos);
+        
+        function renderTablaAlumnos() {
+            const sec = document.getElementById("filtro-alumnos-sec").value; const txt = (document.getElementById("filtro-alumnos-txt").value || "").toLowerCase();
+            let fs = estudiantes; 
+            if(sec !== "TODAS") fs = fs.filter(x => (x.seccionesIds || []).includes(sec)); 
+            if(txt) fs = fs.filter(x => x.cedula.toLowerCase().includes(txt) || x.nombre.toLowerCase().includes(txt) || x.apellido.toLowerCase().includes(txt));
+            
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            const tabA = document.getElementById("tabla-alumnos-gestion");
+            if(tabA) tabA.innerHTML = h + fs.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido} ${e.passkeyId ? '🛡️' : ''}</td>
+                <td class="border p-2 text-center font-bold">
+                    ${e.aprobado ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">🟢 Validado</span>' : '<span class="text-red-600 bg-red-50 px-2 py-1 rounded">🔴 Pendiente</span>'}
+                </td>
+                <td class="border p-2 text-center space-x-1">
+                    <button onclick="window.permitirResetAlumno('${e.id}')" class="${e.resetClaveAutorizado ? 'bg-amber-400 text-amber-900' : 'bg-amber-100 text-amber-700'} px-2 py-1 rounded border border-amber-300" title="Reset Clave">🔑</button>
+                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-slate-200' : 'bg-emerald-200'} px-2 py-1 rounded border border-slate-300 font-bold">${e.aprobado ? '❌' : '✅'}</button>
+                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Edit</button>
+                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-indigo-100 px-2 py-1 rounded border" title="Liberar Equipo">Lib</button>
+                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border">Del</button>
+                </td></tr>`).join('') + `</tbody></table>`;
+        }
+
+        window.permitirResetAlumno = async (id) => {
+            if(confirm("¿Habilitar a este alumno para que cambie su contraseña?")) {
+                await updateDoc(doc(db, "estudiantes", id), { resetClaveAutorizado: true });
+                alert("Permiso concedido. El alumno ya puede usar el formulario de recuperación.");
+            }
+        };
+        
+        window.toggleAprobacionAlumno = async (id, st) => { await updateDoc(doc(db, "estudiantes", id), { aprobado: st }); };
+        window.forzarCierreSesionAlumno = async (id) => { await updateDoc(doc(db, "estudiantes", id), { tokenSesionActivo: null, enLinea: false, dispositivoVinculado: null }); alert("Dispositivo y Sesiones liberados."); };
+        window.eliminarAlumno = async (id) => { if(confirm("¿Borrar alumno?")) await deleteDoc(doc(db, "estudiantes", id)); };
+        
+        window.editarDatosAlumnoModal = (id) => {
+            const e = estudiantes.find(x=>x.id===id); document.getElementById("edit-alum-id").value=e.id; document.getElementById("edit-alum-ced").value=e.cedula; document.getElementById("edit-alum-nom").value=e.nombre; document.getElementById("edit-alum-ape").value=e.apellido;
+            const c = document.getElementById("edit-alum-sec-container");
+            c.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-edit-sec" value="${s.id}" ${ (e.seccionesIds||[]).includes(s.id)?'checked':'' }> <span>${s.nombre}</span></label>`).join('');
+            document.getElementById("modal-editar-alumno").classList.remove("hidden");
+        };
+        document.getElementById("btn-guardar-edicion-alumno").addEventListener("click", async () => {
+            const id = document.getElementById("edit-alum-id").value;
+            const selectedSecs = Array.from(document.querySelectorAll('.chk-edit-sec:checked')).map(cb => cb.value);
+            await updateDoc(doc(db,"estudiantes",id), {cedula: normalizarCedula(document.getElementById("edit-alum-ced").value), nombre: document.getElementById("edit-alum-nom").value, apellido: document.getElementById("edit-alum-ape").value, seccionesIds: selectedSecs});
+            document.getElementById("modal-editar-alumno").classList.add("hidden");
+        });
+
+        document.getElementById("filtro-asistencia-seccion").addEventListener("change", renderTablaAsistencia);
+        function renderTablaAsistencia() {
+            const secId = document.getElementById("filtro-asistencia-seccion").value; const tabAs = document.getElementById("tabla-asistencia-contenedor");
+            if (!secId || secId==="TODAS") return tabAs.innerHTML = 'Seleccione una sección específica.';
+            let alums = estudiantes.filter(e => (e.seccionesIds || []).includes(secId) && e.aprobado);
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado Aula</th></tr></thead><tbody>`;
+            if (tabAs) tabAs.innerHTML = h + alums.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido}</td><td class="border p-2 text-center"><button onclick="window.toggleAsistencia('${e.id}', ${!e.presenteAula})" class="${e.presenteAula?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-500'} px-2 py-1 rounded font-bold">${e.presenteAula ? '✅ Presente' : '❌ Ausente'}</button></td></tr>`).join('') + `</tbody></table>`;
+        }
+        window.toggleAsistencia = async (id, st) => await updateDoc(doc(db, "estudiantes", id), { presenteAula: st });
+        document.getElementById("btn-todos-presentes").addEventListener("click", async () => { 
+            const s = document.getElementById("filtro-asistencia-seccion").value; 
+            estudiantes.filter(e=>(e.seccionesIds||[]).includes(s) && e.aprobado).forEach(async a=>await updateDoc(doc(db,"estudiantes",a.id),{presenteAula:true}));
+        });
+
+        function renderTablaReanudacionDocente() {
+            const cont = document.getElementById("tabla-reanudacion-contenedor");
+            if (sesionesActivas.length === 0) return cont.innerHTML = '<p class="text-slate-400 py-3">No hay sesiones activas.</p>';
+            let h = `<table class="w-full border-collapse border"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Estudiante</th><th class="border p-2">Eval</th><th class="border p-2">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            sesionesActivas.forEach(s => { h += `<tr><td class="border p-2">${s.cedula}</td><td class="border p-2">${s.estudianteNombre}</td><td class="border p-2">${s.objetivoNombre}</td><td class="border p-2 text-center">${s.estado}</td><td class="border p-2 text-center space-x-1"><button onclick="window.desbloquearReanudacionSesion('${s.id}')" class="bg-amber-600 text-white px-2 py-1 rounded text-[11px]">Desbloquear</button><button onclick="window.eliminarSesionExamen('${s.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-[11px]">Reiniciar</button></td></tr>`; });
+            cont.innerHTML = h + '</tbody></table>';
+        }
+        window.desbloquearReanudacionSesion = async (id) => { const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await updateDoc(doc(db, "sesiones_examen", id), { estado: "reanudacion_permitida", strikes: 0, calificado: false }); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Desbloqueado."); } };
+        window.eliminarSesionExamen = async (id) => { if(!confirm("¿Reiniciar intento?")) return; const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await deleteDoc(doc(db, "sesiones_examen", id)); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Reiniciado."); } };
+
+        document.getElementById("filtro-calif-mat").addEventListener("change", (e) => {
+            const matId = e.target.value; const objSel = document.getElementById("filtro-calif-obj");
+            if (matId === "TODAS") { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); } 
+            else { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.filter(o=>o.materiaId===matId).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); }
+            renderTablaCalificaciones();
+        });
+        document.getElementById("filtro-calif-obj").addEventListener("change", renderTablaCalificaciones);
+        
+        function renderTablaCalificaciones() {
+            const matFiltro = document.getElementById("filtro-calif-mat")?.value || "TODAS"; const objFiltro = document.getElementById("filtro-calif-obj")?.value || "TODOS";
+            let filtradas = calificaciones;
+            if (matFiltro !== "TODAS") { const objsDeMateria = objetivos.filter(o => o.materiaId === matFiltro).map(o => o.id); filtradas = filtradas.filter(c => objsDeMateria.includes(c.objetivoId)); }
+            if (objFiltro !== "TODOS") { filtradas = filtradas.filter(c => c.objetivoId === objFiltro); }
+            
+            // DEDUPLICACIÓN ESTRICTA DE NOTAS
+            let notasUnicas = [];
+            let llavesVistas = new Set();
+            for (let i = filtradas.length - 1; i >= 0; i--) {
+                let c = filtradas[i];
+                let llave = `${c.cedula}_${c.objetivoId}`;
+                if (!llavesVistas.has(llave)) {
+                    llavesVistas.add(llave);
+                    notasUnicas.unshift(c);
+                }
+            }
+
+            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">C.I</th><th class="border p-2">Alumno</th><th class="border p-2">Evaluación</th><th class="border p-2">Logrado %</th><th class="border p-2 text-center">🗑️</th></tr></thead><tbody>`;
+            const tabC = document.getElementById("tabla-calificaciones-final");
+            if(tabC) tabC.innerHTML = h + notasUnicas.map(c=>`<tr><td class="border p-2 font-mono">${c.cedula}</td><td class="border p-2 font-medium">${c.estudiante}</td><td class="border p-2">${c.objetivoNombre}</td><td class="border p-2 text-center font-bold text-blue-700">${c.nota} / ${c.ponderacionTotal}</td><td class="border p-2 text-center"><button onclick="window.eliminarNotaMasiva('${c.cedula}', '${c.objetivoId}')" class="text-red-500 font-bold bg-red-50 px-2 border rounded">X</button></td></tr>`).join('') + `</tbody></table>`;
+        }
+
+        window.eliminarNotaMasiva = async (cedula, objetivoId) => { 
+            if(confirm("¿Borrar definitivamente la calificación de este estudiante para esta evaluación?")) {
+                const qC = query(collection(db, "calificaciones"), where("cedula", "==", cedula), where("objetivoId", "==", objetivoId));
+                const snapshots = await getDocs(qC);
+                const batch = writeBatch(db);
+                snapshots.forEach(docSnap => batch.delete(docSnap.ref));
+                await batch.commit();
+                alert("Calificación eliminada limpiamente del registro.");
+            }
+        };
+
+        // --- Creadores de Materia/Sección ---
+        document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
         
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
             const m = document.getElementById("sec-mat-select").value; 
@@ -1378,56 +1529,9 @@
 
         function renderTablaMateriasResumen() { 
             const t = document.getElementById("tabla-materias-resumen"); 
-            if(t) t.innerHTML = materias.map(m => `
-                <div class="border p-3 mb-2 bg-white rounded shadow-sm">
-                    <div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1 flex justify-between items-center">
-                        <span>📚 ${m.nombre}</span>
-                        <div class="space-x-1">
-                            <button onclick="window.editarMateria('${m.id}', '${m.nombre}')" class="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded shadow-sm transition">✏️ Editar</button>
-                            <button onclick="window.eliminarMateria('${m.id}')" class="text-[10px] bg-red-100 hover:bg-red-200 text-red-800 px-2 py-1 rounded shadow-sm transition">🗑️ Borrar</button>
-                        </div>
-                    </div>
-                    <div class="flex flex-wrap gap-2">
-                        ${secciones.filter(s=>s.materiaId===m.id).map(x=>`
-                            <div class="border border-slate-200 p-1.5 bg-slate-50 text-xs rounded shadow-sm flex items-center gap-2">
-                                <span class="font-semibold text-slate-700 ml-1">${x.nombre}</span>
-                                <div class="flex bg-white border rounded">
-                                    <button onclick="window.editarSeccion('${x.id}', '${x.nombre}')" class="hover:bg-blue-50 text-blue-600 px-1.5 py-0.5 border-r" title="Editar Nombre">✏️</button>
-                                    <button onclick="window.eliminarSeccion('${x.id}')" class="hover:bg-red-50 text-red-600 px-1.5 py-0.5 font-bold" title="Borrar Sección">X</button>
-                                </div>
-                            </div>
-                        `).join('')}
-                        ${secciones.filter(s=>s.materiaId===m.id).length === 0 ? '<span class="text-xs text-slate-400 italic py-1">Sin secciones registradas.</span>' : ''}
-                    </div>
-                </div>`).join(''); 
+            if(t) t.innerHTML = materias.map(m => `<div class="border p-3 mb-2 bg-white rounded shadow-sm"><div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1">${m.nombre}</div><div class="flex flex-wrap gap-2">${secciones.filter(s=>s.materiaId===m.id).map(x=>`<div class="border border-slate-200 p-2 bg-slate-50 text-xs rounded shadow-sm flex items-center">${x.nombre} <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 ml-2 px-1.5 rounded font-bold">x</button></div>`).join('')}</div></div>`).join(''); 
         }
-
-        // Lógica de Edición y Borrado
-        window.editarMateria = async (id, nombreActual) => {
-            const nuevo = prompt("Modificar nombre de la Materia:", nombreActual);
-            if (nuevo && nuevo.trim() !== "" && nuevo !== nombreActual) {
-                await updateDoc(doc(db, "materias", id), { nombre: nuevo.trim() });
-            }
-        };
-
-        window.eliminarMateria = async (id) => { 
-            if(confirm("⚠️ ATENCIÓN: ¿Borrar esta Materia?\n\nAl borrarla dejará de estar disponible en el sistema. Asegúrese de borrar sus secciones antes para mantener el orden de la base de datos.")) {
-                await deleteDoc(doc(db, "materias", id)); 
-            }
-        };
-
-        window.editarSeccion = async (id, nombreActual) => {
-            const nuevo = prompt("Modificar nombre de la Sección:", nombreActual);
-            if (nuevo && nuevo.trim() !== "" && nuevo !== nombreActual) {
-                await updateDoc(doc(db, "secciones", id), { nombre: nuevo.trim() });
-            }
-        };
-
-        window.eliminarSeccion = async (id) => { 
-            if(confirm("¿Borrar esta sección permanentemente?")) {
-                await deleteDoc(doc(db,"secciones",id)); 
-            }
-        };
+        window.eliminarSeccion = async (id) => { if(confirm("¿Borrar sección permanentemente?")) await deleteDoc(doc(db,"secciones",id)); };
 
     </script>
 </body>
