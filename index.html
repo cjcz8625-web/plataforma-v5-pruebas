@@ -1511,7 +1511,7 @@
             }
         };
 
-        // --- Creadores de Materia/Sección ---
+      // --- Creadores de Materia/Sección ---
         document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
         
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
@@ -1527,11 +1527,79 @@
             }
         });
 
+        // --- RENDERIZADO Y CRUD DE MATERIAS Y SECCIONES ---
         function renderTablaMateriasResumen() { 
             const t = document.getElementById("tabla-materias-resumen"); 
-            if(t) t.innerHTML = materias.map(m => `<div class="border p-3 mb-2 bg-white rounded shadow-sm"><div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1">${m.nombre}</div><div class="flex flex-wrap gap-2">${secciones.filter(s=>s.materiaId===m.id).map(x=>`<div class="border border-slate-200 p-2 bg-slate-50 text-xs rounded shadow-sm flex items-center">${x.nombre} <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 ml-2 px-1.5 rounded font-bold">x</button></div>`).join('')}</div></div>`).join(''); 
+            if(t) {
+                t.innerHTML = materias.map(m => `
+                <div class="border p-3 mb-3 bg-white rounded shadow-sm">
+                    <div class="font-bold text-sm text-blue-900 mb-2 border-b pb-2 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                        <span>📚 ${m.nombre}</span>
+                        <div class="flex space-x-1">
+                            <button onclick="window.editarMateria('${m.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded text-[10px] font-bold shadow-sm transition">✎ Editar Materia</button>
+                            <button onclick="window.eliminarMateria('${m.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm transition">🗑️ Borrar Materia</button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        ${secciones.filter(s=>s.materiaId===m.id).map(x=>`
+                        <div class="border border-slate-200 p-1.5 bg-slate-50 text-xs rounded shadow-sm flex items-center">
+                            <span class="mr-2 font-medium">${x.nombre}</span> 
+                            <button onclick="window.editarSeccion('${x.id}')" class="text-blue-600 hover:bg-blue-200 px-1.5 py-0.5 rounded transition" title="Editar Sección">✎</button>
+                            <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 px-1.5 py-0.5 ml-1 rounded font-bold transition" title="Borrar Sección">x</button>
+                        </div>
+                        `).join('')}
+                        ${secciones.filter(s=>s.materiaId===m.id).length === 0 ? '<span class="text-xs text-slate-400 italic">Sin secciones registradas.</span>' : ''}
+                    </div>
+                </div>`).join(''); 
+            }
         }
-        window.eliminarSeccion = async (id) => { if(confirm("¿Borrar sección permanentemente?")) await deleteDoc(doc(db,"secciones",id)); };
+
+        // EDICIÓN Y BORRADO DE MATERIAS
+        window.editarMateria = async (id) => {
+            const m = materias.find(x => x.id === id);
+            if (!m) return;
+            const nuevoNombre = prompt("Editar nombre de la materia:", m.nombre);
+            if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre !== m.nombre) {
+                await updateDoc(doc(db, "materias", id), { nombre: nuevoNombre.trim() });
+                alert("✅ Materia actualizada.");
+            }
+        };
+
+        window.eliminarMateria = async (id) => {
+            // Validaciones de Integridad Estricta
+            const tieneSecciones = secciones.some(s => s.materiaId === id);
+            const tieneObjetivos = objetivos.some(o => o.materiaId === id);
+            
+            if (tieneSecciones || tieneObjetivos) {
+                return alert("⛔ ACCIÓN DENEGADA: No puedes borrar esta materia porque tiene Secciones o Evaluaciones asociadas. Borra primero sus dependencias.");
+            }
+            if(confirm("⚠️ ¿Estás totalmente seguro de borrar esta materia permanentemente?")) {
+                await deleteDoc(doc(db, "materias", id));
+                alert("🗑️ Materia eliminada del sistema.");
+            }
+        };
+
+        // EDICIÓN Y BORRADO DE SECCIONES
+        window.editarSeccion = async (id) => {
+            const s = secciones.find(x => x.id === id);
+            if (!s) return;
+            const nuevoNombre = prompt("Editar nombre de la sección:", s.nombre);
+            if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre !== s.nombre) {
+                await updateDoc(doc(db, "secciones", id), { nombre: nuevoNombre.trim() });
+            }
+        };
+
+        window.eliminarSeccion = async (id) => { 
+            // Validar si la sección tiene alumnos inscritos
+            const tieneAlumnos = estudiantes.some(e => (e.seccionesIds || []).includes(id));
+            if (tieneAlumnos) {
+                if(!confirm("⚠️ ADVERTENCIA GRAVE: Hay estudiantes inscritos en esta sección. Si la borras, perderán el acceso a esta materia en su tablero. ¿Deseas destruirla de todas formas?")) return;
+            } else {
+                if(!confirm("¿Borrar sección permanentemente?")) return;
+            }
+            await deleteDoc(doc(db, "secciones", id)); 
+            alert("🗑️ Sección eliminada.");
+        };
 
     </script>
 </body>
