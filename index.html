@@ -44,6 +44,7 @@
                 <div class="flex space-x-1 bg-slate-100 p-1 rounded text-xs font-semibold">
                     <button id="tab-btn-ingreso" class="px-3 py-1.5 rounded bg-white text-blue-700 shadow-sm">Iniciar Sesión</button>
                     <button id="tab-btn-registro" class="px-3 py-1.5 rounded text-slate-600 hover:text-slate-900">Registrarse</button>
+                    <button id="tab-btn-reset" class="px-3 py-1.5 rounded text-slate-600 hover:text-slate-900">Recuperar Clave</button>
                 </div>
             </div>
 
@@ -99,6 +100,36 @@
                     <button type="submit" id="btn-completar-registro" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Crear Cuenta Solo con Contraseña</button>
                 </div>
             </form>
+
+            <!-- RECUPERACIÓN DE CLAVE (AUTORIZADA POR DOCENTE) -->
+            <form id="form-reset-estudiante" class="hidden space-y-4 max-w-md mx-auto">
+                <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs mb-4">
+                    <span class="font-bold text-sm block mb-1">🔐 Autorización Requerida</span>
+                    Para cambiar tu contraseña, el profesor debe habilitar tu usuario desde el Panel de Control. Solicita el permiso antes de llenar este formulario.
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label>
+                    <input type="text" id="reset-cedula" placeholder="Ej. 25123456" class="w-full border p-2 text-xs font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nueva Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="reset-pass-1" placeholder="Mínimo 4 caracteres" class="w-full border p-2 text-xs pr-10" required>
+                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-1">👁️</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1">Confirmar Nueva Contraseña</label>
+                    <div class="relative">
+                        <input type="password" id="reset-pass-2" placeholder="Repite la contraseña" class="w-full border p-2 text-xs pr-10" required>
+                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-2">👁️</button>
+                    </div>
+                </div>
+                <div class="pt-2">
+                    <button type="submit" id="btn-procesar-reset" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded text-xs shadow-sm">Guardar Nueva Contraseña</button>
+                </div>
+            </form>
+
         </section>
 
         <!-- ========================================== -->
@@ -276,7 +307,7 @@
                     <div class="border p-4 bg-slate-50 space-y-2 rounded">
                         <h4 class="font-bold text-xs">Nueva Sección</h4>
                         <select id="sec-mat-select" class="border p-2 text-xs w-full mb-1"><option value="">-- Materia --</option></select>
-                        <input type="text" id="sec-nombre" placeholder="Nombre Sección" class="border p-2 text-xs w-full mb-1">
+                        <input type="text" id="sec-nombre" placeholder="Nombre Sección (Ej. Sección A)" class="border p-2 text-xs w-full mb-1">
                         <button id="btn-crear-seccion" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 text-xs rounded w-full font-bold shadow-sm">Crear Sección</button>
                     </div>
                 </div>
@@ -579,15 +610,40 @@
             return { estData, estDocId };
         }
 
-        document.getElementById("tab-btn-ingreso").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.remove("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("tab-btn-ingreso").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
-        document.getElementById("tab-btn-registro").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.remove("hidden"); document.getElementById("tab-btn-registro").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
+        // --- CONTROL DE PESTAÑAS DEL PORTAL ---
+        document.getElementById("tab-btn-ingreso").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.remove("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-ingreso").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
+        document.getElementById("tab-btn-registro").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.remove("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-registro").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
+        document.getElementById("tab-btn-reset").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.remove("hidden"); document.getElementById("tab-btn-reset").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
+
+        // --- PROCESAMIENTO DE RESET DE CLAVE ---
+        document.getElementById("form-reset-estudiante").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const cedula = normalizarCedula(document.getElementById("reset-cedula").value);
+            const pass1 = document.getElementById("reset-pass-1").value.trim();
+            const pass2 = document.getElementById("reset-pass-2").value.trim();
+
+            if(pass1 !== pass2) return alert("Las contraseñas no coinciden.");
+            if(pass1.length < 4) return alert("La contraseña debe tener al menos 4 caracteres.");
+
+            const { estData, estDocId } = await buscarEstudianteRobusto(cedula);
+            if (!estData) return alert("Cédula no registrada en el sistema.");
+
+            if (estData.resetClaveAutorizado !== true) {
+                return alert("⛔ No tienes autorización para cambiar la contraseña. Solicita el permiso al docente.");
+            }
+
+            const passHash = await cifrarClave(pass1);
+            await updateDoc(doc(db, "estudiantes", estDocId), { passwordHash: passHash, resetClaveAutorizado: false });
+
+            alert("✅ Contraseña actualizada correctamente. Ya puedes iniciar sesión.");
+            document.getElementById("form-reset-estudiante").reset();
+            document.getElementById("tab-btn-ingreso").click();
+        });
 
         async function procesarRegistroEstudiante(huellaActiva) {
             const nom = document.getElementById("reg-nombre").value.trim(); const ape = document.getElementById("reg-apellido").value.trim();
             const ced = normalizarCedula(document.getElementById("reg-cedula").value);
             const pass = document.getElementById("reg-password").value.trim();
-            
-            // MULTI-SECCION: Leer checkboxes marcados
             const seccionesSeleccionadas = Array.from(document.querySelectorAll('.chk-reg-sec:checked')).map(cb => cb.value);
             
             if (!nom || !ape || !ced || pass.length < 4) { return alert("Rellena todos los campos de texto."); }
@@ -607,22 +663,12 @@
             }
             
             const passHash = await cifrarClave(pass);
-            
-            // LA MAGIA: Si el estudiante ya estaba en el Excel del profe para ALGUNA de las secciones, entra directo.
-            // Si no estaba en el Excel, se crea la cuenta pero queda "Pendiente" para validacion manual.
-            let autoAprobado = false;
-            seccionesSeleccionadas.forEach(sId => {
-                const sObj = secciones.find(x => x.id === sId);
-                // NOTA: Para este nuevo sistema masivo por Excel, asumo que el profe pegó la lista general y la guardó
-                // en un padron. Si usamos el botón "Validar Cédulas" del panel, eso aprueba directo la cuenta.
-                // Como esta es la creación inicial: arranca en false, a menos que el profe le haya dado click a validar antes.
-            });
 
             await setDoc(doc(db, "estudiantes", ced), { 
                 nombre: nom, apellido: ape, cedula: ced, seccionesIds: seccionesSeleccionadas, 
                 passwordHash: passHash, passkeyId: passkeyId, presenteAula: false, 
                 tokenSesionActivo: null, enLinea: false, terminosAceptados: true, 
-                fechaRegistro: new Date().toLocaleString(), aprobado: false // ESTADO DE CUARENTENA INICIAL
+                fechaRegistro: new Date().toLocaleString(), aprobado: false
             });
             
             alert("✅ Registro exitoso. Su cuenta pasará a revisión por el Docente."); 
@@ -641,9 +687,7 @@
             const passHash = await cifrarClave(pass);
             if (estData.passwordHash !== passHash && estData.password !== pass) return alert("Contraseña incorrecta.");
             
-            // Migrar vieja data si existe
             if(estData.seccionId && !estData.seccionesIds) { estData.seccionesIds = [estData.seccionId]; await updateDoc(doc(db, "estudiantes", estDocId), {seccionesIds: estData.seccionesIds, aprobado: true}); estData.aprobado = true; }
-
             iniciarSesionEstudianteExitoso(estDocId, estData);
         });
 
@@ -654,7 +698,6 @@
             if (!estData) return alert("Cédula no registrada.");
             if (!estData.passkeyId) return alert("No tienes huella registrada. Usa contraseña.");
             
-            // Migrar vieja data si existe
             if(estData.seccionId && !estData.seccionesIds) { estData.seccionesIds = [estData.seccionId]; await updateDoc(doc(db, "estudiantes", estDocId), {seccionesIds: estData.seccionesIds, aprobado: true}); estData.aprobado = true; }
 
             try {
@@ -672,16 +715,13 @@
             } catch(err) { alert("Proceso cancelado."); }
         });
 
-        // ----------------- ACTUALIZACIÓN DE SECCIÓN (ALUMNOS ANTIGUOS) -----------------
         document.getElementById("btn-actualizar-seccion-dash").addEventListener("click", async () => {
             const boxes = document.querySelectorAll('.chk-renov-sec:checked');
             if(boxes.length === 0) return alert("Selecciona al menos una materia para inscribirte.");
             const nuevasSecciones = Array.from(boxes).map(cb => cb.value);
             
-            // Al inscribir nuevas materias, lo ponemos "Pendiente" (En cuarentena)
             await updateDoc(doc(db, "estudiantes", estudianteSesion.id), { seccionesIds: nuevasSecciones, aprobado: false });
-            estudianteSesion.seccionesIds = nuevasSecciones;
-            estudianteSesion.aprobado = false;
+            estudianteSesion.seccionesIds = nuevasSecciones; estudianteSesion.aprobado = false;
             alert("✅ Solicitud de inscripción enviada. Tu cuenta entra en revisión.");
             mostrarTableroEstudiante();
         });
@@ -703,11 +743,7 @@
                 if (data.tokenSesionActivo && data.tokenSesionActivo !== tokenLocal) expulsarPorViolacionSesion("Conexiones simultáneas prohibidas.");
                 else if (data.tokenSesionActivo === null && !examenEnCurso) expulsarPorViolacionSesion("Sesión finalizada remotamente.");
                 
-                // Vigilar si el docente lo aprobó en tiempo real
-                if (data.aprobado !== estudianteSesion.aprobado) {
-                    estudianteSesion.aprobado = data.aprobado;
-                    mostrarTableroEstudiante();
-                }
+                if (data.aprobado !== estudianteSesion.aprobado) { estudianteSesion.aprobado = data.aprobado; mostrarTableroEstudiante(); }
             });
         }
 
@@ -725,10 +761,8 @@
             sessionStorage.removeItem("token_sesion_estudiante"); estudianteSesion = null; document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden");
         });
 
-        // ----------------- TABLERO L.M.S. DEL ESTUDIANTE (FILTRO CUARENTENA) -----------------
         function mostrarTableroEstudiante() {
             document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
-            
             document.getElementById("perfil-estudiante-bienvenida").innerText = `Hola, ${estudianteSesion.nombre} ${estudianteSesion.apellido}`;
             document.getElementById("perfil-estudiante-seccion").innerText = `C.I: ${estudianteSesion.cedula}`;
             
@@ -736,13 +770,10 @@
             if (!estudianteSesion.passkeyId && window.PublicKeyCredential) { document.getElementById("box-vincular-huella").classList.remove("hidden"); document.getElementById("box-vincular-huella").classList.add("flex"); } 
             else { document.getElementById("box-vincular-huella").classList.add("hidden"); document.getElementById("box-vincular-huella").classList.remove("flex"); }
             
-            // LA CUARENTENA
             if (!estudianteSesion.aprobado) {
-                document.getElementById("alerta-validacion-pendiente").classList.remove("hidden");
-                document.getElementById("contenido-aprobado-tablero").classList.add("hidden");
+                document.getElementById("alerta-validacion-pendiente").classList.remove("hidden"); document.getElementById("contenido-aprobado-tablero").classList.add("hidden");
             } else {
-                document.getElementById("alerta-validacion-pendiente").classList.add("hidden");
-                document.getElementById("contenido-aprobado-tablero").classList.remove("hidden");
+                document.getElementById("alerta-validacion-pendiente").classList.add("hidden"); document.getElementById("contenido-aprobado-tablero").classList.remove("hidden");
                 renderTableroEstudianteLMS(); verificarSesionPendienteEstudiante();
             }
         }
@@ -753,8 +784,6 @@
             const misSeccionesIds = estudianteSesion.seccionesIds || [];
             
             if(misSeccionesIds.length === 0) return cont.innerHTML = "No tienes secciones matriculadas.";
-
-            // Extraer materias a las que el alumno pertenece
             const misMaterias = materias.filter(m => secciones.some(s => misSeccionesIds.includes(s.id) && s.materiaId === m.id));
             if(misMaterias.length === 0) return cont.innerHTML = "No hay materias asignadas a tus secciones.";
 
@@ -762,7 +791,6 @@
             const corteGlobalActual = docentePerfil.corteActivo || 1;
             
             misMaterias.forEach(mat => {
-                // Evaluaciones que sean de la materia, y cuya sección permitida coincida con las inscritas por el alumno
                 const objsMateria = objetivos.filter(o => o.materiaId === mat.id && o.activo && o.seccionesAutorizadas && o.seccionesAutorizadas.some(sId => misSeccionesIds.includes(sId)));
                 const misNotasMat = calificaciones.filter(c => c.cedula === estudianteSesion.cedula && c.materiaNombre === mat.nombre);
 
@@ -906,7 +934,7 @@
                 document.getElementById(`preg-card-${indicePreguntaActual}`).classList.replace("block", "hidden");
                 indicePreguntaActual--;
                 document.getElementById(`preg-card-${indicePreguntaActual}`).classList.replace("hidden", "block");
-                actualizarControlesPaginacion();
+                updateControlesPaginacion();
             }
         });
         document.getElementById("btn-preg-siguiente").addEventListener("click", () => {
@@ -914,10 +942,10 @@
                 document.getElementById(`preg-card-${indicePreguntaActual}`).classList.replace("block", "hidden");
                 indicePreguntaActual++;
                 document.getElementById(`preg-card-${indicePreguntaActual}`).classList.replace("hidden", "block");
-                actualizarControlesPaginacion();
+                updateControlesPaginacion();
             }
         });
-        function actualizarControlesPaginacion() {
+        function updateControlesPaginacion() {
             document.getElementById("indicador-paginacion").innerText = `Pregunta ${indicePreguntaActual + 1} de ${totalPreguntasActivas}`;
             const btnAnt = document.getElementById("btn-preg-anterior"); const btnSig = document.getElementById("btn-preg-siguiente"); const btnEntregar = document.getElementById("btn-entregar-examen-final");
             if (indicePreguntaActual === 0) btnAnt.classList.add("hidden"); else btnAnt.classList.remove("hidden");
@@ -943,7 +971,7 @@
                 });
                 h += `</div></div>`;
             });
-            cont.innerHTML = h; actualizarControlesPaginacion();
+            cont.innerHTML = h; updateControlesPaginacion();
 
             if (timerInterval) clearInterval(timerInterval); actualizarRelojTexto(); tiempoUltimaIteracion = performance.now();
             timerInterval = setInterval(() => {
@@ -1015,6 +1043,7 @@
         document.getElementById("btn-entregar-examen-final").addEventListener("click", () => procesarEntregaFinalCiega(false));
         function autoEntregarPorTiempoAgotado() { procesarEntregaFinalCiega(true); }
 
+        // MEJORA 4: CALIFICACIÓN A CIEGAS CON CLIENT-SIDE HASHING
         async function procesarEntregaFinalCiega(esPorTiempo) {
             examenEnCurso = false; clearInterval(timerInterval); desactivarListenersSupervision(); liberarWakeLock();
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
@@ -1030,11 +1059,30 @@
                 const snapshotPregs = await getDocs(qP);
                 
                 let totalNota = 0; let aprobadas = []; let reprobadas = [];
-                snapshotPregs.forEach(docP => {
-                    const pData = docP.data(); const seleccion = respuestasEstudiante[docP.id]; const correcta = claves[docP.id];
-                    if (seleccion !== undefined && parseInt(seleccion) === parseInt(correcta)) { totalNota += parseFloat(pData.valor || 0); aprobadas.push(`<li class="text-sm">✅ ${pData.enunciado} <span class="font-bold text-emerald-600">(+${pData.valor}%)</span></li>`); } 
-                    else { reprobadas.push(`<li class="text-sm">❌ ${pData.enunciado} <span class="font-bold text-red-500">(${seleccion===undefined?'Vacía':'Mala'})</span></li>`); }
-                });
+                
+                // Iteración asíncrona para validar hashes
+                for (let i = 0; i < snapshotPregs.docs.length; i++) {
+                    const docP = snapshotPregs.docs[i];
+                    const pData = docP.data(); 
+                    const seleccion = respuestasEstudiante[docP.id]; 
+                    const correctaHash = claves[docP.id];
+                    
+                    let acierto = false;
+                    if (seleccion !== undefined && correctaHash !== undefined) {
+                        const seleccionHash = await cifrarClave(docP.id + "-" + seleccion);
+                        // Verifica con el Hash Criptográfico, o como fallback con número directo para exámenes viejos de la versión anterior
+                        if (seleccionHash === correctaHash || parseInt(seleccion) === parseInt(correctaHash)) {
+                            acierto = true;
+                        }
+                    }
+
+                    if (acierto) { 
+                        totalNota += parseFloat(pData.valor || 0); 
+                        aprobadas.push(`<li class="text-sm">✅ ${pData.enunciado} <span class="font-bold text-emerald-600">(+${pData.valor}%)</span></li>`); 
+                    } else { 
+                        reprobadas.push(`<li class="text-sm">❌ ${pData.enunciado} <span class="font-bold text-red-500">(${seleccion===undefined?'Vacía':'Mala'})</span></li>`); 
+                    }
+                }
 
                 let htmlReporte = `<div class="bg-white border p-4 rounded text-left">`;
                 if (aprobadas.length > 0) htmlReporte += `<h4 class="font-bold text-emerald-700">Acertadas:</h4><ul class="mb-4">${aprobadas.join('')}</ul>`;
@@ -1047,7 +1095,7 @@
                 await addDoc(collection(db, "calificaciones"), { 
                     fecha: new Date().toLocaleString(), cedula: estudianteSesion.cedula, estudiante: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, 
                     materiaNombre: matObj ? matObj.nombre : 'Cátedra', objetivoId: objetivoActivo.id, objetivoNombre: objetivoActivo.nombre, 
-                    nota: parseFloat(notaCalculada.toFixed(2)), ponderacionTotal: objetivoActivo.ponderacion, sancionado: false, motivoSancion: esPorTiempo ? "Tiempo agotado" : "Entrega manual" 
+                    nota: parseFloat(notaCalculada.toFixed(2)), ponderacionTotal: objetivoActivo.ponderacion, sancionado: false, motivoSancion: esPorTiempo ? "Tiempo agotado" : "Entrega online" 
                 });
                 
                 await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "entregado", entregaAutomatica: esPorTiempo, calificado: true, notaFinal: parseFloat(notaCalculada.toFixed(2)), reporteHtml: htmlReporte });
@@ -1179,7 +1227,7 @@
             document.getElementById("btn-guardar-notas-manuales").innerText = "Guardar Notas en Sistema";
         });
 
-        // PREGUNTAS
+        // PREGUNTAS Y ESCUDO CRIPTOGRÁFICO
         document.getElementById("doc-preg-mat").addEventListener("change", (e) => {
             const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden");
             s.disabled = !id; s.innerHTML = '<option value="">Objetivo...</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
@@ -1190,19 +1238,51 @@
             document.getElementById("box-crear-pregunta").classList.remove("hidden");
             if(unsubPreguntas) unsubPreguntas();
             const sC = await getDoc(doc(db, "claves_examen", id)); clavesDocente = sC.exists() ? sC.data().respuestas : {};
-            unsubPreguntas = onSnapshot(query(collection(db, "preguntas"), where("objetivoId", "==", id)), snap => { preguntas = []; snap.forEach(d => preguntas.push({id: d.id, ...d.data()})); renderListaPregs(id); });
+            
+            unsubPreguntas = onSnapshot(query(collection(db, "preguntas"), where("objetivoId", "==", id)), async snap => { 
+                preguntas = []; snap.forEach(d => preguntas.push({id: d.id, ...d.data()})); 
+                await renderListaPregs(id); 
+            });
         });
-        function renderListaPregs(objId) {
-            let h=''; preguntas.forEach((p,i) => { h+=`<div class="border p-2 bg-white flex justify-between"><div class="space-y-1"><div class="font-bold">${i+1}. ${p.enunciado} (${p.valor}%)</div><div class="text-[10px] text-emerald-600">Clave Bóveda: ${p.opciones[clavesDocente[p.id]]||'--'}</div></div><div><button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-500 ml-2 font-bold text-lg">x</button></div></div>`; });
+
+        async function renderListaPregs(objId) {
+            let h=''; 
+            for (let i = 0; i < preguntas.length; i++) {
+                const p = preguntas[i];
+                let correctaIndex = '--';
+                
+                if (clavesDocente[p.id] !== undefined) {
+                    if (!isNaN(clavesDocente[p.id]) && p.opciones[clavesDocente[p.id]]) {
+                        correctaIndex = p.opciones[clavesDocente[p.id]]; // Backup para pregs sin hash
+                    } else {
+                        // Búsqueda por Hash
+                        for (let oi = 0; oi < 4; oi++) {
+                            const testHash = await cifrarClave(p.id + "-" + oi);
+                            if (testHash === clavesDocente[p.id]) {
+                                correctaIndex = p.opciones[oi];
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                h += `<div class="border p-2 bg-white flex justify-between"><div class="space-y-1"><div class="font-bold">${i+1}. ${p.enunciado} (${p.valor}%)</div><div class="text-[10px] text-emerald-600">Clave Bóveda: ${correctaIndex}</div></div><div><button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-500 ml-2 font-bold text-lg">x</button></div></div>`; 
+            }
             document.getElementById("lista-preguntas-creadas").innerHTML = h;
         }
+
         document.getElementById("btn-agregar-pregunta").addEventListener("click", async () => {
             const objId = document.getElementById("doc-preg-obj").value; const ob = objetivos.find(x=>x.id===objId);
             const e = document.getElementById("p-enunciado").value; const o0 = document.getElementById("p-opc-0").value; const o1 = document.getElementById("p-opc-1").value; const o2 = document.getElementById("p-opc-2").value; const o3 = document.getElementById("p-opc-3").value;
             const c = parseInt(document.querySelector("input[name='opt_cor']:checked").value); const v = parseFloat(document.getElementById("p-puntos").value);
             if(!e||!o0||!o1||!o2||!o3||!v) return alert("Completa");
             const docR = await addDoc(collection(db,"preguntas"), {objetivoId:objId, materiaId:ob.materiaId, enunciado:e, opciones:[o0,o1,o2,o3], valor:v});
-            clavesDocente[docR.id] = c; await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
+            
+            // Cifrado de la respuesta (Client-Side Hashing)
+            const hashCorrecta = await cifrarClave(docR.id + "-" + c);
+            clavesDocente[docR.id] = hashCorrecta; 
+            
+            await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
             document.getElementById("p-enunciado").value="";
         });
         window.eliminarPregunta = async (pId, oId) => { await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
@@ -1275,11 +1355,9 @@
         function renderMateriasSelectores() { const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
         
         function renderSeccionesSelectores() { 
-            // Generar Checkboxes para Portal de Registro
             const contReg = document.getElementById("reg-secciones-container");
             if (contReg) contReg.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-reg-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
             
-            // Generar Checkboxes para Renovacion Dash
             const contRen = document.getElementById("renovacion-secciones-container");
             if (contRen) contRen.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-renov-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
             
@@ -1297,7 +1375,6 @@
             if (docPregObj) { docPregObj.innerHTML = '<option value="">Elige...</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
         }
         
-        // TAB ALUMNOS: GESTION Y APROBACIÓN
         document.getElementById("btn-aprobar-masivo").addEventListener("click", async () => {
             const raw = document.getElementById("txt-aprobacion-masiva").value;
             const cedulasAprobar = raw.match(/\d+/g) || [];
@@ -1322,6 +1399,7 @@
         });
 
         document.getElementById("filtro-alumnos-sec").addEventListener("change", renderTablaAlumnos); document.getElementById("filtro-alumnos-txt").addEventListener("input", renderTablaAlumnos);
+        
         function renderTablaAlumnos() {
             const sec = document.getElementById("filtro-alumnos-sec").value; const txt = (document.getElementById("filtro-alumnos-txt").value || "").toLowerCase();
             let fs = estudiantes; 
@@ -1335,12 +1413,20 @@
                     ${e.aprobado ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">🟢 Validado</span>' : '<span class="text-red-600 bg-red-50 px-2 py-1 rounded">🔴 Pendiente</span>'}
                 </td>
                 <td class="border p-2 text-center space-x-1">
-                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-slate-200' : 'bg-emerald-200'} px-2 py-1 rounded border border-slate-300 font-bold">${e.aprobado ? '❌ Revocar' : '✅ Validar'}</button>
-                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Editar</button>
-                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-amber-100 px-2 py-1 rounded border" title="Liberar Equipo">Lib</button>
-                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border" title="Borrar">Del</button>
+                    <button onclick="window.permitirResetAlumno('${e.id}')" class="${e.resetClaveAutorizado ? 'bg-amber-400 text-amber-900' : 'bg-amber-100 text-amber-700'} px-2 py-1 rounded border border-amber-300" title="Reset Clave">🔑</button>
+                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-slate-200' : 'bg-emerald-200'} px-2 py-1 rounded border border-slate-300 font-bold">${e.aprobado ? '❌' : '✅'}</button>
+                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Edit</button>
+                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-indigo-100 px-2 py-1 rounded border" title="Liberar Equipo">Lib</button>
+                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border">Del</button>
                 </td></tr>`).join('') + `</tbody></table>`;
         }
+
+        window.permitirResetAlumno = async (id) => {
+            if(confirm("¿Habilitar a este alumno para que cambie su contraseña?")) {
+                await updateDoc(doc(db, "estudiantes", id), { resetClaveAutorizado: true });
+                alert("Permiso concedido. El alumno ya puede usar el formulario de recuperación.");
+            }
+        };
         
         window.toggleAprobacionAlumno = async (id, st) => { await updateDoc(doc(db, "estudiantes", id), { aprobado: st }); };
         window.forzarCierreSesionAlumno = async (id) => { await updateDoc(doc(db, "estudiantes", id), { tokenSesionActivo: null, enLinea: false, dispositivoVinculado: null }); alert("Dispositivo y Sesiones liberados."); };
@@ -1390,16 +1476,40 @@
             renderTablaCalificaciones();
         });
         document.getElementById("filtro-calif-obj").addEventListener("change", renderTablaCalificaciones);
+        
         function renderTablaCalificaciones() {
             const matFiltro = document.getElementById("filtro-calif-mat")?.value || "TODAS"; const objFiltro = document.getElementById("filtro-calif-obj")?.value || "TODOS";
             let filtradas = calificaciones;
             if (matFiltro !== "TODAS") { const objsDeMateria = objetivos.filter(o => o.materiaId === matFiltro).map(o => o.id); filtradas = filtradas.filter(c => objsDeMateria.includes(c.objetivoId)); }
             if (objFiltro !== "TODOS") { filtradas = filtradas.filter(c => c.objetivoId === objFiltro); }
+            
+            // DEDUPLICACIÓN ESTRICTA DE NOTAS
+            let notasUnicas = [];
+            let llavesVistas = new Set();
+            for (let i = filtradas.length - 1; i >= 0; i--) {
+                let c = filtradas[i];
+                let llave = `${c.cedula}_${c.objetivoId}`;
+                if (!llavesVistas.has(llave)) {
+                    llavesVistas.add(llave);
+                    notasUnicas.unshift(c);
+                }
+            }
+
             let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">C.I</th><th class="border p-2">Alumno</th><th class="border p-2">Evaluación</th><th class="border p-2">Logrado %</th><th class="border p-2 text-center">🗑️</th></tr></thead><tbody>`;
             const tabC = document.getElementById("tabla-calificaciones-final");
-            if(tabC) tabC.innerHTML = h + filtradas.map(c=>`<tr><td class="border p-2 font-mono">${c.cedula}</td><td class="border p-2 font-medium">${c.estudiante}</td><td class="border p-2">${c.objetivoNombre}</td><td class="border p-2 text-center font-bold text-blue-700">${c.nota} / ${c.ponderacionTotal}</td><td class="border p-2 text-center"><button onclick="window.eliminarNotaOficial('${c.id}')" class="text-red-500 font-bold bg-red-50 px-2 border rounded">X</button></td></tr>`).join('') + `</tbody></table>`;
+            if(tabC) tabC.innerHTML = h + notasUnicas.map(c=>`<tr><td class="border p-2 font-mono">${c.cedula}</td><td class="border p-2 font-medium">${c.estudiante}</td><td class="border p-2">${c.objetivoNombre}</td><td class="border p-2 text-center font-bold text-blue-700">${c.nota} / ${c.ponderacionTotal}</td><td class="border p-2 text-center"><button onclick="window.eliminarNotaMasiva('${c.cedula}', '${c.objetivoId}')" class="text-red-500 font-bold bg-red-50 px-2 border rounded">X</button></td></tr>`).join('') + `</tbody></table>`;
         }
-        window.eliminarNotaOficial = async (id) => { if(confirm("Borrar nota oficial?")) await deleteDoc(doc(db,"calificaciones",id)); };
+
+        window.eliminarNotaMasiva = async (cedula, objetivoId) => { 
+            if(confirm("¿Borrar definitivamente la calificación de este estudiante para esta evaluación?")) {
+                const qC = query(collection(db, "calificaciones"), where("cedula", "==", cedula), where("objetivoId", "==", objetivoId));
+                const snapshots = await getDocs(qC);
+                const batch = writeBatch(db);
+                snapshots.forEach(docSnap => batch.delete(docSnap.ref));
+                await batch.commit();
+                alert("Calificación eliminada limpiamente del registro.");
+            }
+        };
 
         // --- Creadores de Materia/Sección ---
         document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
@@ -1407,14 +1517,11 @@
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
             const m = document.getElementById("sec-mat-select").value; 
             const n = document.getElementById("sec-nombre").value; 
-            const padronRaw = document.getElementById("sec-padron").value;
             
             if(m && n) { 
-                const cedulasPermitidas = padronRaw.match(/\d+/g) || [];
-                await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n, cedulasPermitidas: cedulasPermitidas }); 
-                alert(`✅ Sección creada exitosamente.\nPadrón Oficial cargado: ${cedulasPermitidas.length} alumnos autorizados.\n\nNota: Los alumnos que coincidan con estas cédulas entrarán directo. Los que no, quedarán pendientes de validación manual.`); 
+                await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n }); 
+                alert(`✅ Sección creada exitosamente.`); 
                 document.getElementById("sec-nombre").value = ""; 
-                document.getElementById("sec-padron").value = ""; 
             } else {
                 alert("Complete Materia y Nombre de Sección.");
             }
@@ -1422,7 +1529,7 @@
 
         function renderTablaMateriasResumen() { 
             const t = document.getElementById("tabla-materias-resumen"); 
-            if(t) t.innerHTML = materias.map(m => `<div class="border p-3 mb-2 bg-white rounded shadow-sm"><div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1">${m.nombre}</div><div class="flex flex-wrap gap-2">${secciones.filter(s=>s.materiaId===m.id).map(x=>`<div class="border border-slate-200 p-2 bg-slate-50 text-xs rounded shadow-sm flex items-center">${x.nombre} <span class="text-blue-700 font-bold ml-1 bg-blue-100 px-1 rounded">(${x.cedulasPermitidas ? x.cedulasPermitidas.length : 0} autorizados)</span> <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 ml-2 px-1.5 rounded font-bold">x</button></div>`).join('')}</div></div>`).join(''); 
+            if(t) t.innerHTML = materias.map(m => `<div class="border p-3 mb-2 bg-white rounded shadow-sm"><div class="font-bold text-sm text-blue-900 mb-2 border-b pb-1">${m.nombre}</div><div class="flex flex-wrap gap-2">${secciones.filter(s=>s.materiaId===m.id).map(x=>`<div class="border border-slate-200 p-2 bg-slate-50 text-xs rounded shadow-sm flex items-center">${x.nombre} <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 ml-2 px-1.5 rounded font-bold">x</button></div>`).join('')}</div></div>`).join(''); 
         }
         window.eliminarSeccion = async (id) => { if(confirm("¿Borrar sección permanentemente?")) await deleteDoc(doc(db,"secciones",id)); };
 
