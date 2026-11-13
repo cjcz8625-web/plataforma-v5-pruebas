@@ -1354,7 +1354,14 @@
         }
         
         // --- Creadores y Gestores de Materia/Sección (CRUD Completo) ---
-        document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
+        document.getElementById("btn-crear-materia").addEventListener("click", async () => { 
+            const n = document.getElementById("mat-nombre").value; 
+            if(n) { 
+                await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); 
+                alert("Materia creada"); 
+                document.getElementById("mat-nombre").value = ""; 
+            } 
+        });
         
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
             const m = document.getElementById("sec-mat-select").value; 
