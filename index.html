@@ -333,7 +333,10 @@
                         <select id="eval-mat-select" class="border p-2 rounded sm:col-span-1"></select>
                         <input type="text" id="eval-nombre" placeholder="Nombre (Ej. Lab Redes)" class="border p-2 rounded sm:col-span-1">
                         <select id="eval-tipo" class="border p-2 rounded font-semibold text-blue-800 bg-blue-50">
-                            <option value="online">💻 Examen en Línea</option><option value="manual">📝 Evaluación Manual (Lab)</option>
+                            <option value="online">💻 Examen en Línea</option>
+                            <option value="manual">📝 Evaluación Manual (Lab)</option>
+                            <option value="trabajo">📄 Trabajo</option>
+                            <option value="taller">🛠️ Taller</option>
                         </select>
                         <select id="eval-corte" class="border p-2 rounded font-semibold">
                             <option value="1">Corte Semestral 1</option><option value="2">Corte Semestral 2</option>
@@ -812,7 +815,7 @@
 
                     let btnAccion = '';
                     if (miNota && obj.tipo === 'online') { btnAccion = `<button onclick="window.verReporteEstudiante('${estudianteSesion.cedula}_${obj.id}')" class="bg-white text-slate-800 font-bold text-[11px] px-2 py-1 border shadow-sm rounded">Ver Reporte</button>`; }
-                    else if (miNota && obj.tipo === 'manual') { btnAccion = `<span class="text-[10px] text-emerald-600 font-bold">Evaluado ✓</span>`; }
+                    else if (miNota && obj.tipo !== 'online') { btnAccion = `<span class="text-[10px] text-emerald-600 font-bold">Evaluado ✓</span>`; }
                     else if (esCorteCerrado) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded font-bold border border-red-200">Expirado (Corte Cerrado)</span>`; }
                     else if (sesionPrevia && sesionPrevia.estado === "entregado") { btnAccion = `<span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-1 rounded">Entregado</span>`; }
                     else if (sesionPrevia && (sesionPrevia.estado === "bloqueado_por_infracciones" || sesionPrevia.estado === "bloqueado_por_fraude")) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded">Anulado 01</span>`; }
@@ -822,8 +825,8 @@
                         else if (obj.horaInicio && ahora < obj.horaInicio) btnAccion = `<span class="text-[10px] text-blue-700 bg-blue-100 px-2 py-1 rounded">🕒 Inicia: ${new Date(obj.horaInicio).toLocaleTimeString()}</span>`;
                         else if (obj.horaFin && ahora > obj.horaFin) btnAccion = `<span class="text-[10px] text-red-700 bg-red-100 px-2 py-1 rounded">Cerrado</span>`;
                         else btnAccion = `<button onclick="window.iniciarExamenAlumno('${obj.id}')" class="bg-blue-700 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">Realizar Examen</button>`;
-                    } else if (obj.tipo === 'manual') {
-                        btnAccion = `<span class="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-200">Presencial / Lab</span>`;
+                    } else if (obj.tipo !== 'online') {
+                        btnAccion = `<span class="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-200">Presencial / Entrega</span>`;
                     }
 
                     const itemHtml = `
@@ -1024,7 +1027,7 @@
         function actualizarIndicadorStrikesVisual() {
             const el = document.getElementById("strike-1");
             if (strikeCount === 0) el.innerText = "Sin faltas";
-            else if (strikeCount === 1) { el.innerText = "1 Advertencia"; el.className = "px-2 py-0.5 rounded text-[10px] bg-amber-500 text-white font-bold animate-pulse"; }
+            else if (strikeCount === 1) { el.innerText = "1 Advertencia"; el.className = "px-2 py-0.5 rounded text-[10px] bg-amber-50 text-white font-bold animate-pulse"; }
             else if (strikeCount === 2) { el.innerText = "2 Advertencias (Peligro)"; el.className = "px-2 py-0.5 rounded text-[10px] bg-orange-600 text-white font-bold animate-pulse"; }
             else el.innerText = "Bloqueado";
         }
@@ -1135,8 +1138,15 @@
 
         document.getElementById("eval-tipo").addEventListener("change", (e) => {
             const container = document.getElementById("eval-fechas-container");
-            if(e.target.value === 'manual') { document.getElementById("eval-hora-inicio").classList.add("hidden"); document.getElementById("eval-hora-fin").classList.add("hidden"); container.classList.replace("grid-cols-3", "grid-cols-1"); } 
-            else { document.getElementById("eval-hora-inicio").classList.remove("hidden"); document.getElementById("eval-hora-fin").classList.remove("hidden"); container.classList.replace("grid-cols-1", "grid-cols-3"); }
+            if(e.target.value !== 'online') { 
+                document.getElementById("eval-hora-inicio").classList.add("hidden"); 
+                document.getElementById("eval-hora-fin").classList.add("hidden"); 
+                container.classList.replace("grid-cols-3", "grid-cols-1"); 
+            } else { 
+                document.getElementById("eval-hora-inicio").classList.remove("hidden"); 
+                document.getElementById("eval-hora-fin").classList.remove("hidden"); 
+                container.classList.replace("grid-cols-1", "grid-cols-3"); 
+            }
         });
 
         const btnAvanzarCorte = document.getElementById("btn-avanzar-corte");
@@ -1178,8 +1188,8 @@
         document.getElementById("manual-mat-select").addEventListener("change", (e) => {
             const matId = e.target.value; const objSel = document.getElementById("manual-obj-select");
             if (!matId) { objSel.disabled = true; return; }
-            const manualObjs = objetivos.filter(o => o.materiaId === matId && o.tipo === 'manual');
-            objSel.innerHTML = '<option value="">-- Elige Laboratorio/Práctica --</option>' + manualObjs.map(o => `<option value="${o.id}">${o.nombre} (${o.ponderacion}%)</option>`).join('');
+            const manualObjs = objetivos.filter(o => o.materiaId === matId && o.tipo !== 'online');
+            objSel.innerHTML = '<option value="">-- Elige Laboratorio/Práctica/Trabajo --</option>' + manualObjs.map(o => `<option value="${o.id}">${o.nombre} (${o.ponderacion}%)</option>`).join('');
             objSel.disabled = false;
         });
         document.getElementById("manual-obj-select").addEventListener("change", (e) => {
@@ -1344,11 +1354,11 @@
                 if (corteActual === 2) {
                     btnAvanzar.classList.replace("bg-indigo-700", "bg-slate-400"); btnAvanzar.classList.replace("hover:bg-indigo-800", "cursor-not-allowed");
                     btnAvanzar.innerText = "Corte 2 Activo (Semestre Final)"; btnAvanzar.disabled = true;
-                    selectCorte.value = "2"; if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = true; 
+                    selectCorte.innerHTML = '<option value="2">Corte Semestral 2</option>';
                 } else {
                     btnAvanzar.classList.replace("bg-slate-400", "bg-indigo-700"); btnAvanzar.classList.replace("cursor-not-allowed", "hover:bg-indigo-800");
                     btnAvanzar.innerText = "Finalizar Corte 1 e Iniciar Corte 2 ⏩"; btnAvanzar.disabled = false;
-                    if(selectCorte.querySelector('option[value="1"]')) selectCorte.querySelector('option[value="1"]').disabled = false;
+                    selectCorte.innerHTML = '<option value="1">Corte Semestral 1</option>';
                 }
             }
         }
@@ -1370,7 +1380,7 @@
         function renderObjetivosSelectores() {
             const h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Nombre</th><th class="border p-2">Tipo</th><th class="border p-2">Pts %</th><th class="border p-2">Corte</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
             const tEval = document.getElementById("tabla-evaluaciones-resumen");
-            if (tEval) tEval.innerHTML = h + objetivos.map(o=>`<tr><td class="border p-2">${o.nombre}</td><td class="border p-2 text-center text-[10px]">${o.tipo==='online'?'💻 Online':'📝 Manual'}</td><td class="border p-2 text-center">${o.ponderacion}%</td><td class="border p-2 text-center font-bold">Corte ${o.corte}</td><td class="border p-2 text-center space-x-1"><button onclick="window.editarObjetivo('${o.id}')" class="bg-blue-100 px-2 py-1 rounded">Editar</button><button onclick="window.eliminarObjetivo('${o.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded">Borrar</button></td></tr>`).join('') + `</tbody></table>`;
+            if (tEval) tEval.innerHTML = h + objetivos.map(o=>`<tr><td class="border p-2">${o.nombre}</td><td class="border p-2 text-center text-[10px]">${o.tipo==='online'?'💻 Online': o.tipo==='trabajo'?'📄 Trabajo': o.tipo==='taller'?'🛠️ Taller':'📝 Manual'}</td><td class="border p-2 text-center">${o.ponderacion}%</td><td class="border p-2 text-center font-bold">Corte ${o.corte}</td><td class="border p-2 text-center space-x-1"><button onclick="window.editarObjetivo('${o.id}')" class="bg-blue-100 px-2 py-1 rounded">Editar</button><button onclick="window.eliminarObjetivo('${o.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded">Borrar</button></td></tr>`).join('') + `</tbody></table>`;
             const docPregObj = document.getElementById("doc-preg-obj");
             if (docPregObj) { docPregObj.innerHTML = '<option value="">Elige...</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
         }
@@ -1511,7 +1521,7 @@
             }
         };
 
-      // --- Creadores de Materia/Sección ---
+        // --- Creadores de Materia/Sección ---
         document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
         
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
