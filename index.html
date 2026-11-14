@@ -417,42 +417,49 @@
                         <div id="tabla-evaluaciones-resumen" class="overflow-x-auto text-xs border border-slate-100 rounded-xl"></div>
                     </div>
 
-                    <div id="tc-preguntas" class="hidden space-y-4">
+					<div id="tc-preguntas" class="hidden space-y-4">
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <select id="doc-preg-mat" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500"></select>
                             <select id="doc-preg-obj" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500" disabled></select>
                         </div>
-                        <div id="box-crear-pregunta" class="hidden border border-slate-100 p-4 bg-slate-50 text-xs space-y-3 rounded-xl">
-                            <textarea id="p-enunciado" class="w-full border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500 resize-none h-16" placeholder="Redacta la pregunta..."></textarea>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="p-opc-0" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 1">
-                                <input type="text" id="p-opc-1" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 2">
-                                <input type="text" id="p-opc-2" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 3">
-                                <input type="text" id="p-opc-3" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 4">
-                            </div>
-                            <div class="font-medium flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-100">Respuesta: 
-                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="0" checked class="accent-blue-600"> 1</label> 
-                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="1" class="accent-blue-600"> 2</label> 
-                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="2" class="accent-blue-600"> 3</label> 
-                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="3" class="accent-blue-600"> 4</label>
-                            </div>
-                            <div class="flex gap-2">
-                                <input type="number" id="p-puntos" placeholder="Valor %" class="border border-slate-200 p-2 rounded-lg w-24 bg-white outline-none">
-                                <button id="btn-agregar-pregunta" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-sm">Agregar al Banco</button>
-                            </div>
+                        
+                        <!-- PANEL INTELIGENTE DE PUNTOS RESTANTES -->
+                        <div id="resumen-puntos-preguntas" class="hidden flex flex-col sm:flex-row justify-between items-center bg-slate-50 border border-slate-200 p-3.5 rounded-xl shadow-sm text-xs transition-colors gap-2">
+                            <div class="font-medium" id="txt-puntos-info">Seleccione un examen para ver el balance de puntos.</div>
+                            <div class="text-right font-bold text-base bg-white px-3 py-1 rounded-lg border shadow-sm" id="txt-puntos-restantes">--</div>
                         </div>
-                        <div id="lista-preguntas-creadas" class="text-xs space-y-2"></div>
-                    </div>
 
-                    <div id="tc-alumnos" class="hidden space-y-5">
-                        <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
-                            <h3 class="font-semibold text-blue-900 text-sm mb-1">Validación Masiva (Excel)</h3>
-                            <p class="text-xs text-blue-700/80 mb-3">Pega la columna de cédulas del sistema de control de estudios.</p>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <textarea id="txt-aprobacion-masiva" class="flex-grow border border-slate-200 p-2 text-xs h-10 outline-none rounded-lg resize-none" placeholder="25123456, 26987654..."></textarea>
-                                <button id="btn-aprobar-masivo" class="bg-white border border-blue-200 hover:bg-blue-50 text-blue-700 font-medium px-4 py-2 rounded-lg text-xs shadow-sm transition">Procesar Lista</button>
+                        <!-- FORMULARIO DE CREACIÓN / EDICIÓN -->
+                        <div id="box-crear-pregunta" class="hidden border border-slate-100 p-5 bg-slate-50 text-xs space-y-4 rounded-xl transition-all relative shadow-sm">
+                            <input type="hidden" id="edit-preg-id">
+                            <div class="flex justify-between items-center mb-1 border-b border-slate-200 pb-2">
+                                <h4 class="font-bold text-sm text-blue-700" id="titulo-form-preg">Añadir Nueva Pregunta</h4>
+                                <button id="btn-cancelar-edicion-preg" class="hidden text-slate-500 hover:text-red-500 font-bold bg-white px-2 py-1 border rounded-md shadow-sm transition">Cancelar Edición</button>
+                            </div>
+                            <textarea id="p-enunciado" class="w-full border border-slate-200 p-2.5 rounded-lg bg-white outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 resize-none h-16 transition" placeholder="Redacta la pregunta..."></textarea>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <input type="text" id="p-opc-0" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500" placeholder="Opción 1">
+                                <input type="text" id="p-opc-1" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500" placeholder="Opción 2">
+                                <input type="text" id="p-opc-2" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500" placeholder="Opción 3">
+                                <input type="text" id="p-opc-3" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500" placeholder="Opción 4">
+                            </div>
+                            <div class="font-medium flex flex-wrap items-center gap-4 bg-white p-2.5 rounded-lg border border-slate-100 shadow-sm">
+                                <span class="text-slate-500 mr-2">Respuesta Correcta:</span>
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition"><input type="radio" name="opt_cor" value="0" checked class="accent-blue-600 w-4 h-4"> 1</label> 
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition"><input type="radio" name="opt_cor" value="1" class="accent-blue-600 w-4 h-4"> 2</label> 
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition"><input type="radio" name="opt_cor" value="2" class="accent-blue-600 w-4 h-4"> 3</label> 
+                                <label class="flex items-center gap-1 cursor-pointer hover:text-blue-600 transition"><input type="radio" name="opt_cor" value="3" class="accent-blue-600 w-4 h-4"> 4</label>
+                            </div>
+                            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                                <div class="flex items-center bg-white border border-slate-200 rounded-lg overflow-hidden w-full sm:w-auto shadow-sm">
+                                    <span class="bg-slate-50 px-3 py-2 text-slate-500 border-r border-slate-200 font-medium">Puntos %</span>
+                                    <input type="number" step="0.1" id="p-puntos" placeholder="0.0" class="p-2 w-20 outline-none">
+                                </div>
+                                <button id="btn-agregar-pregunta" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm w-full sm:w-auto">Agregar al Banco</button>
                             </div>
                         </div>
+                        <div id="lista-preguntas-creadas" class="text-xs space-y-3 pt-2"></div>
+                    </div>
 
                         <div class="space-y-3">
                             <div class="flex justify-between items-center gap-2">
@@ -1380,12 +1387,12 @@
 
         // PREGUNTAS Y ESCUDO CRIPTOGRÁFICO
         document.getElementById("doc-preg-mat").addEventListener("change", (e) => {
-            const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden");
-            s.disabled = !id; s.innerHTML = '<option value="">-- Examen asociado --</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
+            const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden"); document.getElementById("resumen-puntos-preguntas").classList.add("hidden");
+            s.disabled = !id; s.innerHTML = '<option value="">-- Selecciona un Examen --</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
         });
         let unsubPreguntas = null;
         document.getElementById("doc-preg-obj").addEventListener("change", async (e) => {
-            const id = e.target.value; if(!id) return document.getElementById("box-crear-pregunta").classList.add("hidden");
+            const id = e.target.value; if(!id) { document.getElementById("box-crear-pregunta").classList.add("hidden"); document.getElementById("resumen-puntos-preguntas").classList.add("hidden"); return; }
             document.getElementById("box-crear-pregunta").classList.remove("hidden");
             if(unsubPreguntas) unsubPreguntas();
             const sC = await getDoc(doc(db, "claves_examen", id)); clavesDocente = sC.exists() ? sC.data().respuestas : {};
@@ -1397,54 +1404,139 @@
         });
 
         async function renderListaPregs(objId) {
+            const ob = objetivos.find(x => x.id === objId);
+            if (!ob) return;
+
             let h=''; 
+            let totalPuntosActuales = 0;
+
             for (let i = 0; i < preguntas.length; i++) {
                 const p = preguntas[i];
+                totalPuntosActuales += parseFloat(p.valor || 0);
+                
                 let correctaIndex = '--';
+                let correctaVal = 0;
                 
                 if (clavesDocente[p.id] !== undefined) {
                     if (!isNaN(clavesDocente[p.id]) && p.opciones[clavesDocente[p.id]]) {
-                        correctaIndex = p.opciones[clavesDocente[p.id]];
+                        correctaIndex = p.opciones[clavesDocente[p.id]]; correctaVal = clavesDocente[p.id];
                     } else {
                         // Búsqueda por Hash Inverso
                         for (let oi = 0; oi < 4; oi++) {
                             const testHash = await cifrarClave(p.id + "-" + oi);
-                            if (testHash === clavesDocente[p.id]) {
-                                correctaIndex = p.opciones[oi];
-                                break;
-                            }
+                            if (testHash === clavesDocente[p.id]) { correctaIndex = p.opciones[oi]; correctaVal = oi; break; }
                         }
                     }
                 }
                 
-                h += `<div class="border border-slate-100 p-3 bg-white rounded-xl shadow-sm flex justify-between items-start gap-4">
-                        <div class="space-y-1">
-                            <div class="font-medium text-slate-800 text-sm leading-tight">${i+1}. ${p.enunciado} <span class="text-slate-400 font-normal">(${p.valor}%)</span></div>
-                            <div class="text-[10px] text-blue-600 bg-blue-50 inline-block px-2 py-0.5 rounded border border-blue-100 mt-1 font-medium">Bóveda Cifrada: ${correctaIndex}</div>
+                h += `<div class="border border-slate-200 p-4 bg-white rounded-xl shadow-sm flex flex-col sm:flex-row justify-between sm:items-start gap-4 hover:border-blue-300 transition">
+                        <div class="space-y-2 flex-grow">
+                            <div class="font-medium text-slate-800 text-sm leading-tight">${i+1}. ${p.enunciado} <span class="text-blue-600 font-bold ml-1">${p.valor}%</span></div>
+                            <div class="text-[11px] text-emerald-700 bg-emerald-50 inline-block px-2 py-1 rounded-md border border-emerald-100 font-medium shadow-sm">✓ Bóveda Cifrada: Opción ${correctaVal + 1} (${correctaIndex})</div>
                         </div>
-                        <button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-400 hover:text-red-600 bg-slate-50 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar pregunta">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                        </button>
+                        <div class="flex gap-2 justify-end">
+                            <button onclick="window.cargarPreguntaParaEdicion('${p.id}', ${correctaVal})" class="text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-3 py-1.5 rounded-lg border border-blue-200 transition font-medium text-xs shadow-sm">Editar</button>
+                            <button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-500 hover:text-white bg-red-50 hover:bg-red-500 px-3 py-1.5 rounded-lg border border-red-200 transition font-medium text-xs shadow-sm">Borrar</button>
+                        </div>
                       </div>`; 
             }
             document.getElementById("lista-preguntas-creadas").innerHTML = h;
+
+            // ACTUALIZACIÓN DE PANEL DE PUNTOS
+            const panelPuntos = document.getElementById("resumen-puntos-preguntas");
+            const txtPuntosInfo = document.getElementById("txt-puntos-info");
+            const txtRestantes = document.getElementById("txt-puntos-restantes");
+            
+            panelPuntos.classList.remove("hidden");
+            const faltante = (ob.ponderacion - totalPuntosActuales).toFixed(1);
+
+            txtPuntosInfo.innerHTML = `Puntos estructurados: <span class="text-slate-800 font-bold">${totalPuntosActuales.toFixed(1)}%</span> de <span class="text-blue-700 font-bold">${ob.ponderacion}%</span>`;
+            
+            if (faltante > 0) {
+                txtRestantes.innerHTML = `<span class="text-amber-600">Faltan: ${faltante}%</span>`;
+                panelPuntos.className = "flex flex-col sm:flex-row justify-between items-center bg-amber-50 border border-amber-200 p-4 rounded-xl shadow-sm text-xs gap-3";
+            } else if (faltante == 0) {
+                txtRestantes.innerHTML = `<span class="text-emerald-600">Examen Completado ✓</span>`;
+                panelPuntos.className = "flex flex-col sm:flex-row justify-between items-center bg-emerald-50 border border-emerald-300 p-4 rounded-xl shadow-sm text-xs gap-3";
+            } else {
+                txtRestantes.innerHTML = `<span class="text-red-600">¡Excedido por: ${Math.abs(faltante)}%!</span>`;
+                panelPuntos.className = "flex flex-col sm:flex-row justify-between items-center bg-red-50 border border-red-300 p-4 rounded-xl shadow-sm text-xs gap-3";
+            }
         }
+
+        // FUNCIONALIDAD DE EDICIÓN Y BORRADO
+        window.cargarPreguntaParaEdicion = (pId, correctaVal) => {
+            const p = preguntas.find(x => x.id === pId); if (!p) return;
+            document.getElementById("edit-preg-id").value = p.id;
+            document.getElementById("p-enunciado").value = p.enunciado;
+            document.getElementById("p-opc-0").value = p.opciones[0]; document.getElementById("p-opc-1").value = p.opciones[1];
+            document.getElementById("p-opc-2").value = p.opciones[2]; document.getElementById("p-opc-3").value = p.opciones[3];
+            document.getElementById("p-puntos").value = p.valor;
+            
+            const radios = document.querySelectorAll("input[name='opt_cor']");
+            radios.forEach(r => { if(parseInt(r.value) === correctaVal) r.checked = true; });
+
+            // Activar UI de Edición
+            document.getElementById("titulo-form-preg").innerText = "Modificando Pregunta"; document.getElementById("titulo-form-preg").classList.replace("text-blue-700", "text-amber-700");
+            document.getElementById("box-crear-pregunta").classList.replace("bg-slate-50", "bg-amber-50/40"); document.getElementById("box-crear-pregunta").classList.replace("border-slate-100", "border-amber-200");
+            document.getElementById("btn-agregar-pregunta").innerText = "Guardar Modificación"; document.getElementById("btn-agregar-pregunta").classList.replace("bg-blue-600", "bg-amber-600"); document.getElementById("btn-agregar-pregunta").classList.replace("hover:bg-blue-700", "hover:bg-amber-700");
+            document.getElementById("btn-cancelar-edicion-preg").classList.remove("hidden");
+            
+            document.getElementById("box-crear-pregunta").scrollIntoView({behavior: "smooth", block: "center"});
+        };
+
+        function resetFormPregunta() {
+            document.getElementById("edit-preg-id").value = ""; document.getElementById("p-enunciado").value = "";
+            document.getElementById("p-opc-0").value = ""; document.getElementById("p-opc-1").value = "";
+            document.getElementById("p-opc-2").value = ""; document.getElementById("p-opc-3").value = "";
+            document.getElementById("p-puntos").value = ""; document.querySelector("input[name='opt_cor'][value='0']").checked = true;
+            
+            document.getElementById("titulo-form-preg").innerText = "Añadir Nueva Pregunta"; document.getElementById("titulo-form-preg").classList.replace("text-amber-700", "text-blue-700");
+            document.getElementById("box-crear-pregunta").classList.replace("bg-amber-50/40", "bg-slate-50"); document.getElementById("box-crear-pregunta").classList.replace("border-amber-200", "border-slate-100");
+            document.getElementById("btn-agregar-pregunta").innerText = "Agregar al Banco"; document.getElementById("btn-agregar-pregunta").classList.replace("bg-amber-600", "bg-blue-600"); document.getElementById("btn-agregar-pregunta").classList.replace("hover:bg-amber-700", "hover:bg-blue-700");
+            document.getElementById("btn-cancelar-edicion-preg").classList.add("hidden");
+        }
+
+        document.getElementById("btn-cancelar-edicion-preg").addEventListener("click", resetFormPregunta);
 
         document.getElementById("btn-agregar-pregunta").addEventListener("click", async () => {
             const objId = document.getElementById("doc-preg-obj").value; const ob = objetivos.find(x=>x.id===objId);
             const e = document.getElementById("p-enunciado").value; const o0 = document.getElementById("p-opc-0").value; const o1 = document.getElementById("p-opc-1").value; const o2 = document.getElementById("p-opc-2").value; const o3 = document.getElementById("p-opc-3").value;
             const c = parseInt(document.querySelector("input[name='opt_cor']:checked").value); const v = parseFloat(document.getElementById("p-puntos").value);
+            
             if(!e||!o0||!o1||!o2||!o3||!v) return alert("Faltan datos para procesar la pregunta.");
-            const docR = await addDoc(collection(db,"preguntas"), {objetivoId:objId, materiaId:ob.materiaId, enunciado:e, opciones:[o0,o1,o2,o3], valor:v});
             
-            // Cifrado de la respuesta (Client-Side Hashing)
-            const hashCorrecta = await cifrarClave(docR.id + "-" + c);
-            clavesDocente[docR.id] = hashCorrecta; 
-            
-            await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
-            document.getElementById("p-enunciado").value=""; document.getElementById("p-puntos").value="";
+            const editPregId = document.getElementById("edit-preg-id").value;
+
+            document.getElementById("btn-agregar-pregunta").innerText = "Sincronizando...";
+
+            if (editPregId) {
+                // MODIFICAR EXISTENTE
+                await updateDoc(doc(db, "preguntas", editPregId), { enunciado: e, opciones: [o0, o1, o2, o3], valor: v });
+                const hashCorrecta = await cifrarClave(editPregId + "-" + c);
+                clavesDocente[editPregId] = hashCorrecta; 
+                // Actualizamos directamente (sin merge) para limpiar fantasmas
+                await setDoc(doc(db, "claves_examen", objId), {respuestas: clavesDocente});
+            } else {
+                // CREAR NUEVA
+                const docR = await addDoc(collection(db,"preguntas"), {objetivoId:objId, materiaId:ob.materiaId, enunciado:e, opciones:[o0,o1,o2,o3], valor:v});
+                const hashCorrecta = await cifrarClave(docR.id + "-" + c);
+                clavesDocente[docR.id] = hashCorrecta; 
+                await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
+            }
+            resetFormPregunta();
         });
-        window.eliminarPregunta = async (pId, oId) => { if(!confirm("Borrar del banco de preguntas?"))return; await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
+
+        window.eliminarPregunta = async (pId, oId) => { 
+            if(!confirm("⚠️ ¿Borrar definitivamente esta pregunta del banco?")) return; 
+            await deleteDoc(doc(db,"preguntas",pId)); 
+            delete clavesDocente[pId]; 
+            // Eliminamos la clave del documento reemplazándolo (sin merge)
+            await updateDoc(doc(db,"claves_examen",oId), { respuestas: clavesDocente }).catch(async () => {
+                 await setDoc(doc(db,"claves_examen",oId), { respuestas: clavesDocente }); // Fallback si no existiera
+            }); 
+            if(document.getElementById("edit-preg-id").value === pId) resetFormPregunta();
+        };
 
         // NAVEGACIÓN
         const tabsDoc = ["asistencia", "reanudacion", "materias", "evaluaciones", "preguntas", "alumnos", "calificaciones", "perfil"];
