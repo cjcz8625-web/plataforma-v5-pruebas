@@ -417,7 +417,7 @@
                         <div id="tabla-evaluaciones-resumen" class="overflow-x-auto text-xs border border-slate-100 rounded-xl"></div>
                     </div>
 
-					<div id="tc-preguntas" class="hidden space-y-4">
+                    <div id="tc-preguntas" class="hidden space-y-4">
                         <div class="grid grid-cols-2 gap-3 text-xs">
                             <select id="doc-preg-mat" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500"></select>
                             <select id="doc-preg-obj" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500" disabled></select>
@@ -460,6 +460,17 @@
                         </div>
                         <div id="lista-preguntas-creadas" class="text-xs space-y-3 pt-2"></div>
                     </div>
+
+                    <!-- AQUÍ ESTÁ EL BLOQUE FALTANTE RESTAURADO -->
+                    <div id="tc-alumnos" class="hidden space-y-5">
+                        <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
+                            <h3 class="font-semibold text-blue-900 text-sm mb-1">Validación Masiva (Excel)</h3>
+                            <p class="text-xs text-blue-700/80 mb-3">Pega la columna de cédulas del sistema de control de estudios.</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <textarea id="txt-aprobacion-masiva" class="flex-grow border border-slate-200 p-2 text-xs h-10 outline-none rounded-lg resize-none" placeholder="25123456, 26987654..."></textarea>
+                                <button id="btn-aprobar-masivo" class="bg-white border border-blue-200 hover:bg-blue-50 text-blue-700 font-medium px-4 py-2 rounded-lg text-xs shadow-sm transition">Procesar Lista</button>
+                            </div>
+                        </div>
 
                         <div class="space-y-3">
                             <div class="flex justify-between items-center gap-2">
