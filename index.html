@@ -7,25 +7,37 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-select { user-select: none; -webkit-user-select: none; }
+        /* Efecto Mica simulado para modales y barra superior */
+        .mica-effect {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col no-select">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col no-select selection:bg-blue-100 selection:text-blue-900">
 
-    <!-- BARRA SUPERIOR -->
-    <header class="bg-blue-900 text-white shadow-md">
+    <!-- BARRA SUPERIOR WINDOWS 11 STYLE -->
+    <header class="mica-effect shadow-sm border-b border-slate-200 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div>
-                <h1 class="text-base sm:text-lg font-bold">Evaluaciones Digitales (LMS)</h1>
-                <p class="text-xs text-blue-200" id="header-docente-info">Docente: Sin configurar • Entorno de Pruebas V5.0</p>
+            <div class="flex items-center gap-3">
+                 <!-- Ícono genérico tipo Windows -->
+                <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center shadow-sm">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                    <h1 class="text-sm sm:text-base font-semibold text-slate-900 leading-tight">Evaluaciones Digitales</h1>
+                    <p class="text-[10px] text-slate-500 font-medium" id="header-docente-info">Docente: Sin configurar • Entorno V5.0</p>
+                </div>
             </div>
             <div class="flex items-center space-x-2">
-                <span id="badge-eval-ciega" class="hidden sm:inline-flex items-center text-[10px] bg-emerald-950 text-emerald-200 px-2 py-1 rounded border border-emerald-700 font-medium">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> Bóveda Cifrada
+                <span id="badge-eval-ciega" class="hidden sm:inline-flex items-center text-[10px] bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full border border-slate-200 font-medium shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Bóveda Cifrada
                 </span>
-                <span id="badge-wakelock" class="hidden sm:inline-flex items-center text-[10px] bg-blue-950 text-blue-200 px-2 py-1 rounded border border-blue-700">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 mr-1.5 animate-pulse"></span> Pantalla Bloqueada
+                <span id="badge-wakelock" class="hidden sm:inline-flex items-center text-[10px] bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full border border-slate-200 font-medium shadow-sm">
+                    <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5 animate-pulse"></span> Pantalla Bloq.
                 </span>
-                <button id="btn-login-docente" class="bg-blue-800 hover:bg-blue-700 text-xs px-3 py-1.5 rounded border border-blue-600 transition font-medium">Panel Docente</button>
+                <button id="btn-login-docente" class="bg-white hover:bg-slate-50 text-slate-700 text-xs px-4 py-1.5 rounded-full border border-slate-200 transition font-medium shadow-sm">Panel Docente</button>
             </div>
         </div>
     </header>
@@ -35,98 +47,101 @@
         <!-- ========================================== -->
         <!-- VISTA 1: PORTAL DEL ESTUDIANTE -->
         <!-- ========================================== -->
-        <section id="vista-estudiante-portal" class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
-            <div class="border-b border-slate-200 pb-4 flex justify-between items-center">
+        <section id="vista-estudiante-portal" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
+            <div class="border-b border-slate-100 pb-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                 <div>
-                    <h2 class="text-xl font-bold text-slate-900">Acceso Estudiantil (Biométrico)</h2>
-                    <p class="text-xs text-slate-500">Inicia sesión con tu huella dactilar o clave cifrada. Equipo monitoreado.</p>
+                    <h2 class="text-xl font-semibold text-slate-800">Acceso Estudiantil</h2>
+                    <p class="text-xs text-slate-500 mt-1">Inicia sesión con tu credencial biométrica o clave asignada.</p>
                 </div>
-                <div class="flex space-x-1 bg-slate-100 p-1 rounded text-xs font-semibold">
-                    <button id="tab-btn-ingreso" class="px-3 py-1.5 rounded bg-white text-blue-700 shadow-sm">Iniciar Sesión</button>
-                    <button id="tab-btn-registro" class="px-3 py-1.5 rounded text-slate-600 hover:text-slate-900">Registrarse</button>
-                    <button id="tab-btn-reset" class="px-3 py-1.5 rounded text-slate-600 hover:text-slate-900">Recuperar Clave</button>
+                <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-medium w-full md:w-auto">
+                    <button id="tab-btn-ingreso" class="flex-1 md:flex-none px-4 py-1.5 rounded-lg bg-white text-blue-600 shadow-sm transition">Iniciar Sesión</button>
+                    <button id="tab-btn-registro" class="flex-1 md:flex-none px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition">Registrarse</button>
+                    <button id="tab-btn-reset" class="flex-1 md:flex-none px-4 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition">Recuperar</button>
                 </div>
             </div>
 
             <!-- LOGIN -->
-            <form id="form-login-estudiante" class="space-y-4 max-w-md mx-auto">
+            <form id="form-login-estudiante" class="space-y-4 max-w-sm mx-auto py-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label>
-                    <input type="text" id="login-cedula" placeholder="Ej. 25123456" class="w-full border border-slate-300 rounded p-2 text-xs outline-none focus:ring-2 focus:ring-blue-600 font-mono" required>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Cédula de Identidad</label>
+                    <input type="text" id="login-cedula" placeholder="Ej. 25123456" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition font-mono" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Contraseña</label>
                     <div class="relative">
-                        <input type="password" id="login-password" placeholder="Tu contraseña registrada" class="w-full border border-slate-300 rounded p-2 text-xs pr-10 outline-none focus:ring-2 focus:ring-blue-600">
-                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="login-password">👁️</button>
+                        <input type="password" id="login-password" placeholder="Tu contraseña registrada" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm pr-10 outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition">
+                        <button type="button" class="toggle-password absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-lg" data-target="login-password">👁️</button>
                     </div>
                 </div>
-                <div class="space-y-2 pt-2">
-                    <button type="button" id="btn-iniciar-huella" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded text-xs transition shadow-sm flex items-center justify-center gap-2"><span class="text-lg">👆</span> Ingresar con Huella Biométrica</button>
-                    <button type="submit" id="btn-iniciar-sesion-est" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded text-xs transition border border-slate-300">Ingresar con Contraseña</button>
+                <div class="space-y-2 pt-4">
+                    <button type="button" id="btn-iniciar-huella" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-sm flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4"></path></svg>
+                        Ingresar con Passkey
+                    </button>
+                    <button type="submit" id="btn-iniciar-sesion-est" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-2.5 rounded-lg text-sm transition border border-slate-200 shadow-sm">Ingresar con Contraseña</button>
                 </div>
             </form>
 
             <!-- REGISTRO (MULTI-MATERIA Y CUARENTENA) -->
-            <form id="form-registro-estudiante" class="hidden space-y-4 max-w-md mx-auto">
+            <form id="form-registro-estudiante" class="hidden space-y-4 max-w-md mx-auto py-2">
                 <div class="grid grid-cols-2 gap-3">
-                    <div><label class="block text-xs font-semibold text-slate-600 mb-1">Nombre</label><input type="text" id="reg-nombre" class="w-full border p-2 text-xs" required></div>
-                    <div><label class="block text-xs font-semibold text-slate-600 mb-1">Apellido</label><input type="text" id="reg-apellido" class="w-full border p-2 text-xs" required></div>
+                    <div><label class="block text-xs font-medium text-slate-600 mb-1">Nombre</label><input type="text" id="reg-nombre" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required></div>
+                    <div><label class="block text-xs font-medium text-slate-600 mb-1">Apellido</label><input type="text" id="reg-apellido" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required></div>
                 </div>
-                <div><label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label><input type="text" id="reg-cedula" placeholder="Ej. 25123456" class="w-full border p-2 text-xs font-mono" required></div>
+                <div><label class="block text-xs font-medium text-slate-600 mb-1">Cédula de Identidad</label><input type="text" id="reg-cedula" placeholder="Ej. 25123456" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required></div>
                 
-                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg space-y-2">
-                    <label class="block text-xs font-bold text-indigo-900">Secciones a Inscribir (Puedes marcar varias)</label>
-                    <div id="reg-secciones-container" class="grid grid-cols-1 gap-2 text-xs bg-white p-2 border rounded max-h-32 overflow-y-auto">
+                <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                    <label class="block text-xs font-medium text-slate-700">Secciones a Inscribir</label>
+                    <div id="reg-secciones-container" class="grid grid-cols-1 gap-2 text-sm bg-white p-2 border border-slate-100 rounded-lg max-h-32 overflow-y-auto">
                         <!-- Checkboxes generados por JS -->
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Contraseña de Respaldo</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Contraseña de Respaldo</label>
                     <div class="relative">
-                        <input type="password" id="reg-password" placeholder="Mínimo 4 caracteres" class="w-full border p-2 text-xs pr-10" required>
-                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="reg-password">👁️</button>
+                        <input type="password" id="reg-password" placeholder="Mínimo 4 caracteres" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-sm pr-10 focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition" required>
+                        <button type="button" class="toggle-password absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-lg" data-target="reg-password">👁️</button>
                     </div>
                 </div>
-                <div class="mt-4 bg-slate-50 border p-3 rounded-lg">
+                <div class="mt-4 p-2">
                     <label class="flex items-start space-x-2 cursor-pointer">
-                        <input type="checkbox" id="reg-terminos" class="mt-1 w-4 h-4 text-blue-600 rounded" required>
-                        <span class="text-[10px] text-slate-600">He leído y acepto los <a href="#" class="text-blue-700 font-bold underline">Términos de Uso y Descargo</a>.</span>
+                        <input type="checkbox" id="reg-terminos" class="mt-1 w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500" required>
+                        <span class="text-[11px] text-slate-500 leading-tight">He leído y acepto los <a href="#" class="text-blue-600 hover:underline">Términos de Uso y Descargo</a>.</span>
                     </label>
                 </div>
                 <div class="space-y-2 pt-2">
-                    <button type="button" id="btn-completar-registro-huella" class="w-full bg-emerald-600 text-white font-bold py-2.5 rounded text-xs shadow-sm flex justify-center items-center gap-2">👆 Crear Cuenta y Vincular Huella</button>
-                    <button type="submit" id="btn-completar-registro" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Crear Cuenta Solo con Contraseña</button>
+                    <button type="button" id="btn-completar-registro-huella" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm transition shadow-sm flex justify-center items-center gap-2">Crear Cuenta y Vincular Huella</button>
+                    <button type="submit" id="btn-completar-registro" class="w-full bg-white hover:bg-slate-50 text-slate-700 font-medium py-2 rounded-lg text-sm border border-slate-200 shadow-sm transition">Solo Contraseña</button>
                 </div>
             </form>
 
             <!-- RECUPERACIÓN DE CLAVE (AUTORIZADA POR DOCENTE) -->
-            <form id="form-reset-estudiante" class="hidden space-y-4 max-w-md mx-auto">
-                <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs mb-4">
-                    <span class="font-bold text-sm block mb-1">🔐 Autorización Requerida</span>
-                    Para cambiar tu contraseña, el profesor debe habilitar tu usuario desde el Panel de Control. Solicita el permiso antes de llenar este formulario.
+            <form id="form-reset-estudiante" class="hidden space-y-4 max-w-sm mx-auto py-4">
+                <div class="p-4 bg-blue-50 border border-blue-100 rounded-xl text-blue-900 text-xs mb-4">
+                    <span class="font-semibold text-sm block mb-1">Autorización Requerida</span>
+                    El profesor debe habilitar tu usuario desde el Panel de Control antes de usar este formulario.
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Cédula de Identidad</label>
-                    <input type="text" id="reset-cedula" placeholder="Ej. 25123456" class="w-full border p-2 text-xs font-mono" required>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Cédula de Identidad</label>
+                    <input type="text" id="reset-cedula" placeholder="Ej. 25123456" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none transition" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nueva Contraseña</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Nueva Contraseña</label>
                     <div class="relative">
-                        <input type="password" id="reset-pass-1" placeholder="Mínimo 4 caracteres" class="w-full border p-2 text-xs pr-10" required>
-                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-1">👁️</button>
+                        <input type="password" id="reset-pass-1" placeholder="Mínimo 4 caracteres" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm pr-10 focus:ring-2 focus:ring-blue-500 outline-none transition" required>
+                        <button type="button" class="toggle-password absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-1">👁️</button>
                     </div>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1">Confirmar Nueva Contraseña</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Confirmar Nueva Contraseña</label>
                     <div class="relative">
-                        <input type="password" id="reset-pass-2" placeholder="Repite la contraseña" class="w-full border p-2 text-xs pr-10" required>
-                        <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-2">👁️</button>
+                        <input type="password" id="reset-pass-2" placeholder="Repite la contraseña" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-sm pr-10 focus:ring-2 focus:ring-blue-500 outline-none transition" required>
+                        <button type="button" class="toggle-password absolute right-2 top-2 text-slate-400 hover:text-slate-600 text-lg" data-target="reset-pass-2">👁️</button>
                     </div>
                 </div>
-                <div class="pt-2">
-                    <button type="submit" id="btn-procesar-reset" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 rounded text-xs shadow-sm">Guardar Nueva Contraseña</button>
+                <div class="pt-4">
+                    <button type="submit" id="btn-procesar-reset" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg text-sm shadow-sm transition">Guardar Nueva Contraseña</button>
                 </div>
             </form>
 
@@ -136,372 +151,449 @@
         <!-- VISTA 1.1: TABLERO ESTUDIANTE (LMS) -->
         <!-- ========================================== -->
         <section id="vista-estudiante-tablero" class="hidden space-y-6">
-            <div class="bg-white rounded-lg shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900" id="perfil-estudiante-bienvenida">Bienvenido</h2>
-                    <p class="text-xs text-slate-500" id="perfil-estudiante-seccion">C.I: --</p>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-700 rounded-full flex items-center justify-center text-xl font-semibold">
+                        <span id="perfil-estudiante-iniciales">--</span>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-semibold text-slate-800" id="perfil-estudiante-bienvenida">Bienvenido</h2>
+                        <p class="text-xs text-slate-500" id="perfil-estudiante-seccion">C.I: --</p>
+                    </div>
                 </div>
-                <button id="btn-cerrar-sesion-est" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded font-medium">Cerrar Sesión Segura</button>
+                <button id="btn-cerrar-sesion-est" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg font-medium transition">Cerrar Sesión</button>
             </div>
 
-            <!-- MENSAJE DE CUARENTENA (VALIDACIÓN PENDIENTE) -->
-            <div id="alerta-validacion-pendiente" class="hidden bg-amber-100 border-2 border-amber-400 p-6 rounded-lg text-center shadow-sm">
-                <div class="text-4xl mb-2">⏳</div>
-                <h3 class="text-lg font-black text-amber-900">Inscripción en Revisión</h3>
-                <p class="text-sm text-amber-800 mt-2 font-medium max-w-lg mx-auto">Tu cuenta ha sido creada, pero el docente debe cotejar tu registro con la lista oficial de Control de Estudios (Validación manual o por Excel).</p>
-                <p class="text-xs text-amber-700 mt-4">Vuelve a iniciar sesión más tarde para verificar si tu acceso fue aprobado.</p>
+            <!-- MENSAJE DE CUARENTENA -->
+            <div id="alerta-validacion-pendiente" class="hidden bg-slate-50 border border-slate-200 p-8 rounded-2xl text-center shadow-sm">
+                <div class="text-4xl mb-3 text-slate-400">⏳</div>
+                <h3 class="text-lg font-semibold text-slate-700">Inscripción en Revisión</h3>
+                <p class="text-sm text-slate-500 mt-2 max-w-md mx-auto">Tu cuenta ha sido creada y está pendiente de validación por parte del docente con la lista de Control de Estudios.</p>
             </div>
 
-            <!-- TABLERO REAL (SOLO SI ESTÁ APROBADO) -->
+            <!-- TABLERO REAL -->
             <div id="contenido-aprobado-tablero" class="hidden space-y-6">
-                <!-- RENOVACIÓN DE MATRÍCULA -->
-                <div id="box-cambiar-seccion" class="p-5 bg-indigo-50 border border-indigo-200 rounded-lg flex flex-col justify-between items-center gap-4 shadow-sm">
-                    <div class="w-full text-center">
-                        <h4 class="font-bold text-indigo-900 text-sm">Añadir Nueva Materia / Actualizar Matrícula</h4>
-                        <p class="text-xs text-indigo-700 mt-0.5">Si cursas una nueva materia este semestre, añádela aquí. Quedarás "Pendiente" en esa materia hasta que el docente te valide.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- RENOVACIÓN DE MATRÍCULA -->
+                    <div id="box-cambiar-seccion" class="p-5 bg-white border border-slate-200 rounded-2xl shadow-sm flex flex-col gap-3">
+                        <div>
+                            <h4 class="font-medium text-slate-800 text-sm">Actualizar Matrícula</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">Inscribe nuevas materias este semestre.</p>
+                        </div>
+                        <div id="renovacion-secciones-container" class="grid grid-cols-2 gap-2 text-xs bg-slate-50 p-2 rounded-lg max-h-24 overflow-y-auto"></div>
+                        <button id="btn-actualizar-seccion-dash" class="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium py-2 rounded-lg text-xs transition mt-auto">Enviar Solicitud</button>
                     </div>
-                    <div class="flex flex-col sm:flex-row gap-2 w-full justify-center">
-                        <div id="renovacion-secciones-container" class="grid grid-cols-2 gap-2 text-xs bg-white p-2 border rounded max-h-32 overflow-y-auto w-full max-w-md"></div>
-                        <button id="btn-actualizar-seccion-dash" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 py-2 rounded text-xs transition">Inscribir Nuevas</button>
+
+                    <div id="box-vincular-huella" class="hidden p-5 bg-white border border-slate-200 rounded-2xl shadow-sm flex-col justify-between">
+                        <div>
+                            <h4 class="font-medium text-slate-800 text-sm">Seguridad Biométrica</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">Configura Windows Hello o tu huella para acceder más rápido.</p>
+                        </div>
+                        <button id="btn-vincular-huella-dash" class="w-full bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium py-2 rounded-lg text-xs transition mt-3">Configurar ahora</button>
                     </div>
                 </div>
 
-                <div id="box-vincular-huella" class="hidden p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div><h4 class="font-bold text-blue-900 text-sm">Vincular Huella Dactilar</h4><p class="text-xs text-blue-700 mt-1">Mejora tu acceso al sistema.</p></div>
-                    <button id="btn-vincular-huella-dash" class="w-full sm:w-auto bg-blue-700 text-white font-bold px-4 py-2.5 rounded text-xs">Vincular</button>
-                </div>
-
-                <div id="banner-reanudacion-disponible" class="hidden p-4 bg-amber-50 border-2 border-amber-400 rounded-lg space-y-2">
-                    <p class="text-xs text-amber-700 font-bold">Progreso Guardado Detectado</p>
-                    <button id="btn-reanudar-examen-guardado" class="bg-amber-600 text-white font-bold px-4 py-2 rounded text-xs shadow-sm">Reanudar Examen en Línea</button>
+                <div id="banner-reanudacion-disponible" class="hidden p-4 bg-white border-l-4 border-blue-500 rounded-2xl shadow-sm flex justify-between items-center">
+                    <div>
+                        <p class="text-sm text-slate-800 font-medium">Evaluación en pausa detectada</p>
+                        <p class="text-xs text-slate-500">Tienes un progreso guardado.</p>
+                    </div>
+                    <button id="btn-reanudar-examen-guardado" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg text-xs shadow-sm transition">Reanudar</button>
                 </div>
 
                 <!-- CONTENEDOR DE MATERIAS Y CORTES -->
-                <div id="contenedor-evaluaciones-alumno" class="space-y-6"><p class="text-xs text-slate-400 py-4">Cargando tablero LMS...</p></div>
+                <div id="contenedor-evaluaciones-alumno" class="space-y-6"><div class="flex justify-center p-8"><div class="w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div></div></div>
             </div>
         </section>
 
         <!-- ========================================== -->
         <!-- VISTA 2: CUESTIONARIO (EXAMEN ONLINE) -->
         <!-- ========================================== -->
-        <section id="vista-examen-activo" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-6 md:p-8 space-y-6">
-            <div class="border-b pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
-                <div><span id="badge-examen-materia" class="inline-block bg-slate-100 text-[10px] font-bold px-2 py-0.5 rounded uppercase mb-1">Cátedra</span><h2 id="txt-examen-titulo" class="text-base sm:text-lg font-bold"></h2></div>
-                <div class="flex sm:flex-col items-end gap-1">
-                    <div class="text-right"><span class="text-[10px] uppercase font-bold text-slate-400">Tiempo Restante</span><div id="reloj-temporizador" class="text-lg font-black font-mono">00:00</div></div>
-                    <div id="indicador-strikes" class="flex items-center space-x-1 text-[11px] font-bold text-slate-600"><span id="strike-1" class="px-2 py-0.5 rounded text-[10px] bg-slate-200 text-slate-700">Sin faltas</span></div>
+        <section id="vista-examen-activo" class="hidden bg-slate-50 rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-8 space-y-6 min-h-[80vh] flex flex-col">
+            <div class="border-b border-slate-200 pb-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-white p-4 rounded-xl shadow-sm">
+                <div>
+                    <span id="badge-examen-materia" class="inline-block bg-slate-100 text-slate-500 text-[10px] font-semibold px-2 py-0.5 rounded-md uppercase mb-1">Materia</span>
+                    <h2 id="txt-examen-titulo" class="text-lg font-semibold text-slate-800 leading-tight"></h2>
+                </div>
+                <div class="flex sm:flex-col items-end gap-1 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100">
+                    <div class="text-right">
+                        <span class="text-[10px] uppercase font-semibold text-slate-500">Tiempo Restante</span>
+                        <div id="reloj-temporizador" class="text-xl font-medium font-mono text-slate-700">00:00</div>
+                    </div>
                 </div>
             </div>
-            <div id="contenedor-preguntas-examen" class="space-y-6 min-h-[150px]"></div>
-            <div id="controles-paginacion" class="flex justify-between items-center pt-2 pb-4">
-                <button id="btn-preg-anterior" class="hidden bg-slate-200 hover:bg-slate-300 font-bold px-5 py-2.5 rounded text-xs">⬅ Anterior</button>
-                <div class="flex-grow text-center"><span id="indicador-paginacion" class="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border"></span></div>
-                <button id="btn-preg-siguiente" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-2.5 rounded text-xs">Siguiente ➡</button>
+            
+            <div class="flex justify-end px-2">
+                 <div id="indicador-strikes" class="flex items-center space-x-1"><span id="strike-1" class="px-2.5 py-1 rounded-full text-[10px] bg-white border border-slate-200 text-slate-600 font-medium shadow-sm">Monitoreo Activo</span></div>
             </div>
-            <div class="pt-6 border-t flex flex-col sm:flex-row justify-between items-center gap-3">
-                <div class="flex items-center text-xs text-slate-500 space-x-2"><span id="icono-guardando" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span><span id="txt-estado-guardado">Autoguardado Activo</span></div>
-                <button id="btn-entregar-examen-final" class="hidden w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded text-xs">Finalizar Evaluación</button>
+
+            <div id="contenedor-preguntas-examen" class="space-y-4 flex-grow"></div>
+            
+            <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm mt-auto">
+                <div id="controles-paginacion" class="flex justify-between items-center">
+                    <button id="btn-preg-anterior" class="hidden bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium px-5 py-2 rounded-lg text-xs transition">Anterior</button>
+                    <div class="flex-grow text-center"><span id="indicador-paginacion" class="text-xs font-medium text-slate-500"></span></div>
+                    <button id="btn-preg-siguiente" class="hidden bg-blue-50 text-blue-700 hover:bg-blue-100 font-medium px-5 py-2 rounded-lg text-xs transition">Siguiente</button>
+                    <button id="btn-entregar-examen-final" class="hidden bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg text-xs shadow-sm transition">Finalizar</button>
+                </div>
+                <div class="mt-3 flex items-center justify-center text-[10px] text-slate-400 gap-1.5 border-t border-slate-100 pt-2">
+                    <span id="icono-guardando" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span id="txt-estado-guardado">Sincronizado con la nube</span>
+                </div>
             </div>
         </section>
 
         <!-- ========================================== -->
         <!-- MODALES ESTUDIANTE: ADVERTENCIA / RESULTADOS -->
         <!-- ========================================== -->
-        <div id="modal-advertencia" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 text-center space-y-4 border-2 border-amber-500">
-                <div class="w-14 h-14 bg-amber-100 text-amber-600 rounded-full flex mx-auto text-2xl font-black items-center justify-center">!</div>
-                <h3 class="text-lg font-bold">Incidencia Detectada</h3>
-                <p id="modal-adv-motivo" class="text-xs text-slate-600"></p>
-                <div class="p-3 bg-red-50 border-red-200 rounded text-xs text-red-700 text-left font-medium">A la tercera falta (salir del navegador), tu examen será anulado con 01.</div>
-                <button id="btn-reanudar-tras-advertencia" class="w-full bg-blue-700 text-white font-bold py-2.5 rounded text-xs">Reanudar en Pantalla Completa</button>
+        <div id="modal-advertencia" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center space-y-4 border border-slate-200">
+                <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-full flex mx-auto text-xl font-bold items-center justify-center border border-amber-100">!</div>
+                <h3 class="text-lg font-semibold text-slate-800">Atención Requerida</h3>
+                <p id="modal-adv-motivo" class="text-sm text-slate-500"></p>
+                <div class="p-3 bg-slate-50 rounded-lg text-xs text-slate-600 text-left border border-slate-100">El sistema ha registrado una interrupción. A la tercera, la evaluación se cerrará automáticamente.</div>
+                <button id="btn-reanudar-tras-advertencia" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-xl text-sm transition shadow-sm">Entendido, volver al examen</button>
             </div>
         </div>
 
-        <div id="modal-aceptar-terminos" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-2xl max-w-lg w-full p-6 space-y-4 border-t-4 border-blue-800">
-                <h3 class="text-xl font-black text-blue-900 border-b pb-2">Normativas de Evaluación</h3>
-                <button id="btn-aceptar-terminos-viejos" class="w-full bg-blue-800 text-white font-bold py-3 rounded text-sm shadow-md">Acepto las condiciones (0 Tolerancia al Fraude)</button>
+        <div id="modal-aceptar-terminos" class="hidden fixed inset-0 mica-effect z-[60] flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-md w-full p-6 space-y-5 border border-slate-200">
+                <div>
+                    <h3 class="text-lg font-semibold text-slate-800">Normativas del Sistema</h3>
+                    <p class="text-xs text-slate-500 mt-1">Lee cuidadosamente antes de continuar.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-2 h-32 overflow-y-auto">
+                    <p>1. El sistema monitorea la actividad de la ventana.</p>
+                    <p>2. Salir de pantalla completa se considera infracción.</p>
+                    <p>3. Tolerancia cero al fraude académico.</p>
+                </div>
+                <button id="btn-aceptar-terminos-viejos" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-xl text-sm shadow-sm transition">Acepto las condiciones</button>
             </div>
         </div>
 
-        <section id="vista-resultados-fin" class="hidden bg-white rounded-lg shadow-sm border border-slate-200 p-8 text-center space-y-4">
-            <h2 class="text-2xl font-bold">Evaluación Entregada</h2>
-            <div class="bg-slate-50 border rounded p-6 max-w-xs mx-auto">
-                <p class="text-xs uppercase font-semibold text-slate-500 mb-1">Puntos Alcanzados (Se sumarán a tu Corte)</p>
-                <div class="text-4xl font-black text-blue-800" id="res-nota-valor">--</div>
+        <section id="vista-resultados-fin" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center space-y-6 max-w-md mx-auto mt-10">
+            <div class="w-16 h-16 bg-emerald-50 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
-            <div id="btn-ver-reporte-final-container" class="hidden w-full mt-4 text-center">
-                <button onclick="window.verReporteEstudianteActual()" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold px-6 py-2.5 rounded text-xs border border-blue-300 shadow-sm w-full max-w-xs mx-auto">🔍 Ver Detalles de Corrección</button>
+            <h2 class="text-xl font-semibold text-slate-800">Evaluación Registrada</h2>
+            <div class="bg-slate-50 border border-slate-100 rounded-2xl p-6">
+                <p class="text-[10px] uppercase font-semibold text-slate-500 tracking-wider mb-2">Puntuación Final</p>
+                <div class="text-4xl font-medium text-slate-800" id="res-nota-valor">--</div>
             </div>
-            <button onclick="location.reload()" class="bg-blue-700 text-white px-6 py-2 rounded text-xs font-semibold mt-4">Volver al Tablero</button>
+            <div id="btn-ver-reporte-final-container" class="hidden w-full">
+                <button onclick="window.verReporteEstudianteActual()" class="w-full bg-white hover:bg-slate-50 text-blue-600 font-medium py-2.5 rounded-xl text-sm border border-slate-200 transition shadow-sm">Ver Detalles de Corrección</button>
+            </div>
+            <button onclick="location.reload()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-sm font-medium transition shadow-sm">Volver a Inicio</button>
         </section>
 
-        <section id="vista-sancion-bloqueo" class="hidden bg-white rounded-lg shadow-sm border-2 border-red-500 p-8 text-center space-y-4">
-            <h2 class="text-2xl font-bold text-red-700">Examen Anulado (Sanción 01)</h2>
-            <div class="bg-red-50 border border-red-200 text-red-800 font-medium text-xs p-3 rounded max-w-md mx-auto" id="sancion-detalle-final"></div>
-            <button onclick="location.reload()" class="bg-slate-700 text-white px-6 py-2 rounded text-xs font-semibold">Cerrar</button>
+        <section id="vista-sancion-bloqueo" class="hidden bg-white rounded-2xl shadow-sm border border-slate-200 p-8 text-center space-y-5 max-w-md mx-auto mt-10">
+             <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </div>
+            <h2 class="text-xl font-semibold text-slate-800">Acceso Restringido</h2>
+            <div class="bg-slate-50 border border-slate-100 text-slate-600 text-sm p-4 rounded-xl" id="sancion-detalle-final"></div>
+            <button onclick="location.reload()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-2.5 rounded-xl text-sm font-medium transition shadow-sm">Entendido</button>
         </section>
         
-        <div id="modal-ver-reporte" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-lg font-bold text-slate-900">Reporte de Evaluación</h3>
-                    <button onclick="document.getElementById('modal-ver-reporte').classList.add('hidden')" class="text-slate-500 font-bold text-xl">&times;</button>
+        <div id="modal-ver-reporte" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-2xl w-full p-0 flex flex-col max-h-[85vh] border border-slate-200 overflow-hidden">
+                <div class="flex justify-between items-center p-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-sm font-semibold text-slate-800">Reporte Detallado</h3>
+                    <button onclick="document.getElementById('modal-ver-reporte').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
-                <div id="contenido-reporte-modal" class="w-full text-left"></div>
+                <div id="contenido-reporte-modal" class="w-full text-left p-6 overflow-y-auto bg-white"></div>
             </div>
         </div>
 
         <!-- ========================================== -->
         <!-- VISTA 5: PANEL DOCENTE INTEGRAL (LMS) -->
         <!-- ========================================== -->
-        <section id="vista-docente-panel" class="hidden space-y-6">
-            <div class="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-4 rounded-lg border border-slate-200 gap-2">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-900">Panel de Administración LMS</h2>
-                    <p class="text-xs text-slate-500" id="doc-panel-nombre">Docente Titular: Sin registrar</p>
+        <section id="vista-docente-panel" class="hidden space-y-4">
+            <!-- HEADER DOCENTE -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <div>
+                        <h2 class="text-sm font-semibold text-slate-800">Administración LMS</h2>
+                        <p class="text-[11px] text-slate-500" id="doc-panel-nombre">Docente: --</p>
+                    </div>
                 </div>
                 <div class="flex gap-2">
-                    <button id="btn-volver-estudiante-desde-docente" class="text-xs bg-slate-200 hover:bg-slate-300 px-3 py-1.5 rounded font-medium">Volver a Vista Estudiantes</button>
-                    <button id="btn-salir-docente" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded font-medium">Cerrar Sesión Docente</button>
+                    <button id="btn-volver-estudiante-desde-docente" class="text-xs bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 px-3 py-1.5 rounded-lg font-medium transition shadow-sm">Vista Estudiantes</button>
+                    <button id="btn-salir-docente" class="text-xs bg-slate-800 hover:bg-slate-700 text-white px-3 py-1.5 rounded-lg font-medium transition shadow-sm">Cerrar Sesión</button>
                 </div>
             </div>
 
-            <!-- BOTONES DE NAVEGACIÓN -->
-            <div class="flex flex-wrap border-b border-slate-200 bg-white rounded-t-lg px-4 pt-2 gap-1 text-xs font-semibold">
-                <button id="tab-btn-asistencia" class="py-2 border-b-2 border-blue-700 text-blue-700 px-3">1. Asistencia</button>
-                <button id="tab-btn-reanudacion" class="py-2 border-b-2 border-transparent text-slate-500 px-3">2. Reanudación</button>
-                <button id="tab-btn-materias" class="py-2 border-b-2 border-transparent text-slate-500 px-3">3. Materias</button>
-                <button id="tab-btn-evaluaciones" class="py-2 border-b-2 border-transparent text-slate-500 px-3">4. Evaluaciones</button>
-                <button id="tab-btn-preguntas" class="py-2 border-b-2 border-transparent text-slate-500 px-3">5. Preguntas</button>
-                <button id="tab-btn-alumnos" class="py-2 border-b-2 border-transparent text-slate-500 px-3">6. Alumnos</button>
-                <button id="tab-btn-calificaciones" class="py-2 border-b-2 border-transparent text-slate-500 px-3">7. Calificaciones</button>
-                <button id="tab-btn-perfil" class="py-2 border-b-2 border-transparent text-slate-500 px-3">8. Perfil</button>
-            </div>
-
-            <!-- CONTENEDORES DE PESTAÑAS -->
-            <div id="tc-asistencia" class="bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="flex justify-between border-b pb-4 gap-2">
-                    <h3 class="text-sm font-bold">Control Presencial</h3>
-                    <div class="flex gap-2">
-                        <select id="filtro-asistencia-seccion" class="border p-1.5 rounded text-xs bg-slate-50"><option value="">Cargando...</option></select>
-                        <button id="btn-todos-presentes" class="bg-emerald-600 text-white px-2 py-1.5 rounded text-xs">Marcar Todos</button>
-                    </div>
-                </div>
-                <div id="tabla-asistencia-contenedor" class="overflow-x-auto text-xs">Seleccione sección.</div>
-            </div>
-
-            <div id="tc-reanudacion" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <h3 class="text-sm font-bold border-b pb-4">Desbloqueo de Exámenes</h3>
-                <div id="tabla-reanudacion-contenedor" class="overflow-x-auto text-xs">Consultando bloqueos...</div>
-            </div>
-
-            <!-- TAB 3: MATERIAS Y SECCIONES -->
-            <div id="tc-materias" class="hidden bg-white p-6 rounded-b-lg border space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="border p-4 bg-slate-50 space-y-2 rounded">
-                        <h4 class="font-bold text-xs">Nueva Materia</h4>
-                        <input type="text" id="mat-nombre" placeholder="Nombre Materia" class="border p-2 text-xs w-full">
-                        <button id="btn-crear-materia" class="bg-blue-600 text-white px-2 py-2 text-xs rounded w-full font-bold">Crear Materia</button>
-                    </div>
-                    <div class="border p-4 bg-slate-50 space-y-2 rounded">
-                        <h4 class="font-bold text-xs">Nueva Sección</h4>
-                        <select id="sec-mat-select" class="border p-2 text-xs w-full mb-1"><option value="">-- Materia --</option></select>
-                        <input type="text" id="sec-nombre" placeholder="Nombre Sección (Ej. Sección A)" class="border p-2 text-xs w-full mb-1">
-                        <button id="btn-crear-seccion" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-2 text-xs rounded w-full font-bold shadow-sm">Crear Sección</button>
-                    </div>
-                </div>
-                <div id="tabla-materias-resumen" class="text-xs"></div>
-            </div>
-
-            <div id="tc-evaluaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between items-center bg-indigo-50 border border-indigo-200 p-4 rounded-lg text-xs gap-3 shadow-sm">
-                    <div class="text-indigo-900">
-                        <h4 class="font-bold text-sm">Fase Académica Actual</h4>
-                        <p class="text-[11px] mt-0.5">Al avanzar, las evaluaciones del corte anterior quedarán inhabilitadas para los alumnos.</p>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span id="txt-fase-semestre" class="font-black text-lg bg-indigo-200 text-indigo-900 px-3 py-1 rounded-lg">Corte 1</span>
-                        <button id="btn-avanzar-corte" class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded font-bold shadow-sm transition">
-                            Finalizar Corte 1 e Iniciar Corte 2 ⏩
-                        </button>
-                    </div>
+            <!-- CONTENEDOR PRINCIPAL TABS -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex flex-col md:flex-row min-h-[70vh]">
+                
+                <!-- SIDEBAR NAVEGACIÓN -->
+                <div class="w-full md:w-48 bg-slate-50 border-r border-slate-200 flex flex-row md:flex-col overflow-x-auto md:overflow-visible p-2 gap-1 hide-scrollbar">
+                    <button id="tab-btn-asistencia" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium bg-white text-blue-600 shadow-sm border border-slate-200 transition">Asistencia</button>
+                    <button id="tab-btn-reanudacion" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Desbloqueos</button>
+                    <button id="tab-btn-materias" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Materias</button>
+                    <button id="tab-btn-evaluaciones" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Evaluaciones</button>
+                    <button id="tab-btn-preguntas" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Banco Pregs</button>
+                    <button id="tab-btn-alumnos" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Padrón</button>
+                    <button id="tab-btn-calificaciones" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">Notas</button>
+                    <button id="tab-btn-perfil" class="flex-shrink-0 md:w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition mt-auto">Perfil</button>
                 </div>
 
-                <div class="border p-4 rounded bg-slate-50 space-y-3 text-xs">
-                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-                        <select id="eval-mat-select" class="border p-2 rounded sm:col-span-1"></select>
-                        <input type="text" id="eval-nombre" placeholder="Nombre (Ej. Lab Redes)" class="border p-2 rounded sm:col-span-1">
-                        <select id="eval-tipo" class="border p-2 rounded font-semibold text-blue-800 bg-blue-50">
-                            <option value="online">💻 Examen en Línea</option>
-                            <option value="manual">📝 Evaluación Manual (Lab)</option>
-                            <option value="trabajo">📄 Trabajo</option>
-                            <option value="taller">🛠️ Taller</option>
-                        </select>
-                        <select id="eval-corte" class="border p-2 rounded font-semibold">
-                            <option value="1">Corte Semestral 1</option><option value="2">Corte Semestral 2</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-3 gap-3" id="eval-fechas-container">
-                        <input type="number" id="eval-peso" placeholder="Porcentaje %" class="border p-2 rounded">
-                        <input type="datetime-local" id="eval-hora-inicio" class="border p-2 rounded">
-                        <input type="datetime-local" id="eval-hora-fin" class="border p-2 rounded">
-                    </div>
-                    <div id="eval-secciones-checkboxes" class="flex flex-wrap gap-2 p-2 bg-white border rounded">Seleccione materia primero.</div>
-                    <button id="btn-guardar-evaluacion" class="bg-blue-700 text-white font-bold px-4 py-2 rounded">Guardar Evaluación</button>
-                </div>
-                <div id="tabla-evaluaciones-resumen" class="overflow-x-auto text-xs"></div>
-            </div>
-
-            <div id="tc-preguntas" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="grid grid-cols-2 gap-3 text-xs"><select id="doc-preg-mat" class="border p-2 rounded"></select><select id="doc-preg-obj" class="border p-2 rounded" disabled></select></div>
-                <div id="box-crear-pregunta" class="hidden border p-4 bg-slate-50 text-xs space-y-2">
-                    <textarea id="p-enunciado" class="w-full border p-2 rounded" placeholder="Enunciado..."></textarea>
-                    <input type="text" id="p-opc-0" class="border p-2 w-full rounded" placeholder="Opc A"><input type="text" id="p-opc-1" class="border p-2 w-full rounded" placeholder="Opc B">
-                    <input type="text" id="p-opc-2" class="border p-2 w-full rounded" placeholder="Opc C"><input type="text" id="p-opc-3" class="border p-2 w-full rounded" placeholder="Opc D">
-                    <div class="font-bold">Correcta: <label>0 <input type="radio" name="opt_cor" value="0" checked></label> <label>1 <input type="radio" name="opt_cor" value="1"></label> <label>2 <input type="radio" name="opt_cor" value="2"></label> <label>3 <input type="radio" name="opt_cor" value="3"></label></div>
-                    <div class="flex gap-2"><input type="number" id="p-puntos" placeholder="Puntos %" class="border p-2 rounded w-32"><button id="btn-agregar-pregunta" class="bg-blue-700 text-white px-4 py-2 rounded font-bold">Guardar Pregunta</button></div>
-                </div>
-                <div id="lista-preguntas-creadas" class="text-xs space-y-1"></div>
-            </div>
-
-            <!-- TAB 6: ALUMNOS (PADRÓN Y VALIDACIÓN) -->
-            <div id="tc-alumnos" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-lg">
-                    <h3 class="font-bold text-indigo-900 text-sm mb-1">Aprobación Masiva de Alumnos (Padrón Excel)</h3>
-                    <p class="text-xs text-indigo-700 mb-3">Pegue aquí las cédulas de su lista oficial de control de estudios. Los alumnos que coincidan serán "Validados" en el sistema automáticamente y podrán presentar sus exámenes.</p>
-                    <div class="flex flex-col sm:flex-row gap-2">
-                        <textarea id="txt-aprobacion-masiva" class="flex-grow border p-2 text-xs h-12 outline-none rounded" placeholder="Ej: 25123456, 26987654..."></textarea>
-                        <button id="btn-aprobar-masivo" class="bg-indigo-700 hover:bg-indigo-800 text-white font-bold px-4 rounded text-xs shadow-sm">Validar Cédulas</button>
-                    </div>
-                </div>
-
-                <div class="flex justify-between border-b pb-3 gap-2 mt-4">
-                    <h3 class="text-sm font-bold">Gestión de Alumnos Matriculados</h3>
-                    <div class="flex gap-2">
-                        <input type="text" id="filtro-alumnos-txt" placeholder="🔍 Buscar cédula/nombre..." class="border p-1.5 rounded text-xs outline-none">
-                        <select id="filtro-alumnos-sec" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODAS">Todas las Secciones</option></select>
-                    </div>
-                </div>
-                <div id="tabla-alumnos-gestion" class="overflow-x-auto text-xs">Consultando estudiantes...</div>
-            </div>
-
-            <div id="tc-calificaciones" class="hidden bg-white p-6 rounded-b-lg border space-y-4">
-                <div class="flex justify-between border-b pb-3 gap-2">
-                    <h3 class="text-sm font-bold">Libro de Calificaciones Central</h3>
-                    <div class="flex gap-2">
-                        <button id="btn-abrir-carga-manual" class="bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold">+ Cargar Notas Manuales</button>
-                        <select id="filtro-calif-mat" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODAS">Todas las Materias</option></select>
-                        <select id="filtro-calif-obj" class="border p-1.5 rounded text-xs bg-slate-50"><option value="TODOS">Todos los Objetivos</option></select>
-                    </div>
-                </div>
-                <div id="tabla-calificaciones-final" class="overflow-x-auto text-xs">Consultando notas...</div>
-            </div>
-
-            <!-- Tab 8: Perfil Docente -->
-            <div id="tc-perfil" class="hidden bg-white p-6 rounded-b-lg border space-y-6 text-xs">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div class="space-y-3">
-                        <h3 class="text-sm font-bold border-b pb-2">Perfil del Docente Titular</h3>
-                        <p class="text-[11px] text-blue-700 font-mono font-bold bg-blue-50 p-2 rounded border border-blue-200" id="doc-uid-display">UID: Cargando...</p>
-                        <div><label class="block font-bold mb-1">Cédula</label><input type="text" id="doc-cedula-input" placeholder="Cédula" class="w-full border p-2 rounded"></div>
-                        <div><label class="block font-bold mb-1">Nombre</label><input type="text" id="doc-nombre-input" placeholder="Nombre" class="w-full border p-2 rounded"></div>
-                        <div><label class="block font-bold mb-1">Apellido</label><input type="text" id="doc-apellido-input" placeholder="Apellido" class="w-full border p-2 rounded"></div>
-                        <button id="btn-guardar-perfil" class="bg-blue-700 hover:bg-blue-800 text-white font-bold px-4 py-2 rounded w-full shadow-sm">Guardar Información</button>
-                    </div>
+                <!-- ÁREA DE CONTENIDO -->
+                <div class="flex-grow p-4 md:p-6 overflow-y-auto bg-white relative">
                     
-                    <div class="space-y-3">
-                        <h3 class="text-sm font-bold border-b pb-2">Cambiar Contraseña</h3>
-                        <p class="text-[10px] text-slate-500">Mínimo 6 caracteres. Debe incluir: Mayúscula, minúscula, número y un carácter especial.</p>
-                        <div class="relative">
-                            <input type="password" id="pin-viejo" placeholder="Contraseña Actual" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-viejo">👁️</button>
+                    <div id="tc-asistencia" class="space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between pb-2 gap-2">
+                            <h3 class="text-sm font-semibold text-slate-800">Control de Aula Virtual</h3>
+                            <div class="flex gap-2">
+                                <select id="filtro-asistencia-seccion" class="border border-slate-200 p-1.5 rounded-lg text-xs bg-slate-50 outline-none focus:ring-1 focus:ring-blue-500"><option value="">Cargando...</option></select>
+                                <button id="btn-todos-presentes" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">Marcar Todos</button>
+                            </div>
                         </div>
-                        <div class="relative">
-                            <input type="password" id="pin-nuevo" placeholder="Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-nuevo">👁️</button>
-                        </div>
-                        <div class="relative">
-                            <input type="password" id="pin-confirma" placeholder="Confirmar Nueva Contraseña" class="w-full border p-2 rounded pr-10 outline-none focus:border-blue-500">
-                            <button type="button" class="toggle-password absolute right-2 top-1 text-slate-400 hover:text-slate-600 text-lg" data-target="pin-confirma">👁️</button>
-                        </div>
-                        <button id="btn-actualizar-pin" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded w-full shadow-sm">Actualizar Contraseña</button>
+                        <div id="tabla-asistencia-contenedor" class="overflow-x-auto text-xs bg-white border border-slate-100 rounded-xl">Seleccione sección.</div>
                     </div>
+
+                    <div id="tc-reanudacion" class="hidden space-y-4">
+                        <h3 class="text-sm font-semibold text-slate-800 pb-2">Gestión de Sesiones Bloqueadas</h3>
+                        <div id="tabla-reanudacion-contenedor" class="overflow-x-auto text-xs bg-white border border-slate-100 rounded-xl">Consultando bloqueos...</div>
+                    </div>
+
+                    <div id="tc-materias" class="hidden space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="border border-slate-100 p-4 bg-slate-50 space-y-3 rounded-xl">
+                                <h4 class="font-semibold text-xs text-slate-700">Crear Materia</h4>
+                                <input type="text" id="mat-nombre" placeholder="Nombre (Ej. Redes)" class="border border-slate-200 p-2 rounded-lg text-xs w-full outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                                <button id="btn-crear-materia" class="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-2 text-xs rounded-lg w-full font-medium transition">Añadir Materia</button>
+                            </div>
+                            <div class="border border-slate-100 p-4 bg-slate-50 space-y-3 rounded-xl">
+                                <h4 class="font-semibold text-xs text-slate-700">Crear Sección</h4>
+                                <div class="space-y-2">
+                                    <select id="sec-mat-select" class="border border-slate-200 p-2 rounded-lg text-xs w-full outline-none bg-white"><option value="">-- Materia --</option></select>
+                                    <input type="text" id="sec-nombre" placeholder="Nombre (Ej. Sección A)" class="border border-slate-200 p-2 rounded-lg text-xs w-full outline-none focus:ring-1 focus:ring-blue-500 bg-white">
+                                </div>
+                                <button id="btn-crear-seccion" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-xs rounded-lg w-full font-medium shadow-sm transition">Añadir Sección</button>
+                            </div>
+                        </div>
+                        <div id="tabla-materias-resumen" class="text-xs space-y-3"></div>
+                    </div>
+
+                    <div id="tc-evaluaciones" class="hidden space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-center bg-blue-50/50 border border-blue-100 p-4 rounded-xl text-xs gap-3">
+                            <div class="text-blue-900">
+                                <h4 class="font-semibold text-sm">Fase Académica Actual</h4>
+                                <p class="text-[11px] mt-0.5 text-blue-700">Controla la visibilidad de las evaluaciones.</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span id="txt-fase-semestre" class="font-bold text-sm bg-white text-blue-800 px-3 py-1.5 rounded-lg shadow-sm border border-blue-100">Corte 1</span>
+                                <button id="btn-avanzar-corte" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-lg font-medium shadow-sm transition">
+                                    Iniciar Corte 2
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="border border-slate-100 p-4 rounded-xl bg-slate-50 space-y-4 text-xs">
+                             <h4 class="font-semibold text-xs text-slate-700 mb-2">Programar Evaluación</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                                <select id="eval-mat-select" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500 sm:col-span-1"></select>
+                                <input type="text" id="eval-nombre" placeholder="Título (Ej. Parcial)" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500 sm:col-span-1">
+                                <select id="eval-tipo" class="border border-blue-200 p-2 rounded-lg bg-blue-50/50 text-blue-800 font-medium outline-none">
+                                    <option value="online">💻 En Línea</option><option value="manual">📝 Presencial</option><option value="trabajo">📄 Trabajo</option><option value="taller">🛠️ Taller</option>
+                                </select>
+                                <select id="eval-corte" class="border border-slate-200 p-2 rounded-lg bg-white outline-none"></select>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3" id="eval-fechas-container">
+                                <input type="number" id="eval-peso" placeholder="Peso %" class="border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500">
+                                <input type="datetime-local" id="eval-hora-inicio" class="border border-slate-200 p-2 rounded-lg bg-white outline-none text-slate-500">
+                                <input type="datetime-local" id="eval-hora-fin" class="border border-slate-200 p-2 rounded-lg bg-white outline-none text-slate-500">
+                            </div>
+                            <div id="eval-secciones-checkboxes" class="flex flex-wrap gap-2 p-3 bg-white border border-slate-100 rounded-lg">Seleccione materia primero.</div>
+                            <button id="btn-guardar-evaluacion" class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2 rounded-lg transition shadow-sm">Guardar Planificación</button>
+                        </div>
+                        <div id="tabla-evaluaciones-resumen" class="overflow-x-auto text-xs border border-slate-100 rounded-xl"></div>
+                    </div>
+
+                    <div id="tc-preguntas" class="hidden space-y-4">
+                        <div class="grid grid-cols-2 gap-3 text-xs">
+                            <select id="doc-preg-mat" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500"></select>
+                            <select id="doc-preg-obj" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500" disabled></select>
+                        </div>
+                        <div id="box-crear-pregunta" class="hidden border border-slate-100 p-4 bg-slate-50 text-xs space-y-3 rounded-xl">
+                            <textarea id="p-enunciado" class="w-full border border-slate-200 p-2 rounded-lg bg-white outline-none focus:border-blue-500 resize-none h-16" placeholder="Redacta la pregunta..."></textarea>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="p-opc-0" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 1">
+                                <input type="text" id="p-opc-1" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 2">
+                                <input type="text" id="p-opc-2" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 3">
+                                <input type="text" id="p-opc-3" class="border border-slate-200 p-2 rounded-lg bg-white" placeholder="Opción 4">
+                            </div>
+                            <div class="font-medium flex items-center gap-3 bg-white p-2 rounded-lg border border-slate-100">Respuesta: 
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="0" checked class="accent-blue-600"> 1</label> 
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="1" class="accent-blue-600"> 2</label> 
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="2" class="accent-blue-600"> 3</label> 
+                                <label class="flex items-center gap-1 cursor-pointer"><input type="radio" name="opt_cor" value="3" class="accent-blue-600"> 4</label>
+                            </div>
+                            <div class="flex gap-2">
+                                <input type="number" id="p-puntos" placeholder="Valor %" class="border border-slate-200 p-2 rounded-lg w-24 bg-white outline-none">
+                                <button id="btn-agregar-pregunta" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition shadow-sm">Agregar al Banco</button>
+                            </div>
+                        </div>
+                        <div id="lista-preguntas-creadas" class="text-xs space-y-2"></div>
+                    </div>
+
+                    <div id="tc-alumnos" class="hidden space-y-5">
+                        <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
+                            <h3 class="font-semibold text-blue-900 text-sm mb-1">Validación Masiva (Excel)</h3>
+                            <p class="text-xs text-blue-700/80 mb-3">Pega la columna de cédulas del sistema de control de estudios.</p>
+                            <div class="flex flex-col sm:flex-row gap-2">
+                                <textarea id="txt-aprobacion-masiva" class="flex-grow border border-slate-200 p-2 text-xs h-10 outline-none rounded-lg resize-none" placeholder="25123456, 26987654..."></textarea>
+                                <button id="btn-aprobar-masivo" class="bg-white border border-blue-200 hover:bg-blue-50 text-blue-700 font-medium px-4 py-2 rounded-lg text-xs shadow-sm transition">Procesar Lista</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center gap-2">
+                                <h3 class="text-sm font-semibold text-slate-800">Directorio</h3>
+                                <div class="flex gap-2">
+                                    <input type="text" id="filtro-alumnos-txt" placeholder="Buscar..." class="border border-slate-200 p-1.5 rounded-lg text-xs outline-none bg-slate-50">
+                                    <select id="filtro-alumnos-sec" class="border border-slate-200 p-1.5 rounded-lg text-xs bg-slate-50 outline-none"></select>
+                                </div>
+                            </div>
+                            <div id="tabla-alumnos-gestion" class="overflow-x-auto text-xs border border-slate-100 rounded-xl"></div>
+                        </div>
+                    </div>
+
+                    <div id="tc-calificaciones" class="hidden space-y-4">
+                        <div class="flex flex-col sm:flex-row justify-between sm:items-center pb-2 gap-3">
+                            <h3 class="text-sm font-semibold text-slate-800">Libro Central</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="btn-abrir-carga-manual" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">Carga Manual</button>
+                                <select id="filtro-calif-mat" class="border border-slate-200 p-1.5 rounded-lg text-xs bg-slate-50 outline-none"></select>
+                                <select id="filtro-calif-obj" class="border border-slate-200 p-1.5 rounded-lg text-xs bg-slate-50 outline-none"></select>
+                            </div>
+                        </div>
+                        <div id="tabla-calificaciones-final" class="overflow-x-auto text-xs border border-slate-100 rounded-xl"></div>
+                    </div>
+
+                    <div id="tc-perfil" class="hidden space-y-6 text-xs">
+                        <div class="max-w-md space-y-6">
+                            <div class="bg-slate-50 border border-slate-100 p-5 rounded-xl space-y-4">
+                                <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-200 pb-2">Información del Sistema</h3>
+                                <p class="text-[10px] text-slate-500 font-mono bg-white p-2 rounded-lg border border-slate-200" id="doc-uid-display">UID: --</p>
+                                <div class="space-y-3">
+                                    <div><label class="block font-medium text-slate-600 mb-1">Cédula</label><input type="text" id="doc-cedula-input" class="w-full border border-slate-200 p-2 rounded-lg bg-white outline-none"></div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div><label class="block font-medium text-slate-600 mb-1">Nombre</label><input type="text" id="doc-nombre-input" class="w-full border border-slate-200 p-2 rounded-lg bg-white outline-none"></div>
+                                        <div><label class="block font-medium text-slate-600 mb-1">Apellido</label><input type="text" id="doc-apellido-input" class="w-full border border-slate-200 p-2 rounded-lg bg-white outline-none"></div>
+                                    </div>
+                                    <button id="btn-guardar-perfil" class="bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium px-4 py-2 rounded-lg w-full shadow-sm transition mt-2">Guardar Datos</button>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-slate-50 border border-slate-100 p-5 rounded-xl space-y-4">
+                                <div>
+                                    <h3 class="text-sm font-semibold text-slate-800 border-b border-slate-200 pb-2">Seguridad</h3>
+                                    <p class="text-[10px] text-slate-500 mt-2">Usa mayúsculas, números y símbolos.</p>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="relative"><input type="password" id="pin-viejo" placeholder="Clave Actual" class="w-full border border-slate-200 p-2 rounded-lg bg-white pr-10 outline-none focus:border-blue-500"><button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400" data-target="pin-viejo">👁️</button></div>
+                                    <div class="relative"><input type="password" id="pin-nuevo" placeholder="Nueva Clave" class="w-full border border-slate-200 p-2 rounded-lg bg-white pr-10 outline-none focus:border-blue-500"><button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400" data-target="pin-nuevo">👁️</button></div>
+                                    <div class="relative"><input type="password" id="pin-confirma" placeholder="Confirmar Clave" class="w-full border border-slate-200 p-2 rounded-lg bg-white pr-10 outline-none focus:border-blue-500"><button type="button" class="toggle-password absolute right-2 top-1.5 text-slate-400" data-target="pin-confirma">👁️</button></div>
+                                    <button id="btn-actualizar-pin" class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2 rounded-lg w-full shadow-sm transition">Actualizar Credenciales</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </section>
 
         <!-- ========================================== -->
-        <!-- MODALES DOCENTE (EDICIÓN Y CARGA MANUAL) -->
+        <!-- MODALES DOCENTE -->
         <!-- ========================================== -->
-        <div id="modal-editar-alumno" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
-                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Estudiante</h3>
+        <div id="modal-editar-alumno" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-5 border border-slate-200">
+                <h3 class="text-sm font-semibold text-slate-800 pb-2 border-b border-slate-100">Ficha del Estudiante</h3>
                 <input type="hidden" id="edit-alum-id">
                 <div class="space-y-3 text-xs">
-                    <div><label class="block font-bold">Cédula</label><input type="text" id="edit-alum-ced" class="w-full border p-2 rounded"></div>
-                    <div class="grid grid-cols-2 gap-2"><div><label class="block font-bold">Nombre</label><input type="text" id="edit-alum-nom" class="w-full border p-2 rounded"></div><div><label class="block font-bold">Apellido</label><input type="text" id="edit-alum-ape" class="w-full border p-2 rounded"></div></div>
-                    <div class="p-2 border rounded bg-slate-50">
-                        <label class="block font-bold mb-1">Secciones Inscritas</label>
-                        <div id="edit-alum-sec-container" class="grid grid-cols-1 gap-1 max-h-24 overflow-y-auto"></div>
+                    <div><label class="block font-medium text-slate-600 mb-1">Cédula</label><input type="text" id="edit-alum-ced" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none"></div>
+                    <div class="grid grid-cols-2 gap-2"><div><label class="block font-medium text-slate-600 mb-1">Nombre</label><input type="text" id="edit-alum-nom" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none"></div><div><label class="block font-medium text-slate-600 mb-1">Apellido</label><input type="text" id="edit-alum-ape" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none"></div></div>
+                    <div class="border border-slate-100 rounded-lg bg-slate-50 p-3">
+                        <label class="block font-medium text-slate-600 mb-2">Matrícula</label>
+                        <div id="edit-alum-sec-container" class="grid grid-cols-1 gap-1.5 max-h-24 overflow-y-auto"></div>
                     </div>
                 </div>
-                <div class="flex space-x-2 pt-3">
-                    <button id="btn-guardar-edicion-alumno" class="w-full bg-blue-700 text-white font-bold py-2 rounded text-xs">Guardar</button>
-                    <button onclick="document.getElementById('modal-editar-alumno').classList.add('hidden')" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Cancelar</button>
+                <div class="flex gap-2 pt-2">
+                    <button id="btn-guardar-edicion-alumno" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg text-xs transition shadow-sm">Aplicar</button>
+                    <button onclick="document.getElementById('modal-editar-alumno').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 rounded-lg text-xs transition">Cancelar</button>
                 </div>
             </div>
         </div>
 
-        <div id="modal-editar-objetivo" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4">
-                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Modificar Evaluación</h3>
+        <div id="modal-editar-objetivo" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 space-y-5 border border-slate-200">
+                <h3 class="text-sm font-semibold text-slate-800 pb-2 border-b border-slate-100">Propiedades de Evaluación</h3>
                 <input type="hidden" id="edit-eval-id">
-                <div class="space-y-3 text-xs">
-                    <div><label class="block font-bold">Nombre</label><input type="text" id="edit-eval-nom" class="w-full border p-2 rounded"></div>
-                    <div><label class="block font-bold">Ponderación (%)</label><input type="number" id="edit-eval-peso" class="w-full border p-2 rounded"></div>
+                <div class="space-y-4 text-xs">
+                    <div><label class="block font-medium text-slate-600 mb-1">Título</label><input type="text" id="edit-eval-nom" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500"></div>
+                    <div><label class="block font-medium text-slate-600 mb-1">Valor (%)</label><input type="number" id="edit-eval-peso" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none focus:border-blue-500"></div>
                     <div class="grid grid-cols-2 gap-2">
-                        <div><label class="block font-bold">Hora Inicio (Online)</label><input type="datetime-local" id="edit-eval-hora-inicio" class="w-full border p-2 rounded"></div>
-                        <div><label class="block font-bold">Hora Cierre (Online)</label><input type="datetime-local" id="edit-eval-hora-fin" class="w-full border p-2 rounded"></div>
+                        <div><label class="block font-medium text-slate-600 mb-1">Inicio</label><input type="datetime-local" id="edit-eval-hora-inicio" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none text-slate-600"></div>
+                        <div><label class="block font-medium text-slate-600 mb-1">Cierre</label><input type="datetime-local" id="edit-eval-hora-fin" class="w-full border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none text-slate-600"></div>
                     </div>
                 </div>
-                <div class="flex space-x-2 pt-3">
-                    <button id="btn-guardar-edicion-objetivo" class="w-full bg-emerald-600 text-white font-bold py-2 rounded text-xs">Guardar</button>
-                    <button onclick="document.getElementById('modal-editar-objetivo').classList.add('hidden')" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Cancelar</button>
+                <div class="flex gap-2 pt-2">
+                    <button id="btn-guardar-edicion-objetivo" class="flex-1 bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 rounded-lg text-xs transition shadow-sm">Aplicar</button>
+                    <button onclick="document.getElementById('modal-editar-objetivo').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium py-2 rounded-lg text-xs transition">Cancelar</button>
                 </div>
             </div>
         </div>
 
-        <div id="modal-carga-manual" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full p-6 space-y-4 border-t-4 border-emerald-600 max-h-[90vh] flex flex-col">
-                <div class="flex justify-between items-center border-b pb-2">
-                    <h3 class="text-lg font-bold">Carga de Notas (Laboratorios / Manuales)</h3>
-                    <button onclick="document.getElementById('modal-carga-manual').classList.add('hidden')" class="text-slate-500 font-bold text-xl">&times;</button>
+        <div id="modal-carga-manual" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-3xl w-full p-0 flex flex-col max-h-[85vh] border border-slate-200 overflow-hidden">
+                <div class="flex justify-between items-center p-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="text-sm font-semibold text-slate-800">Acta de Calificaciones</h3>
+                    <button onclick="document.getElementById('modal-carga-manual').classList.add('hidden')" class="text-slate-400 hover:text-slate-600 p-1 rounded-md hover:bg-slate-200 transition">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
                 </div>
-                <div class="grid grid-cols-2 gap-3 text-xs bg-slate-50 p-3 rounded border">
-                    <select id="manual-mat-select" class="border p-2 rounded"><option value="">-- Elige Materia --</option></select>
-                    <select id="manual-obj-select" class="border p-2 rounded" disabled><option value="">-- Elige Evaluación Manual --</option></select>
-                    <select id="manual-sec-select" class="border p-2 rounded col-span-2" disabled><option value="">-- Elige Sección a Cargar --</option></select>
+                <div class="p-4 bg-white space-y-4 flex-grow flex flex-col min-h-0">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+                        <select id="manual-mat-select" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none"><option value="">-- Materia --</option></select>
+                        <select id="manual-obj-select" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none" disabled><option value="">-- Actividad --</option></select>
+                        <select id="manual-sec-select" class="border border-slate-200 p-2 rounded-lg bg-slate-50 outline-none" disabled><option value="">-- Sección --</option></select>
+                    </div>
+                    <div class="flex-grow overflow-y-auto border border-slate-100 rounded-xl min-h-[200px]">
+                        <table class="w-full text-xs text-left" id="tabla-alumnos-manual">
+                            <thead class="bg-slate-50 sticky top-0 shadow-sm"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">Identidad</th><th class="p-3 font-semibold text-slate-600">Estudiante</th><th class="p-3 w-32 text-center font-semibold text-slate-600">Nota</th></tr></thead>
+                            <tbody id="body-alumnos-manual" class="divide-y divide-slate-100"><tr><td colspan="3" class="p-8 text-center text-slate-400 italic">Seleccione los filtros para cargar la lista.</td></tr></tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="flex-grow overflow-y-auto border rounded min-h-[200px]">
-                    <table class="w-full text-xs text-left" id="tabla-alumnos-manual">
-                        <thead class="bg-slate-100 sticky top-0 shadow-sm"><tr class="border-b"><th class="p-2">Cédula</th><th class="p-2">Estudiante</th><th class="p-2 w-32 text-center">Nota Alcanzada (%)</th></tr></thead>
-                        <tbody id="body-alumnos-manual"><tr><td colspan="3" class="p-4 text-center text-slate-400">Selecciona materia, evaluación y sección arriba.</td></tr></tbody>
-                    </table>
+                <div class="p-4 border-t border-slate-100 bg-slate-50/50 flex justify-end">
+                    <button id="btn-guardar-notas-manuales" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg text-xs shadow-sm transition" disabled>Firmar Acta</button>
                 </div>
-                <div class="pt-2 flex justify-end"><button id="btn-guardar-notas-manuales" class="bg-emerald-600 text-white font-bold px-6 py-2 rounded text-xs" disabled>Guardar Notas en Sistema</button></div>
             </div>
         </div>
         
-        <div id="modal-login-docente" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-sm w-full p-6 space-y-4 border-t-4 border-blue-800">
-                <h3 class="text-lg font-bold text-slate-900 border-b pb-2">Acceso Docente</h3>
+        <div id="modal-login-docente" class="hidden fixed inset-0 mica-effect z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl shadow-xl max-w-xs w-full p-6 space-y-5 border border-slate-200 text-center">
+                <div class="w-12 h-12 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mx-auto">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                </div>
+                <h3 class="text-sm font-semibold text-slate-800">Credencial Administrativa</h3>
                 <div class="relative">
-                    <input type="password" id="login-docente-pin" placeholder="Contraseña de acceso" class="w-full border border-slate-300 p-2.5 rounded text-sm pr-10 outline-none focus:border-blue-500">
+                    <input type="password" id="login-docente-pin" placeholder="PIN de acceso" class="w-full border border-slate-200 p-2.5 rounded-xl text-sm bg-slate-50 text-center pr-10 outline-none focus:border-blue-500 focus:bg-white transition" autocomplete="off">
                     <button type="button" class="toggle-password absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 text-lg" data-target="login-docente-pin">👁️</button>
                 </div>
-                <button id="btn-confirmar-login-docente" class="w-full bg-blue-800 text-white font-bold py-2 rounded text-xs">Ingresar</button>
-                <button onclick="document.getElementById('modal-login-docente').classList.add('hidden')" class="w-full bg-slate-200 text-slate-800 font-bold py-2 rounded text-xs">Cancelar</button>
+                <div class="flex gap-2 pt-2">
+                    <button onclick="document.getElementById('modal-login-docente').classList.add('hidden')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2 rounded-xl text-xs transition">Cancelar</button>
+                    <button id="btn-confirmar-login-docente" class="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-medium py-2 rounded-xl text-xs transition shadow-sm">Entrar</button>
+                </div>
             </div>
         </div>
     </main>
@@ -614,9 +706,9 @@
         }
 
         // --- CONTROL DE PESTAÑAS DEL PORTAL ---
-        document.getElementById("tab-btn-ingreso").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.remove("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-ingreso").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
-        document.getElementById("tab-btn-registro").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.remove("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-registro").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
-        document.getElementById("tab-btn-reset").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.remove("hidden"); document.getElementById("tab-btn-reset").classList.add("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-700", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-700", "shadow-sm"); });
+        document.getElementById("tab-btn-ingreso").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.remove("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-ingreso").classList.add("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-600", "shadow-sm"); });
+        document.getElementById("tab-btn-registro").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.remove("hidden"); document.getElementById("form-reset-estudiante").classList.add("hidden"); document.getElementById("tab-btn-registro").classList.add("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-reset").classList.remove("bg-white", "text-blue-600", "shadow-sm"); });
+        document.getElementById("tab-btn-reset").addEventListener("click", () => { document.getElementById("form-login-estudiante").classList.add("hidden"); document.getElementById("form-registro-estudiante").classList.add("hidden"); document.getElementById("form-reset-estudiante").classList.remove("hidden"); document.getElementById("tab-btn-reset").classList.add("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-ingreso").classList.remove("bg-white", "text-blue-600", "shadow-sm"); document.getElementById("tab-btn-registro").classList.remove("bg-white", "text-blue-600", "shadow-sm"); });
 
         // --- PROCESAMIENTO DE RESET DE CLAVE ---
         document.getElementById("form-reset-estudiante").addEventListener("submit", async (e) => {
@@ -768,6 +860,9 @@
             document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-estudiante-tablero").classList.remove("hidden");
             document.getElementById("perfil-estudiante-bienvenida").innerText = `Hola, ${estudianteSesion.nombre} ${estudianteSesion.apellido}`;
             document.getElementById("perfil-estudiante-seccion").innerText = `C.I: ${estudianteSesion.cedula}`;
+            if(estudianteSesion.nombre && estudianteSesion.apellido){
+                 document.getElementById("perfil-estudiante-iniciales").innerText = `${estudianteSesion.nombre.charAt(0)}${estudianteSesion.apellido.charAt(0)}`.toUpperCase();
+            }
             
             if (!estudianteSesion.terminosAceptados) document.getElementById("modal-aceptar-terminos").classList.remove("hidden");
             if (!estudianteSesion.passkeyId && window.PublicKeyCredential) { document.getElementById("box-vincular-huella").classList.remove("hidden"); document.getElementById("box-vincular-huella").classList.add("flex"); } 
@@ -786,9 +881,9 @@
             const cont = document.getElementById("contenedor-evaluaciones-alumno");
             const misSeccionesIds = estudianteSesion.seccionesIds || [];
             
-            if(misSeccionesIds.length === 0) return cont.innerHTML = "No tienes secciones matriculadas.";
+            if(misSeccionesIds.length === 0) { cont.innerHTML = '<div class="text-center text-slate-500 py-8 bg-white rounded-2xl border border-slate-200">No tienes secciones matriculadas.</div>'; return; }
             const misMaterias = materias.filter(m => secciones.some(s => misSeccionesIds.includes(s.id) && s.materiaId === m.id));
-            if(misMaterias.length === 0) return cont.innerHTML = "No hay materias asignadas a tus secciones.";
+            if(misMaterias.length === 0) { cont.innerHTML = '<div class="text-center text-slate-500 py-8 bg-white rounded-2xl border border-slate-200">No hay materias asignadas a tus secciones.</div>'; return;}
 
             let htmlFull = ''; const ahora = Date.now();
             const corteGlobalActual = docentePerfil.corteActivo || 1;
@@ -806,7 +901,7 @@
                     const presente = estudianteSesion.presenteAula === true;
                     const esCorteCerrado = (obj.corte < corteGlobalActual);
                     
-                    let notaDisplay = miNota ? `<span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-1 rounded border border-emerald-200">${miNota.nota} % logrados</span>` : `<span class="text-slate-400">Sin evaluar</span>`;
+                    let notaDisplay = miNota ? `<span class="text-emerald-700 font-semibold bg-emerald-50 px-2 py-1 rounded-md border border-emerald-100">${miNota.nota}% logrado</span>` : `<span class="text-slate-400 font-medium">Sin evaluar</span>`;
                     
                     if (miNota) {
                         if (obj.corte === 1) c1AcumuladoPct += parseFloat(miNota.nota);
@@ -814,25 +909,36 @@
                     }
 
                     let btnAccion = '';
-                    if (miNota && obj.tipo === 'online') { btnAccion = `<button onclick="window.verReporteEstudiante('${estudianteSesion.cedula}_${obj.id}')" class="bg-white text-slate-800 font-bold text-[11px] px-2 py-1 border shadow-sm rounded">Ver Reporte</button>`; }
-                    else if (miNota && obj.tipo !== 'online') { btnAccion = `<span class="text-[10px] text-emerald-600 font-bold">Evaluado ✓</span>`; }
-                    else if (esCorteCerrado) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded font-bold border border-red-200">Expirado (Corte Cerrado)</span>`; }
-                    else if (sesionPrevia && sesionPrevia.estado === "entregado") { btnAccion = `<span class="text-[10px] text-blue-600 bg-blue-50 px-2 py-1 rounded">Entregado</span>`; }
-                    else if (sesionPrevia && (sesionPrevia.estado === "bloqueado_por_infracciones" || sesionPrevia.estado === "bloqueado_por_fraude")) { btnAccion = `<span class="text-[10px] text-red-600 bg-red-100 px-2 py-1 rounded">Anulado 01</span>`; }
-                    else if (sesionPrevia && (sesionPrevia.estado === "en_curso" || sesionPrevia.estado === "reanudacion_permitida")) { btnAccion = `<span class="text-[10px] text-amber-700 bg-amber-50 px-2 py-1 rounded">Reanuda arriba ☝️</span>`; }
+                    if (miNota && obj.tipo === 'online') { btnAccion = `<button onclick="window.verReporteEstudiante('${estudianteSesion.cedula}_${obj.id}')" class="bg-white text-blue-600 hover:bg-slate-50 font-medium text-[11px] px-3 py-1.5 border border-slate-200 shadow-sm rounded-lg transition">Ver Reporte</button>`; }
+                    else if (miNota && obj.tipo !== 'online') { btnAccion = `<span class="text-[11px] text-emerald-600 font-medium bg-emerald-50 px-2.5 py-1 rounded-md">Evaluado ✓</span>`; }
+                    else if (esCorteCerrado) { btnAccion = `<span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md font-medium border border-slate-200">Expirado</span>`; }
+                    else if (sesionPrevia && sesionPrevia.estado === "entregado") { btnAccion = `<span class="text-[11px] text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md font-medium">Entregado</span>`; }
+                    else if (sesionPrevia && (sesionPrevia.estado === "bloqueado_por_infracciones" || sesionPrevia.estado === "bloqueado_por_fraude")) { btnAccion = `<span class="text-[11px] text-red-600 bg-red-50 px-2.5 py-1 rounded-md font-medium">Anulado</span>`; }
+                    else if (sesionPrevia && (sesionPrevia.estado === "en_curso" || sesionPrevia.estado === "reanudacion_permitida")) { btnAccion = `<span class="text-[11px] text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md font-medium">Reanuda arriba</span>`; }
                     else if (obj.tipo === 'online') {
-                        if (!presente) btnAccion = `<span class="text-[10px] text-amber-700 font-bold">⚠️ Requiere Asistencia</span>`;
-                        else if (obj.horaInicio && ahora < obj.horaInicio) btnAccion = `<span class="text-[10px] text-blue-700 bg-blue-100 px-2 py-1 rounded">🕒 Inicia: ${new Date(obj.horaInicio).toLocaleTimeString()}</span>`;
-                        else if (obj.horaFin && ahora > obj.horaFin) btnAccion = `<span class="text-[10px] text-red-700 bg-red-100 px-2 py-1 rounded">Cerrado</span>`;
-                        else btnAccion = `<button onclick="window.iniciarExamenAlumno('${obj.id}')" class="bg-blue-700 text-white font-bold px-3 py-1.5 rounded text-xs shadow-sm">Realizar Examen</button>`;
+                        if (!presente) btnAccion = `<span class="text-[11px] text-amber-600 font-medium flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg> Requiere Asistencia</span>`;
+                        else if (obj.horaInicio && ahora < obj.horaInicio) btnAccion = `<span class="text-[11px] text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md font-medium">Inicia: ${new Date(obj.horaInicio).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>`;
+                        else if (obj.horaFin && ahora > obj.horaFin) btnAccion = `<span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md font-medium">Cerrado</span>`;
+                        else btnAccion = `<button onclick="window.iniciarExamenAlumno('${obj.id}')" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-1.5 rounded-lg text-xs shadow-sm transition">Iniciar Examen</button>`;
                     } else if (obj.tipo !== 'online') {
-                        btnAccion = `<span class="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-200">Presencial / Entrega</span>`;
+                        btnAccion = `<span class="text-[11px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded-md font-medium border border-slate-200">Presencial / Entrega</span>`;
                     }
 
+                    const iconoEval = obj.tipo === 'online' ? '💻' : obj.tipo === 'trabajo' ? '📄' : obj.tipo === 'taller' ? '🛠️' : '📝';
+
                     const itemHtml = `
-                        <div class="flex justify-between items-center bg-white border p-3 rounded-lg shadow-sm mb-2">
-                            <div><p class="text-xs font-bold text-slate-800">${obj.nombre} <span class="text-[10px] text-blue-600 font-normal">(${obj.ponderacion}%)</span></p></div>
-                            <div class="flex items-center gap-3"><div class="text-xs">${notaDisplay}</div><div>${btnAccion}</div></div>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-white border border-slate-100 p-3.5 rounded-xl shadow-sm mb-3 gap-3">
+                            <div class="flex items-center gap-2">
+                                <span class="text-lg opacity-70">${iconoEval}</span>
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-800">${obj.nombre}</p>
+                                    <p class="text-[10px] text-slate-500 mt-0.5">Ponderación: ${obj.ponderacion}%</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto border-t sm:border-0 border-slate-100 pt-2 sm:pt-0">
+                                <div class="text-xs">${notaDisplay}</div>
+                                <div>${btnAccion}</div>
+                            </div>
                         </div>`;
                     
                     if(obj.corte === 1) htmlCorte1 += itemHtml;
@@ -843,28 +949,37 @@
                 let notaFinalSemestre = (c1AcumuladoPct > 0 || c2AcumuladoPct > 0) ? ((definitivaC1 + definitivaC2) / 2).toFixed(1) : '--';
 
                 htmlFull += `
-                <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden mb-6">
-                    <div class="bg-blue-900 text-white p-4 flex justify-between items-center">
-                        <h3 class="font-bold text-lg">📚 ${mat.nombre}</h3>
-                        <div class="bg-blue-950 px-3 py-1 rounded-lg border border-blue-800 text-center">
-                            <p class="text-[10px] text-blue-300 uppercase">Definitiva Semestre</p>
-                            <p class="text-2xl font-black">${notaFinalSemestre} <span class="text-sm font-normal">/ 20</span></p>
+                <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden mb-6 shadow-sm">
+                    <div class="bg-slate-50 border-b border-slate-200 p-5 flex justify-between items-center">
+                        <h3 class="font-semibold text-lg text-slate-800 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            ${mat.nombre}
+                        </h3>
+                        <div class="bg-white px-4 py-2 rounded-xl border border-slate-200 shadow-sm text-center">
+                            <p class="text-[10px] text-slate-500 uppercase font-medium tracking-wide">Definitiva</p>
+                            <p class="text-xl font-bold text-blue-600">${notaFinalSemestre} <span class="text-xs font-medium text-slate-400">/ 20</span></p>
                         </div>
                     </div>
-                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="border border-slate-300 rounded-lg bg-slate-100 p-3">
-                            <div class="flex justify-between items-end border-b border-slate-300 pb-2 mb-3">
-                                <h4 class="font-bold text-slate-700">1er Corte Semestral</h4>
-                                <div class="text-right"><p class="text-[10px] text-slate-500 font-bold uppercase">Nota Corte 1</p><p class="text-xl font-black text-indigo-700">${definitivaC1} <span class="text-xs font-normal text-slate-500">/ 20 pts</span></p><p class="text-[9px] text-slate-400">Acumulado real: ${c1AcumuladoPct.toFixed(1)}%</p></div>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white">
+                        <div class="bg-slate-50/50 rounded-xl p-1">
+                            <div class="flex justify-between items-end pb-3 mb-3 px-2 pt-2">
+                                <h4 class="font-semibold text-slate-700">Primer Corte</h4>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-slate-800">${definitivaC1} <span class="text-xs font-medium text-slate-500">pts</span></p>
+                                    <p class="text-[9px] text-slate-400 font-medium">Acumulado: ${c1AcumuladoPct.toFixed(1)}%</p>
+                                </div>
                             </div>
-                            ${htmlCorte1 || '<p class="text-xs text-slate-400 italic">No hay evaluaciones programadas.</p>'}
+                            <div class="px-1">${htmlCorte1 || '<p class="text-xs text-slate-400 italic px-2 pb-2">Sin evaluaciones programadas.</p>'}</div>
                         </div>
-                        <div class="border border-slate-300 rounded-lg bg-slate-100 p-3">
-                            <div class="flex justify-between items-end border-b border-slate-300 pb-2 mb-3">
-                                <h4 class="font-bold text-slate-700">2do Corte Semestral</h4>
-                                <div class="text-right"><p class="text-[10px] text-slate-500 font-bold uppercase">Nota Corte 2</p><p class="text-xl font-black text-indigo-700">${definitivaC2} <span class="text-xs font-normal text-slate-500">/ 20 pts</span></p><p class="text-[9px] text-slate-400">Acumulado real: ${c2AcumuladoPct.toFixed(1)}%</p></div>
+                        <div class="bg-slate-50/50 rounded-xl p-1">
+                            <div class="flex justify-between items-end pb-3 mb-3 px-2 pt-2">
+                                <h4 class="font-semibold text-slate-700">Segundo Corte</h4>
+                                <div class="text-right">
+                                    <p class="text-lg font-bold text-slate-800">${definitivaC2} <span class="text-xs font-medium text-slate-500">pts</span></p>
+                                    <p class="text-[9px] text-slate-400 font-medium">Acumulado: ${c2AcumuladoPct.toFixed(1)}%</p>
+                                </div>
                             </div>
-                            ${htmlCorte2 || '<p class="text-xs text-slate-400 italic">No hay evaluaciones programadas.</p>'}
+                            <div class="px-1">${htmlCorte2 || '<p class="text-xs text-slate-400 italic px-2 pb-2">Sin evaluaciones programadas.</p>'}</div>
                         </div>
                     </div>
                 </div>`;
@@ -879,8 +994,8 @@
             if (!estudianteSesion) return;
             const sesion = sesionesActivas.find(s => s.cedula === estudianteSesion.cedula && (s.estado === "en_curso" || s.estado === "reanudacion_permitida"));
             const banner = document.getElementById("banner-reanudacion-disponible");
-            if (sesion) { banner.classList.remove("hidden"); document.getElementById("btn-reanudar-examen-guardado").onclick = () => reanudarExamenExistente(sesion); } 
-            else { banner.classList.add("hidden"); }
+            if (sesion) { banner.classList.remove("hidden"); banner.classList.add("flex"); document.getElementById("btn-reanudar-examen-guardado").onclick = () => reanudarExamenExistente(sesion); } 
+            else { banner.classList.add("hidden"); banner.classList.remove("flex");}
         }
 
         async function reanudarExamenExistente(sesion) {
@@ -893,7 +1008,7 @@
             ejecutarPantallaExamen(pregs, true);
         }
 
-        window.iniciarExamenAlumno = async function(objId) {
+       window.iniciarExamenAlumno = async function(objId) {
             const objLocal = objetivos.find(o => o.id === objId);
             const corteGlobalActual = docentePerfil.corteActivo || 1;
             if (objLocal && objLocal.corte < corteGlobalActual) { return alert("Este examen pertenece a un Corte Semestral cerrado. Ya no puede ser presentado."); }
@@ -902,7 +1017,7 @@
             const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId));
             if (sSnap.exists()) {
                 const sData = sSnap.data();
-                if (sData.estado === "en_curso" || sData.estado === "reanudacion_permitida") { alert("Usa el botón Reanudar arriba."); return; }
+                if (sData.estado === "en_curso" || sData.estado === "reanudacion_permitida") { alert("Usa el botón Reanudar en tu tablero."); return; }
                 
                 objetivoActivo = objetivos.find(o => o.id === objId); const matObj = materias.find(m => m.id === objetivoActivo?.materiaId);
                 await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "bloqueado_por_fraude", strikes: 99, calificado: true, notaFinal: 1.0 });
@@ -914,22 +1029,35 @@
                     nota: 1.0, ponderacionTotal: objetivoActivo ? objetivoActivo.ponderacion : 20, sancionado: true, motivoSancion: "FRAUDE GRAVE: Intento de evadir borrando caché."
                 });
                 document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-sancion-bloqueo").classList.remove("hidden");
-                document.getElementById("sancion-detalle-final").innerText = "VIOLACIÓN CRÍTICA: Intento de vulnerar el sistema borrando caché. Evaluación reprobada con 01."; return;
+                document.getElementById("sancion-detalle-final").innerText = "VIOLACIÓN CRÍTICA: Intento de vulnerar el sistema manipulando datos locales. Evaluación reprobada."; return;
             }
 
             objetivoActivo = objetivos.find(o => o.id === objId); respuestasEstudiante = {}; strikeCount = 0;
             const ahora = Date.now(); tiempoRestanteSegundos = Math.floor((objetivoActivo.horaFin - ahora) / 1000);
-            if (tiempoRestanteSegundos <= 0) { alert("Periodo finalizado."); return; }
+            if (tiempoRestanteSegundos <= 0) { alert("El periodo para esta evaluación ha finalizado."); return; }
             
             const q = query(collection(db, "preguntas"), where("objetivoId", "==", objId));
             const snaps = await getDocs(q); const pregs = []; snaps.forEach(d => pregs.push({ id: d.id, ...d.data() }));
-            if (pregs.length === 0) return alert("Examen sin preguntas.");
+            if (pregs.length === 0) return alert("El banco de preguntas de este examen está vacío.");
             
             const matObj = materias.find(m => m.id === objetivoActivo.materiaId);
-            await setDoc(doc(db, "sesiones_examen", sesionId), {
-                cedula: estudianteSesion.cedula, estudianteNombre: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, materiaNombre: matObj ? matObj.nombre : 'Cátedra', objetivoId: objetivoActivo.id, objetivoNombre: objetivoActivo.nombre, seccionId: estudianteSesion.seccionId, respuestas: {}, strikes: 0, estado: "en_curso", calificado: false, fechaInicio: new Date().toLocaleString()
-            });
-            ejecutarPantallaExamen(pregs, false);
+            const seccionesDelAlumno = estudianteSesion.seccionesIds ? estudianteSesion.seccionesIds.join(', ') : 'N/A';
+
+            try {
+                await setDoc(doc(db, "sesiones_examen", sesionId), {
+                    cedula: estudianteSesion.cedula, 
+                    estudianteNombre: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, 
+                    materiaNombre: matObj ? matObj.nombre : 'Cátedra', 
+                    objetivoId: objetivoActivo.id, 
+                    objetivoNombre: objetivoActivo.nombre, 
+                    seccionesAsignadas: seccionesDelAlumno,
+                    respuestas: {}, strikes: 0, estado: "en_curso", calificado: false, fechaInicio: new Date().toLocaleString()
+                });
+                ejecutarPantallaExamen(pregs, false);
+            } catch (error) {
+                console.error("Error Firestore al iniciar examen:", error);
+                alert("Error de conexión al generar la sesión segura. Avisa al docente.");
+            }
         };
 
         document.getElementById("btn-preg-anterior").addEventListener("click", () => {
@@ -959,18 +1087,22 @@
         function ejecutarPantallaExamen(pregs, esReanudacion) {
             examenEnCurso = true; solicitarWakeLock(); solicitarPantallaCompleta();
             document.getElementById("vista-estudiante-tablero").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.remove("hidden");
+            document.getElementById("vista-examen-activo").classList.add("flex");
             document.getElementById("txt-examen-titulo").innerText = objetivoActivo.nombre; actualizarIndicadorStrikesVisual();
 
             totalPreguntasActivas = pregs.length; indicePreguntaActual = 0;
             const cont = document.getElementById("contenedor-preguntas-examen"); let h = '';
             pregs.forEach((p, idx) => {
                 const valG = respuestasEstudiante[p.id]; const displayClass = idx === 0 ? "block" : "hidden";
-                h += `<div id="preg-card-${idx}" class="pregunta-card ${displayClass} p-4 border rounded-lg bg-slate-50 space-y-2">
-                        <p class="font-bold text-xs sm:text-sm text-slate-800">${idx+1}. ${p.enunciado} <span class="text-blue-600 font-normal">(${p.valor}%)</span></p>
-                        <div class="space-y-1.5 text-xs">`;
+                h += `<div id="preg-card-${idx}" class="pregunta-card ${displayClass} bg-white p-5 sm:p-6 border border-slate-200 rounded-xl shadow-sm space-y-4">
+                        <p class="font-medium text-sm sm:text-base text-slate-800 leading-relaxed">${idx+1}. ${p.enunciado} <span class="text-slate-400 font-normal text-xs ml-1">(${p.valor}%)</span></p>
+                        <div class="space-y-2 text-sm mt-4">`;
                 p.opciones.forEach((opc, oi) => {
                     const chk = (valG !== undefined && parseInt(valG) === oi) ? 'checked' : '';
-                    h += `<label class="flex items-center space-x-2 p-2 bg-white border rounded cursor-pointer hover:bg-slate-100"><input type="radio" name="preg_${p.id}" value="${oi}" onchange="window.guardarRespuestaAutoguardado('${p.id}', ${oi})" ${chk}><span>${opc}</span></label>`;
+                    h += `<label class="flex items-start sm:items-center p-3 bg-slate-50 border border-slate-100 rounded-lg cursor-pointer hover:bg-slate-100 hover:border-slate-200 transition group">
+                            <input type="radio" name="preg_${p.id}" value="${oi}" onchange="window.guardarRespuestaAutoguardado('${p.id}', ${oi})" ${chk} class="mt-0.5 sm:mt-0 mr-3 accent-blue-600 w-4 h-4">
+                            <span class="text-slate-700 group-hover:text-slate-900">${opc}</span>
+                          </label>`;
                 });
                 h += `</div></div>`;
             });
@@ -985,8 +1117,8 @@
             activarListenersSupervision();
         }
 
-        async function solicitarWakeLock() { try { if ('wakeLock' in navigator) { wakeLockSentinel = await navigator.wakeLock.request('screen'); document.getElementById("badge-wakelock").classList.remove("hidden"); } } catch (e) {} }
-        function liberarWakeLock() { if (wakeLockSentinel) { wakeLockSentinel.release(); wakeLockSentinel = null; document.getElementById("badge-wakelock").classList.add("hidden"); } }
+        async function solicitarWakeLock() { try { if ('wakeLock' in navigator) { wakeLockSentinel = await navigator.wakeLock.request('screen'); document.getElementById("badge-wakelock").classList.remove("hidden"); document.getElementById("badge-wakelock").classList.add("inline-flex"); } } catch (e) {} }
+        function liberarWakeLock() { if (wakeLockSentinel) { wakeLockSentinel.release(); wakeLockSentinel = null; document.getElementById("badge-wakelock").classList.add("hidden"); document.getElementById("badge-wakelock").classList.remove("inline-flex"); } }
         function solicitarPantallaCompleta() { const el = document.documentElement; if (el.requestFullscreen) el.requestFullscreen().catch(()=>{}); anchoInicial = window.innerWidth; altoInicial = window.innerHeight; }
 
         function actualizarRelojTexto() {
@@ -1009,10 +1141,10 @@
             document.removeEventListener("visibilitychange", onCambioPestana); window.removeEventListener("blur", onPerdidaFoco);
             document.removeEventListener("fullscreenchange", onSalidaPantallaCompleta); window.removeEventListener("resize", onResizeVentana);
         }
-        function onCambioPestana() { if (document.hidden) registrarIncidencia("tab_change", "Navegador minimizado."); }
-        function onPerdidaFoco() { registrarIncidencia("window_blur", "Pérdida de foco."); }
-        function onSalidaPantallaCompleta() { if (!document.fullscreenElement) registrarIncidencia("fullscreen_exit", "Salida de pantalla completa."); }
-        function onResizeVentana() { if (window.innerWidth < anchoInicial * 0.75 || window.innerHeight < altoInicial * 0.75) registrarIncidencia("split_screen", "Pantalla dividida."); }
+        function onCambioPestana() { if (document.hidden) registrarIncidencia("tab_change", "Minimizó el navegador o cambió de pestaña."); }
+        function onPerdidaFoco() { registrarIncidencia("window_blur", "La ventana del examen perdió el foco principal."); }
+        function onSalidaPantallaCompleta() { if (!document.fullscreenElement) registrarIncidencia("fullscreen_exit", "Salió del modo pantalla completa."); }
+        function onResizeVentana() { if (window.innerWidth < anchoInicial * 0.75 || window.innerHeight < altoInicial * 0.75) registrarIncidencia("split_screen", "Activó la pantalla dividida o redimensionó."); }
 
         function registrarIncidencia(tipo, desc) {
             if (!examenEnCurso) return;
@@ -1022,16 +1154,16 @@
             updateDoc(doc(db, "sesiones_examen", sesionId), { strikes: strikeCount }).catch(()=>{});
             
             if (strikeCount >= 3) ejecutarSancionDefinitiva01(desc);
-            else { document.getElementById("modal-adv-motivo").innerText = desc; document.getElementById("modal-advertencia").classList.remove("hidden"); }
+            else { document.getElementById("modal-adv-motivo").innerText = desc; document.getElementById("modal-advertencia").classList.remove("hidden"); document.getElementById("modal-advertencia").classList.add("flex"); }
         }
         function actualizarIndicadorStrikesVisual() {
             const el = document.getElementById("strike-1");
-            if (strikeCount === 0) el.innerText = "Sin faltas";
-            else if (strikeCount === 1) { el.innerText = "1 Advertencia"; el.className = "px-2 py-0.5 rounded text-[10px] bg-amber-50 text-white font-bold animate-pulse"; }
-            else if (strikeCount === 2) { el.innerText = "2 Advertencias (Peligro)"; el.className = "px-2 py-0.5 rounded text-[10px] bg-orange-600 text-white font-bold animate-pulse"; }
+            if (strikeCount === 0) { el.innerText = "Monitoreo Activo"; el.className = "px-2.5 py-1 rounded-full text-[10px] bg-white border border-slate-200 text-slate-600 font-medium shadow-sm"; }
+            else if (strikeCount === 1) { el.innerText = "1 Advertencia"; el.className = "px-2.5 py-1 rounded-full text-[10px] bg-amber-100 border border-amber-200 text-amber-700 font-medium shadow-sm animate-pulse"; }
+            else if (strikeCount === 2) { el.innerText = "2 Advertencias (Riesgo)"; el.className = "px-2.5 py-1 rounded-full text-[10px] bg-red-100 border border-red-200 text-red-700 font-medium shadow-sm animate-pulse"; }
             else el.innerText = "Bloqueado";
         }
-        document.getElementById("btn-reanudar-tras-advertencia").addEventListener("click", () => { document.getElementById("modal-advertencia").classList.add("hidden"); solicitarPantallaCompleta(); solicitarWakeLock(); });
+        document.getElementById("btn-reanudar-tras-advertencia").addEventListener("click", () => { document.getElementById("modal-advertencia").classList.add("hidden"); document.getElementById("modal-advertencia").classList.remove("flex"); solicitarPantallaCompleta(); solicitarWakeLock(); });
 
         async function ejecutarSancionDefinitiva01(motivo) {
             examenEnCurso = false; clearInterval(timerInterval); desactivarListenersSupervision(); liberarWakeLock();
@@ -1039,7 +1171,7 @@
             const sId = `${estudianteSesion.cedula}_${objetivoActivo.id}`;
             await updateDoc(doc(db, "sesiones_examen", sId), { estado: "bloqueado_por_infracciones", strikes: strikeCount }).catch(()=>{});
             await addDoc(collection(db, "calificaciones"), { fecha: new Date().toLocaleString(), cedula: estudianteSesion.cedula, estudiante: `${estudianteSesion.nombre} ${estudianteSesion.apellido}`, objetivoId: objetivoActivo.id, nota: 1.0, ponderacionTotal: objetivoActivo.ponderacion, sancionado: true, motivoSancion: "Anulado por reincidencia." });
-            document.getElementById("modal-advertencia").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-sancion-bloqueo").classList.remove("hidden");
+            document.getElementById("modal-advertencia").classList.add("hidden"); document.getElementById("modal-advertencia").classList.remove("flex"); document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.remove("flex"); document.getElementById("vista-sancion-bloqueo").classList.remove("hidden");
             document.getElementById("sancion-detalle-final").innerText = motivo;
         }
 
@@ -1052,8 +1184,8 @@
             if (document.fullscreenElement) document.exitFullscreen().catch(()=>{});
             const sesionId = `${estudianteSesion.cedula}_${objetivoActivo.id}`; const matObj = materias.find(m => m.id === objetivoActivo.materiaId);
             
-            document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-resultados-fin").classList.remove("hidden");
-            document.getElementById("res-nota-valor").innerHTML = `<span class="animate-pulse text-2xl text-blue-600">Evaluando...</span>`;
+            document.getElementById("vista-examen-activo").classList.add("hidden"); document.getElementById("vista-examen-activo").classList.remove("flex"); document.getElementById("vista-resultados-fin").classList.remove("hidden");
+            document.getElementById("res-nota-valor").innerHTML = `<span class="animate-pulse text-2xl text-blue-600">Procesando...</span>`;
             
             try {
                 const snapClave = await getDoc(doc(db, "claves_examen", objetivoActivo.id));
@@ -1081,15 +1213,15 @@
 
                     if (acierto) { 
                         totalNota += parseFloat(pData.valor || 0); 
-                        aprobadas.push(`<li class="text-sm">✅ ${pData.enunciado} <span class="font-bold text-emerald-600">(+${pData.valor}%)</span></li>`); 
+                        aprobadas.push(`<li class="text-sm py-1 border-b border-slate-100 last:border-0"><span class="text-emerald-500 mr-2">✓</span> ${pData.enunciado} <span class="font-medium text-emerald-600 text-xs ml-1">(+${pData.valor}%)</span></li>`); 
                     } else { 
-                        reprobadas.push(`<li class="text-sm">❌ ${pData.enunciado} <span class="font-bold text-red-500">(${seleccion===undefined?'Vacía':'Mala'})</span></li>`); 
+                        reprobadas.push(`<li class="text-sm py-1 border-b border-slate-100 last:border-0"><span class="text-red-400 mr-2">✗</span> ${pData.enunciado} <span class="font-medium text-red-500 text-xs ml-1">(${seleccion===undefined?'Sin responder':'Incorrecta'})</span></li>`); 
                     }
                 }
 
-                let htmlReporte = `<div class="bg-white border p-4 rounded text-left">`;
-                if (aprobadas.length > 0) htmlReporte += `<h4 class="font-bold text-emerald-700">Acertadas:</h4><ul class="mb-4">${aprobadas.join('')}</ul>`;
-                if (reprobadas.length > 0) htmlReporte += `<h4 class="font-bold text-red-700">Erradas/Vacías:</h4><ul>${reprobadas.join('')}</ul>`;
+                let htmlReporte = `<div class="space-y-6">`;
+                if (aprobadas.length > 0) htmlReporte += `<div><h4 class="font-semibold text-emerald-700 mb-2 border-b border-emerald-100 pb-1">Respuestas Correctas</h4><ul class="text-slate-700">${aprobadas.join('')}</ul></div>`;
+                if (reprobadas.length > 0) htmlReporte += `<div><h4 class="font-semibold text-red-700 mb-2 border-b border-red-100 pb-1">Errores u Omisiones</h4><ul class="text-slate-700">${reprobadas.join('')}</ul></div>`;
                 htmlReporte += `</div>`;
 
                 let notaCalculada = totalNota < 1.0 ? 1.0 : totalNota;
@@ -1108,12 +1240,12 @@
                 window.reporteHtmlActual = htmlReporte;
 
             } catch (error) {
-                document.getElementById("res-nota-valor").innerText = "Error, Docente evaluará.";
+                document.getElementById("res-nota-valor").innerText = "Error. Docente evaluará.";
                 await updateDoc(doc(db, "sesiones_examen", sesionId), { estado: "entregado", entregaAutomatica: esPorTiempo, fechaEntrega: new Date().toISOString() }).catch(()=>{});
             }
         }
-        window.verReporteEstudianteActual = function() { if (window.reporteHtmlActual) { document.getElementById("contenido-reporte-modal").innerHTML = window.reporteHtmlActual; document.getElementById("modal-ver-reporte").classList.remove("hidden"); } };
-        window.verReporteEstudiante = async function(sesionId) { const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId)); if (sSnap.exists() && sSnap.data().reporteHtml) { document.getElementById("contenido-reporte-modal").innerHTML = sSnap.data().reporteHtml; document.getElementById("modal-ver-reporte").classList.remove("hidden"); } };
+        window.verReporteEstudianteActual = function() { if (window.reporteHtmlActual) { document.getElementById("contenido-reporte-modal").innerHTML = window.reporteHtmlActual; document.getElementById("modal-ver-reporte").classList.remove("hidden"); document.getElementById("modal-ver-reporte").classList.add("flex"); } };
+        window.verReporteEstudiante = async function(sesionId) { const sSnap = await getDoc(doc(db, "sesiones_examen", sesionId)); if (sSnap.exists() && sSnap.data().reporteHtml) { document.getElementById("contenido-reporte-modal").innerHTML = sSnap.data().reporteHtml; document.getElementById("modal-ver-reporte").classList.remove("hidden"); document.getElementById("modal-ver-reporte").classList.add("flex");} };
 
 
         // =======================================================
@@ -1126,14 +1258,15 @@
             const p = parseFloat(document.getElementById("eval-peso").value); 
             const cb = Array.from(document.querySelectorAll("input[name='sec_eval']:checked")).map(x=>x.value);
             
-            if(!m||!n||!p||!cb.length) return alert("Faltan datos básicos");
+            if(!m||!n||!p||!cb.length) return alert("Faltan datos básicos para guardar la evaluación.");
             let data = { materiaId: m, nombre: n, tipo: tipo, corte: corte, ponderacion: p, seccionesAutorizadas: cb, activo: true };
             if (tipo === 'online') {
                 const hi = document.getElementById("eval-hora-inicio").value; const hf = document.getElementById("eval-hora-fin").value;
-                if(!hi||!hf) return alert("Exámenes en línea requieren fechas.");
+                if(!hi||!hf) return alert("Los exámenes en línea requieren establecer fecha de apertura y cierre.");
                 data.horaInicio = new Date(hi).getTime(); data.horaFin = new Date(hf).getTime();
             }
-            await addDoc(collection(db, "objetivos"), data); alert("Evaluación agregada al semestre.");
+            await addDoc(collection(db, "objetivos"), data); alert("✅ Evaluación programada e insertada al semestre.");
+            document.getElementById("eval-nombre").value = ""; document.getElementById("eval-peso").value = "";
         });
 
         document.getElementById("eval-tipo").addEventListener("change", (e) => {
@@ -1155,7 +1288,7 @@
                 if((docentePerfil.corteActivo || 1) === 2) return;
                 if(!confirm("⚠️ ATENCIÓN: ¿Está seguro de Cerrar el Corte 1 e Iniciar el Corte 2?\n\n- Todas las evaluaciones del Corte 1 quedarán INHABILITADAS automáticamente para los alumnos.")) return;
                 await updateDoc(doc(db, "configuracion", "docente"), { corteActivo: 2 });
-                alert("✅ Corte 2 Iniciado con éxito.");
+                alert("✅ Corte 2 Iniciado con éxito. Fase final activada.");
             });
         }
         
@@ -1166,52 +1299,60 @@
             if (o.horaInicio) { document.getElementById("edit-eval-hora-inicio").value = new Date(o.horaInicio - ofs).toISOString().slice(0,16); } else { document.getElementById("edit-eval-hora-inicio").value = ''; }
             if (o.horaFin) { document.getElementById("edit-eval-hora-fin").value = new Date(o.horaFin - ofs).toISOString().slice(0,16); } else { document.getElementById("edit-eval-hora-fin").value = ''; }
             document.getElementById("modal-editar-objetivo").classList.remove("hidden");
+            document.getElementById("modal-editar-objetivo").classList.add("flex");
         };
         document.getElementById("btn-guardar-edicion-objetivo").addEventListener("click", async () => {
             const id = document.getElementById("edit-eval-id").value; const n = document.getElementById("edit-eval-nom").value;
             const p = parseFloat(document.getElementById("edit-eval-peso").value); const valInicio = document.getElementById("edit-eval-hora-inicio").value; const valFin = document.getElementById("edit-eval-hora-fin").value;
-            if(!n || !p) return alert("Faltan datos.");
+            if(!n || !p) return alert("Nombre y peso son obligatorios.");
             let actualizacion = { nombre: n, ponderacion: p };
-            if(valInicio && valFin) { const ti = new Date(valInicio).getTime(); const tf = new Date(valFin).getTime(); if(tf <= ti) return alert("Error de fechas."); actualizacion.horaInicio = ti; actualizacion.horaFin = tf; }
-            await updateDoc(doc(db, "objetivos", id), actualizacion); document.getElementById("modal-editar-objetivo").classList.add("hidden"); alert("Actualizado.");
+            if(valInicio && valFin) { const ti = new Date(valInicio).getTime(); const tf = new Date(valFin).getTime(); if(tf <= ti) return alert("La fecha de cierre debe ser posterior a la de inicio."); actualizacion.horaInicio = ti; actualizacion.horaFin = tf; }
+            await updateDoc(doc(db, "objetivos", id), actualizacion); document.getElementById("modal-editar-objetivo").classList.add("hidden"); document.getElementById("modal-editar-objetivo").classList.remove("flex"); alert("Parámetros de evaluación actualizados.");
         });
-        window.eliminarObjetivo = async (id) => { if(confirm("¿Borrar Evaluación?")) await deleteDoc(doc(db,"objetivos",id)); };
+        window.eliminarObjetivo = async (id) => { if(confirm("⚠️ ¿Eliminar permanentemente esta evaluación y todo su registro histórico?")) await deleteDoc(doc(db,"objetivos",id)); };
         window.toggleEstadoObjetivo = async (id, st) => await updateDoc(doc(db, "objetivos", id), { activo: st });
 
         // MÓDULO CARGA MANUAL DE NOTAS
         document.getElementById("btn-abrir-carga-manual").addEventListener("click", () => {
             document.getElementById("modal-carga-manual").classList.remove("hidden");
-            document.getElementById("manual-mat-select").innerHTML = '<option value="">-- Elige Materia --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
+            document.getElementById("modal-carga-manual").classList.add("flex");
+            document.getElementById("manual-mat-select").innerHTML = '<option value="">-- Materia --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join('');
             document.getElementById("manual-obj-select").disabled = true; document.getElementById("manual-sec-select").disabled = true; document.getElementById("btn-guardar-notas-manuales").disabled = true;
-            document.getElementById("body-alumnos-manual").innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Selecciona materia.</td></tr>';
+            document.getElementById("body-alumnos-manual").innerHTML = '<tr><td colspan="3" class="p-8 text-center text-slate-400 italic">Seleccione materia para comenzar.</td></tr>';
         });
         document.getElementById("manual-mat-select").addEventListener("change", (e) => {
             const matId = e.target.value; const objSel = document.getElementById("manual-obj-select");
             if (!matId) { objSel.disabled = true; return; }
             const manualObjs = objetivos.filter(o => o.materiaId === matId && o.tipo !== 'online');
-            objSel.innerHTML = '<option value="">-- Elige Laboratorio/Práctica/Trabajo --</option>' + manualObjs.map(o => `<option value="${o.id}">${o.nombre} (${o.ponderacion}%)</option>`).join('');
+            objSel.innerHTML = '<option value="">-- Actividad Evaluada --</option>' + manualObjs.map(o => `<option value="${o.id}">${o.nombre} (${o.ponderacion}%)</option>`).join('');
             objSel.disabled = false;
         });
         document.getElementById("manual-obj-select").addEventListener("change", (e) => {
             const objId = e.target.value; const secSel = document.getElementById("manual-sec-select");
             if (!objId) { secSel.disabled = true; return; }
             const obj = objetivos.find(o => o.id === objId); const secsAuto = secciones.filter(s => obj.seccionesAutorizadas.includes(s.id));
-            secSel.innerHTML = '<option value="">-- Elige Sección --</option>' + secsAuto.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
+            secSel.innerHTML = '<option value="">-- Sección a cargar --</option>' + secsAuto.map(s => `<option value="${s.id}">${s.nombre}</option>`).join('');
             secSel.disabled = false;
         });
         document.getElementById("manual-sec-select").addEventListener("change", (e) => {
             const secId = e.target.value; const objId = document.getElementById("manual-obj-select").value; const obj = objetivos.find(o => o.id === objId);
             const tbody = document.getElementById("body-alumnos-manual");
-            if (!secId) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center">...</td></tr>'; document.getElementById("btn-guardar-notas-manuales").disabled = true; return; }
+            if (!secId) { tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-slate-400 italic">Filtros incompletos.</td></tr>'; document.getElementById("btn-guardar-notas-manuales").disabled = true; return; }
 
             const alumsSec = estudiantes.filter(est => (est.seccionesIds || []).includes(secId) && est.aprobado);
-            if (alumsSec.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-amber-600">No hay alumnos autorizados en esta sección.</td></tr>'; return; }
+            if (alumsSec.length === 0) { tbody.innerHTML = '<tr><td colspan="3" class="p-8 text-center text-amber-500 font-medium">Esta sección no tiene alumnos validados.</td></tr>'; return; }
 
             let h = '';
             alumsSec.forEach(al => {
                 const notaPrevia = calificaciones.find(c => c.cedula === al.cedula && c.objetivoId === objId);
                 const valActual = notaPrevia ? notaPrevia.nota : '';
-                h += `<tr class="border-b hover:bg-slate-50"><td class="p-2 font-mono text-xs">${al.cedula}</td><td class="p-2 font-semibold text-xs">${al.nombre} ${al.apellido}</td><td class="p-2 text-center"><input type="number" step="0.1" max="${obj.ponderacion}" class="in-nota-manual border p-1 rounded w-20 text-center text-xs outline-none focus:ring-1 focus:ring-emerald-500" data-cedula="${al.cedula}" data-nom="${al.nombre} ${al.apellido}" value="${valActual}" placeholder="/ ${obj.ponderacion}"></td></tr>`;
+                h += `<tr class="hover:bg-slate-50 transition group">
+                        <td class="p-3 border-b border-slate-100 font-mono text-xs text-slate-500 group-hover:text-slate-800">${al.cedula}</td>
+                        <td class="p-3 border-b border-slate-100 font-medium text-xs text-slate-700">${al.nombre} ${al.apellido}</td>
+                        <td class="p-3 border-b border-slate-100 text-center">
+                            <input type="number" step="0.1" max="${obj.ponderacion}" class="in-nota-manual border border-slate-200 p-1.5 rounded-md w-20 text-center text-xs outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white shadow-sm" data-cedula="${al.cedula}" data-nom="${al.nombre} ${al.apellido}" value="${valActual}" placeholder="Máx ${obj.ponderacion}">
+                        </td>
+                      </tr>`;
             });
             tbody.innerHTML = h; document.getElementById("btn-guardar-notas-manuales").disabled = false;
         });
@@ -1232,15 +1373,15 @@
                     updates++;
                 }
             });
-            if (updates > 0) { await batch.commit(); alert(`✅ ${updates} calificaciones guardadas con éxito.`); document.getElementById("modal-carga-manual").classList.add("hidden"); } 
-            else { alert("No se ingresó ninguna nota nueva."); }
-            document.getElementById("btn-guardar-notas-manuales").innerText = "Guardar Notas en Sistema";
+            if (updates > 0) { await batch.commit(); alert(`✅ Acta firmada. ${updates} calificaciones almacenadas en el Libro Central.`); document.getElementById("modal-carga-manual").classList.add("hidden"); document.getElementById("modal-carga-manual").classList.remove("flex"); } 
+            else { alert("El acta estaba vacía. No se procesaron cambios."); }
+            document.getElementById("btn-guardar-notas-manuales").innerText = "Firmar Acta";
         });
 
         // PREGUNTAS Y ESCUDO CRIPTOGRÁFICO
         document.getElementById("doc-preg-mat").addEventListener("change", (e) => {
             const id = e.target.value; const s = document.getElementById("doc-preg-obj"); document.getElementById("box-crear-pregunta").classList.add("hidden");
-            s.disabled = !id; s.innerHTML = '<option value="">Objetivo...</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
+            s.disabled = !id; s.innerHTML = '<option value="">-- Examen asociado --</option>' + objetivos.filter(x=>x.materiaId===id && x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join('');
         });
         let unsubPreguntas = null;
         document.getElementById("doc-preg-obj").addEventListener("change", async (e) => {
@@ -1263,9 +1404,9 @@
                 
                 if (clavesDocente[p.id] !== undefined) {
                     if (!isNaN(clavesDocente[p.id]) && p.opciones[clavesDocente[p.id]]) {
-                        correctaIndex = p.opciones[clavesDocente[p.id]]; // Backup para pregs sin hash
+                        correctaIndex = p.opciones[clavesDocente[p.id]];
                     } else {
-                        // Búsqueda por Hash
+                        // Búsqueda por Hash Inverso
                         for (let oi = 0; oi < 4; oi++) {
                             const testHash = await cifrarClave(p.id + "-" + oi);
                             if (testHash === clavesDocente[p.id]) {
@@ -1276,7 +1417,15 @@
                     }
                 }
                 
-                h += `<div class="border p-2 bg-white flex justify-between"><div class="space-y-1"><div class="font-bold">${i+1}. ${p.enunciado} (${p.valor}%)</div><div class="text-[10px] text-emerald-600">Clave Bóveda: ${correctaIndex}</div></div><div><button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-500 ml-2 font-bold text-lg">x</button></div></div>`; 
+                h += `<div class="border border-slate-100 p-3 bg-white rounded-xl shadow-sm flex justify-between items-start gap-4">
+                        <div class="space-y-1">
+                            <div class="font-medium text-slate-800 text-sm leading-tight">${i+1}. ${p.enunciado} <span class="text-slate-400 font-normal">(${p.valor}%)</span></div>
+                            <div class="text-[10px] text-blue-600 bg-blue-50 inline-block px-2 py-0.5 rounded border border-blue-100 mt-1 font-medium">Bóveda Cifrada: ${correctaIndex}</div>
+                        </div>
+                        <button onclick="window.eliminarPregunta('${p.id}','${objId}')" class="text-red-400 hover:text-red-600 bg-slate-50 hover:bg-red-50 p-1.5 rounded-lg transition" title="Eliminar pregunta">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                      </div>`; 
             }
             document.getElementById("lista-preguntas-creadas").innerHTML = h;
         }
@@ -1285,7 +1434,7 @@
             const objId = document.getElementById("doc-preg-obj").value; const ob = objetivos.find(x=>x.id===objId);
             const e = document.getElementById("p-enunciado").value; const o0 = document.getElementById("p-opc-0").value; const o1 = document.getElementById("p-opc-1").value; const o2 = document.getElementById("p-opc-2").value; const o3 = document.getElementById("p-opc-3").value;
             const c = parseInt(document.querySelector("input[name='opt_cor']:checked").value); const v = parseFloat(document.getElementById("p-puntos").value);
-            if(!e||!o0||!o1||!o2||!o3||!v) return alert("Completa");
+            if(!e||!o0||!o1||!o2||!o3||!v) return alert("Faltan datos para procesar la pregunta.");
             const docR = await addDoc(collection(db,"preguntas"), {objetivoId:objId, materiaId:ob.materiaId, enunciado:e, opciones:[o0,o1,o2,o3], valor:v});
             
             // Cifrado de la respuesta (Client-Side Hashing)
@@ -1293,9 +1442,9 @@
             clavesDocente[docR.id] = hashCorrecta; 
             
             await setDoc(doc(db,"claves_examen",objId), {respuestas:clavesDocente}, {merge:true});
-            document.getElementById("p-enunciado").value="";
+            document.getElementById("p-enunciado").value=""; document.getElementById("p-puntos").value="";
         });
-        window.eliminarPregunta = async (pId, oId) => { await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
+        window.eliminarPregunta = async (pId, oId) => { if(!confirm("Borrar del banco de preguntas?"))return; await deleteDoc(doc(db,"preguntas",pId)); delete clavesDocente[pId]; await setDoc(doc(db,"claves_examen",oId), {respuestas:clavesDocente}, {merge:true}); };
 
         // NAVEGACIÓN
         const tabsDoc = ["asistencia", "reanudacion", "materias", "evaluaciones", "preguntas", "alumnos", "calificaciones", "perfil"];
@@ -1305,40 +1454,44 @@
                 tabsDoc.forEach(item => {
                     const bx = document.getElementById(`tc-${item}`); const bbtn = document.getElementById(`tab-btn-${item}`);
                     if(bx) bx.classList.add("hidden");
-                    if(bbtn) { bbtn.classList.remove("border-blue-700", "text-blue-700"); bbtn.classList.add("border-transparent", "text-slate-500"); }
+                    if(bbtn) { 
+                        bbtn.classList.remove("bg-white", "text-blue-600", "shadow-sm", "border-slate-200"); 
+                        bbtn.classList.add("border-transparent", "text-slate-600"); 
+                    }
                 });
                 const tBlock = document.getElementById(`tc-${t}`); if(tBlock) tBlock.classList.remove("hidden");
-                btn.classList.remove("border-transparent", "text-slate-500"); btn.classList.add("border-blue-700", "text-blue-700");
+                btn.classList.remove("border-transparent", "text-slate-600"); 
+                btn.classList.add("bg-white", "text-blue-600", "shadow-sm", "border-slate-200");
             });
         });
 
-        document.getElementById("btn-login-docente").addEventListener("click", () => { document.getElementById("modal-login-docente").classList.remove("hidden"); });
+        document.getElementById("btn-login-docente").addEventListener("click", () => { document.getElementById("modal-login-docente").classList.remove("hidden"); document.getElementById("modal-login-docente").classList.add("flex");});
         document.getElementById("btn-confirmar-login-docente").addEventListener("click", async () => {
             const p = document.getElementById("login-docente-pin").value;
             if (await cifrarClave(p) === docentePerfil.pinHash) {
                 localStorage.setItem("docenteSesionLocal", "true");
-                document.getElementById("modal-login-docente").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-docente-panel").classList.remove("hidden");
+                document.getElementById("modal-login-docente").classList.add("hidden"); document.getElementById("modal-login-docente").classList.remove("flex"); document.getElementById("vista-estudiante-portal").classList.add("hidden"); document.getElementById("vista-docente-panel").classList.remove("hidden");
                 const tabC = document.getElementById("tc-asistencia"); if(tabC) tabC.classList.remove("hidden");
-            } else { alert("Contraseña incorrecta."); }
+            } else { alert("Credencial administrativa inválida."); }
         });
         document.getElementById("btn-volver-estudiante-desde-docente").addEventListener("click", () => { document.getElementById("vista-docente-panel").classList.add("hidden"); if (estudianteSesion) document.getElementById("vista-estudiante-tablero").classList.remove("hidden"); else document.getElementById("vista-estudiante-portal").classList.remove("hidden"); });
         document.getElementById("btn-salir-docente").addEventListener("click", () => { localStorage.removeItem("docenteSesionLocal"); document.getElementById("vista-docente-panel").classList.add("hidden"); document.getElementById("vista-estudiante-portal").classList.remove("hidden"); });
         
-        document.getElementById("btn-guardar-perfil").addEventListener("click", async () => { const ced = document.getElementById("doc-cedula-input").value; const nom = document.getElementById("doc-nombre-input").value; const ape = document.getElementById("doc-apellido-input").value; await updateDoc(doc(db, "configuracion", "docente"), { cedula: ced, nombre: nom, apellido: ape }); alert("Perfil Docente guardado exitosamente."); });
+        document.getElementById("btn-guardar-perfil").addEventListener("click", async () => { const ced = document.getElementById("doc-cedula-input").value; const nom = document.getElementById("doc-nombre-input").value; const ape = document.getElementById("doc-apellido-input").value; await updateDoc(doc(db, "configuracion", "docente"), { cedula: ced, nombre: nom, apellido: ape }); alert("Identidad del docente actualizada."); });
         document.getElementById("btn-actualizar-pin").addEventListener("click", async () => {
             const v = document.getElementById("pin-viejo").value; const n = document.getElementById("pin-nuevo").value; const c = document.getElementById("pin-confirma").value;
-            if(await cifrarClave(v) !== docentePerfil.pinHash) return alert("Contraseña actual incorrecta.");
-            if(n !== c) return alert("Las contraseñas nuevas no coinciden.");
+            if(await cifrarClave(v) !== docentePerfil.pinHash) return alert("Credencial actual incorrecta.");
+            if(n !== c) return alert("La verificación de la nueva clave falló.");
             const regexComplejidad = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
-            if(!regexComplejidad.test(n)) { return alert("⚠️ La contraseña debe incluir mayúscula, minúscula, número y carácter especial."); }
-            await updateDoc(doc(db, "configuracion", "docente"), { pinHash: await cifrarClave(n) }); alert("Contraseña actualizada con nivel de seguridad Alto."); 
+            if(!regexComplejidad.test(n)) { return alert("⚠️ Seguridad Insuficiente: Incluye al menos una mayúscula, número y un símbolo."); }
+            await updateDoc(doc(db, "configuracion", "docente"), { pinHash: await cifrarClave(n) }); alert("Clave maestra renovada."); 
             document.getElementById("pin-viejo").value = ""; document.getElementById("pin-nuevo").value = ""; document.getElementById("pin-confirma").value = "";
         });
 
         function actualizarInterfazDocente() { 
-            const nom = docentePerfil.nombre ? `Prof. ${docentePerfil.nombre} ${docentePerfil.apellido}` : "Sin configurar"; 
-            document.getElementById("header-docente-info").innerText = `Docente: ${nom} • Entorno de Pruebas V5.0`; 
-            document.getElementById("doc-panel-nombre").innerText = `Docente Titular: ${nom}`; 
+            const nom = docentePerfil.nombre ? `Prof. ${docentePerfil.nombre} ${docentePerfil.apellido}` : "En configuración"; 
+            document.getElementById("header-docente-info").innerText = `Docente Titular: ${nom}`; 
+            document.getElementById("doc-panel-nombre").innerText = `Identidad confirmada: ${nom}`; 
             
             if (!document.getElementById("doc-cedula-input").value && docentePerfil.cedula) { 
                 document.getElementById("doc-cedula-input").value = docentePerfil.cedula; document.getElementById("doc-nombre-input").value = docentePerfil.nombre; document.getElementById("doc-apellido-input").value = docentePerfil.apellido; 
@@ -1352,43 +1505,51 @@
             if (txtFase && btnAvanzar && selectCorte) {
                 txtFase.innerText = `Corte ${corteActual}`;
                 if (corteActual === 2) {
-                    btnAvanzar.classList.replace("bg-indigo-700", "bg-slate-400"); btnAvanzar.classList.replace("hover:bg-indigo-800", "cursor-not-allowed");
-                    btnAvanzar.innerText = "Corte 2 Activo (Semestre Final)"; btnAvanzar.disabled = true;
+                    btnAvanzar.classList.replace("bg-blue-600", "bg-slate-300"); btnAvanzar.classList.replace("hover:bg-blue-700", "cursor-not-allowed"); btnAvanzar.classList.replace("text-white", "text-slate-500");
+                    btnAvanzar.innerText = "Semestre en su fase final"; btnAvanzar.disabled = true;
                     selectCorte.innerHTML = '<option value="2">Corte Semestral 2</option>';
                 } else {
-                    btnAvanzar.classList.replace("bg-slate-400", "bg-indigo-700"); btnAvanzar.classList.replace("cursor-not-allowed", "hover:bg-indigo-800");
-                    btnAvanzar.innerText = "Finalizar Corte 1 e Iniciar Corte 2 ⏩"; btnAvanzar.disabled = false;
+                    btnAvanzar.classList.replace("bg-slate-300", "bg-blue-600"); btnAvanzar.classList.replace("cursor-not-allowed", "hover:bg-blue-700"); btnAvanzar.classList.replace("text-slate-500", "text-white");
+                    btnAvanzar.innerText = "Iniciar Corte 2"; btnAvanzar.disabled = false;
                     selectCorte.innerHTML = '<option value="1">Corte Semestral 1</option>';
                 }
             }
         }
-        function renderMateriasSelectores() { const h = '<option value="">-- Elige --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
+        function renderMateriasSelectores() { const h = '<option value="">-- Seleccionar --</option>' + materias.map(m => `<option value="${m.id}">${m.nombre}</option>`).join(''); const secMat = document.getElementById("sec-mat-select"); if (secMat) secMat.innerHTML = h; const evalMat = document.getElementById("eval-mat-select"); if (evalMat) evalMat.innerHTML = h; const docPreg = document.getElementById("doc-preg-mat"); if (docPreg) docPreg.innerHTML = h; }
         
         function renderSeccionesSelectores() { 
             const contReg = document.getElementById("reg-secciones-container");
-            if (contReg) contReg.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-reg-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            if (contReg) contReg.innerHTML = secciones.map(s => `<label class="flex items-center space-x-2 py-1"><input type="checkbox" class="chk-reg-sec accent-blue-600 w-4 h-4" value="${s.id}"> <span class="text-slate-700">${s.nombre}</span></label>`).join('');
             
             const contRen = document.getElementById("renovacion-secciones-container");
-            if (contRen) contRen.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-renov-sec" value="${s.id}"> <span>${s.nombre}</span></label>`).join('');
+            if (contRen) contRen.innerHTML = secciones.map(s => `<label class="flex items-center space-x-2"><input type="checkbox" class="chk-renov-sec accent-blue-600 w-4 h-4" value="${s.id}"> <span class="text-slate-700">${s.nombre}</span></label>`).join('');
             
-            const h = '<option value="TODAS">Todas</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join(''); 
+            const h = '<option value="TODAS">Todas las dependencias</option>' + secciones.map(s => `<option value="${s.id}">${s.nombre}</option>`).join(''); 
             const filAlum = document.getElementById("filtro-alumnos-sec"); if(filAlum) filAlum.innerHTML = h; 
             const filAsis = document.getElementById("filtro-asistencia-seccion"); if(filAsis) filAsis.innerHTML = h; 
-            const c = document.getElementById("eval-secciones-checkboxes"); if (c) c.innerHTML = secciones.map(s=>`<label class="border p-1 text-xs"><input type="checkbox" name="sec_eval" value="${s.id}" checked> ${s.nombre}</label>`).join(''); 
+            const c = document.getElementById("eval-secciones-checkboxes"); if (c) c.innerHTML = secciones.map(s=>`<label class="border border-slate-200 bg-slate-50 hover:bg-slate-100 p-1.5 text-xs rounded-md cursor-pointer transition flex items-center gap-1.5"><input type="checkbox" name="sec_eval" value="${s.id}" checked class="accent-blue-600"> <span class="font-medium text-slate-700">${s.nombre}</span></label>`).join(''); 
         }
         
         function renderObjetivosSelectores() {
-            const h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Nombre</th><th class="border p-2">Tipo</th><th class="border p-2">Pts %</th><th class="border p-2">Corte</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            const h = `<table class="w-full text-left"><thead class="bg-slate-50"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">Título</th><th class="p-3 font-semibold text-slate-600 text-center">Tipo</th><th class="p-3 font-semibold text-slate-600 text-center">Peso</th><th class="p-3 font-semibold text-slate-600 text-center">Fase</th><th class="p-3 font-semibold text-slate-600 text-center">Controles</th></tr></thead><tbody class="divide-y divide-slate-100">`;
             const tEval = document.getElementById("tabla-evaluaciones-resumen");
-            if (tEval) tEval.innerHTML = h + objetivos.map(o=>`<tr><td class="border p-2">${o.nombre}</td><td class="border p-2 text-center text-[10px]">${o.tipo==='online'?'💻 Online': o.tipo==='trabajo'?'📄 Trabajo': o.tipo==='taller'?'🛠️ Taller':'📝 Manual'}</td><td class="border p-2 text-center">${o.ponderacion}%</td><td class="border p-2 text-center font-bold">Corte ${o.corte}</td><td class="border p-2 text-center space-x-1"><button onclick="window.editarObjetivo('${o.id}')" class="bg-blue-100 px-2 py-1 rounded">Editar</button><button onclick="window.eliminarObjetivo('${o.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded">Borrar</button></td></tr>`).join('') + `</tbody></table>`;
+            if (tEval) tEval.innerHTML = h + objetivos.map(o=>`<tr class="hover:bg-slate-50 transition">
+                <td class="p-3 font-medium text-slate-800">${o.nombre}</td>
+                <td class="p-3 text-center"><span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-1 rounded-md text-[10px] font-medium text-slate-600 shadow-sm">${o.tipo==='online'?'💻 Online': o.tipo==='trabajo'?'📄 Trabajo': o.tipo==='taller'?'🛠️ Taller':'📝 Presencial'}</span></td>
+                <td class="p-3 text-center font-semibold text-slate-700">${o.ponderacion}%</td>
+                <td class="p-3 text-center font-semibold text-slate-600">C${o.corte}</td>
+                <td class="p-3 text-center flex justify-center gap-1.5">
+                    <button onclick="window.editarObjetivo('${o.id}')" class="text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-2 py-1 rounded-md transition font-medium text-[11px]">Modificar</button>
+                    <button onclick="window.eliminarObjetivo('${o.id}')" class="text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-2 py-1 rounded-md transition font-medium text-[11px]">Eliminar</button>
+                </td></tr>`).join('') + `</tbody></table>`;
             const docPregObj = document.getElementById("doc-preg-obj");
-            if (docPregObj) { docPregObj.innerHTML = '<option value="">Elige...</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
+            if (docPregObj) { docPregObj.innerHTML = '<option value="">-- Examen en línea --</option>' + objetivos.filter(x=>x.tipo==='online').map(x=>`<option value="${x.id}">${x.nombre}</option>`).join(''); docPregObj.disabled = false; }
         }
         
         document.getElementById("btn-aprobar-masivo").addEventListener("click", async () => {
             const raw = document.getElementById("txt-aprobacion-masiva").value;
             const cedulasAprobar = raw.match(/\d+/g) || [];
-            if(cedulasAprobar.length === 0) return alert("No se detectaron cédulas en el texto.");
+            if(cedulasAprobar.length === 0) return alert("Matriz de texto inválida o vacía.");
             
             let count = 0;
             const batch = writeBatch(db);
@@ -1401,10 +1562,10 @@
             });
             if (count > 0) {
                 await batch.commit();
-                alert(`✅ ${count} estudiantes fueron aprobados exitosamente.`);
+                alert(`🏫 Operación exitosa. ${count} registros matriculados.`);
                 document.getElementById("txt-aprobacion-masiva").value = "";
             } else {
-                alert("No se encontraron estudiantes pendientes que coincidan con esas cédulas.");
+                alert("Las cédulas procesadas no coinciden con los registros en cuarentena.");
             }
         });
 
@@ -1416,52 +1577,55 @@
             if(sec !== "TODAS") fs = fs.filter(x => (x.seccionesIds || []).includes(sec)); 
             if(txt) fs = fs.filter(x => x.cedula.toLowerCase().includes(txt) || x.nombre.toLowerCase().includes(txt) || x.apellido.toLowerCase().includes(txt));
             
-            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
+            let h = `<table class="w-full text-left"><thead class="bg-slate-50"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">ID Identidad</th><th class="p-3 font-semibold text-slate-600">Estudiante Registrado</th><th class="p-3 font-semibold text-slate-600 text-center">Estado del Sistema</th><th class="p-3 font-semibold text-slate-600 text-center">Panel de Acciones</th></tr></thead><tbody class="divide-y divide-slate-100">`;
             const tabA = document.getElementById("tabla-alumnos-gestion");
-            if(tabA) tabA.innerHTML = h + fs.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido} ${e.passkeyId ? '🛡️' : ''}</td>
-                <td class="border p-2 text-center font-bold">
-                    ${e.aprobado ? '<span class="text-emerald-600 bg-emerald-50 px-2 py-1 rounded">🟢 Validado</span>' : '<span class="text-red-600 bg-red-50 px-2 py-1 rounded">🔴 Pendiente</span>'}
+            if(tabA) tabA.innerHTML = h + fs.map(e=>`<tr class="hover:bg-slate-50 transition">
+                <td class="p-3 font-mono text-slate-500">${e.cedula}</td>
+                <td class="p-3 font-medium text-slate-800">${e.nombre} ${e.apellido} ${e.passkeyId ? '<span class="ml-1 text-[10px] bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded border border-blue-100" title="WebAuthn Activo">🛡️ Biometría</span>' : ''}</td>
+                <td class="p-3 text-center font-medium">
+                    ${e.aprobado ? '<span class="text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-md text-[10px]">Validado</span>' : '<span class="text-red-700 bg-red-50 border border-red-200 px-2.5 py-1 rounded-md text-[10px]">En Revisión</span>'}
                 </td>
-                <td class="border p-2 text-center space-x-1">
-                    <button onclick="window.permitirResetAlumno('${e.id}')" class="${e.resetClaveAutorizado ? 'bg-amber-400 text-amber-900' : 'bg-amber-100 text-amber-700'} px-2 py-1 rounded border border-amber-300" title="Reset Clave">🔑</button>
-                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-slate-200' : 'bg-emerald-200'} px-2 py-1 rounded border border-slate-300 font-bold">${e.aprobado ? '❌' : '✅'}</button>
-                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-blue-100 px-2 py-1 rounded border">Edit</button>
-                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-indigo-100 px-2 py-1 rounded border" title="Liberar Equipo">Lib</button>
-                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-red-100 text-red-600 px-2 py-1 rounded border">Del</button>
+                <td class="p-3 flex justify-center gap-1.5">
+                    <button onclick="window.permitirResetAlumno('${e.id}')" class="${e.resetClaveAutorizado ? 'bg-amber-100 text-amber-700 border-amber-300' : 'bg-white text-slate-400 border-slate-200 hover:bg-amber-50 hover:text-amber-600'} px-2 py-1 rounded-md border transition shadow-sm" title="Reset Clave">🔑</button>
+                    <button onclick="window.toggleAprobacionAlumno('${e.id}', ${!e.aprobado})" class="${e.aprobado ? 'bg-white text-red-500 hover:bg-red-50 border-slate-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100'} px-2 py-1 rounded-md border transition font-bold shadow-sm" title="${e.aprobado ? 'Revocar' : 'Aprobar'}">${e.aprobado ? '✗' : '✓'}</button>
+                    <button onclick="window.editarDatosAlumnoModal('${e.id}')" class="bg-white hover:bg-blue-50 text-blue-600 px-2 py-1 rounded-md border border-slate-200 transition shadow-sm font-medium text-[11px]" title="Modificar">Editar</button>
+                    <button onclick="window.forzarCierreSesionAlumno('${e.id}')" class="bg-white hover:bg-slate-100 text-slate-600 px-2 py-1 rounded-md border border-slate-200 transition shadow-sm font-medium text-[11px]" title="Liberar Equipo UUID">Desanclar</button>
+                    <button onclick="window.eliminarAlumno('${e.id}')" class="bg-white hover:bg-red-50 text-red-600 px-2 py-1 rounded-md border border-slate-200 transition shadow-sm font-medium text-[11px]" title="Eliminar Registro">Borrar</button>
                 </td></tr>`).join('') + `</tbody></table>`;
         }
 
         window.permitirResetAlumno = async (id) => {
-            if(confirm("¿Habilitar a este alumno para que cambie su contraseña?")) {
+            if(confirm("¿Habilitar los protocolos de recuperación de credencial para este usuario?")) {
                 await updateDoc(doc(db, "estudiantes", id), { resetClaveAutorizado: true });
-                alert("Permiso concedido. El alumno ya puede usar el formulario de recuperación.");
+                alert("Protocolo activado.");
             }
         };
         
         window.toggleAprobacionAlumno = async (id, st) => { await updateDoc(doc(db, "estudiantes", id), { aprobado: st }); };
-        window.forzarCierreSesionAlumno = async (id) => { await updateDoc(doc(db, "estudiantes", id), { tokenSesionActivo: null, enLinea: false, dispositivoVinculado: null }); alert("Dispositivo y Sesiones liberados."); };
-        window.eliminarAlumno = async (id) => { if(confirm("¿Borrar alumno?")) await deleteDoc(doc(db, "estudiantes", id)); };
+        window.forzarCierreSesionAlumno = async (id) => { await updateDoc(doc(db, "estudiantes", id), { tokenSesionActivo: null, enLinea: false, dispositivoVinculado: null }); alert("Anclaje de hardware removido."); };
+        window.eliminarAlumno = async (id) => { if(confirm("¿Destruir el registro del estudiante definitivamente?")) await deleteDoc(doc(db, "estudiantes", id)); };
         
         window.editarDatosAlumnoModal = (id) => {
             const e = estudiantes.find(x=>x.id===id); document.getElementById("edit-alum-id").value=e.id; document.getElementById("edit-alum-ced").value=e.cedula; document.getElementById("edit-alum-nom").value=e.nombre; document.getElementById("edit-alum-ape").value=e.apellido;
             const c = document.getElementById("edit-alum-sec-container");
-            c.innerHTML = secciones.map(s => `<label class="flex items-center space-x-1"><input type="checkbox" class="chk-edit-sec" value="${s.id}" ${ (e.seccionesIds||[]).includes(s.id)?'checked':'' }> <span>${s.nombre}</span></label>`).join('');
+            c.innerHTML = secciones.map(s => `<label class="flex items-center space-x-2 py-1 border-b border-slate-100 last:border-0"><input type="checkbox" class="chk-edit-sec accent-blue-600 w-4 h-4" value="${s.id}" ${ (e.seccionesIds||[]).includes(s.id)?'checked':'' }> <span class="text-slate-700">${s.nombre}</span></label>`).join('');
             document.getElementById("modal-editar-alumno").classList.remove("hidden");
+            document.getElementById("modal-editar-alumno").classList.add("flex");
         };
         document.getElementById("btn-guardar-edicion-alumno").addEventListener("click", async () => {
             const id = document.getElementById("edit-alum-id").value;
             const selectedSecs = Array.from(document.querySelectorAll('.chk-edit-sec:checked')).map(cb => cb.value);
             await updateDoc(doc(db,"estudiantes",id), {cedula: normalizarCedula(document.getElementById("edit-alum-ced").value), nombre: document.getElementById("edit-alum-nom").value, apellido: document.getElementById("edit-alum-ape").value, seccionesIds: selectedSecs});
-            document.getElementById("modal-editar-alumno").classList.add("hidden");
+            document.getElementById("modal-editar-alumno").classList.add("hidden"); document.getElementById("modal-editar-alumno").classList.remove("flex");
         });
 
         document.getElementById("filtro-asistencia-seccion").addEventListener("change", renderTablaAsistencia);
         function renderTablaAsistencia() {
             const secId = document.getElementById("filtro-asistencia-seccion").value; const tabAs = document.getElementById("tabla-asistencia-contenedor");
-            if (!secId || secId==="TODAS") return tabAs.innerHTML = 'Seleccione una sección específica.';
+            if (!secId || secId==="TODAS") return tabAs.innerHTML = '<div class="p-8 text-center text-slate-400 italic">Aplique un filtro de dependencia superior.</div>';
             let alums = estudiantes.filter(e => (e.seccionesIds || []).includes(secId) && e.aprobado);
-            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Nombre</th><th class="border p-2 text-center">Estado Aula</th></tr></thead><tbody>`;
-            if (tabAs) tabAs.innerHTML = h + alums.map(e=>`<tr><td class="border p-2 font-mono">${e.cedula}</td><td class="border p-2">${e.nombre} ${e.apellido}</td><td class="border p-2 text-center"><button onclick="window.toggleAsistencia('${e.id}', ${!e.presenteAula})" class="${e.presenteAula?'bg-emerald-100 text-emerald-700':'bg-slate-100 text-slate-500'} px-2 py-1 rounded font-bold">${e.presenteAula ? '✅ Presente' : '❌ Ausente'}</button></td></tr>`).join('') + `</tbody></table>`;
+            let h = `<table class="w-full text-left"><thead class="bg-slate-50"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">ID</th><th class="p-3 font-semibold text-slate-600">Estudiante Registrado</th><th class="p-3 font-semibold text-slate-600 text-center">Registro Físico</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+            if (tabAs) tabAs.innerHTML = h + alums.map(e=>`<tr class="hover:bg-slate-50 transition"><td class="p-3 font-mono text-slate-500">${e.cedula}</td><td class="p-3 font-medium text-slate-800">${e.nombre} ${e.apellido}</td><td class="p-3 text-center"><button onclick="window.toggleAsistencia('${e.id}', ${!e.presenteAula})" class="${e.presenteAula?'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100':'bg-white border-slate-200 text-slate-400 hover:bg-slate-50'} border px-3 py-1.5 rounded-lg font-medium text-xs transition shadow-sm">${e.presenteAula ? '✓ Confirmado' : 'Ausente'}</button></td></tr>`).join('') + `</tbody></table>`;
         }
         window.toggleAsistencia = async (id, st) => await updateDoc(doc(db, "estudiantes", id), { presenteAula: st });
         document.getElementById("btn-todos-presentes").addEventListener("click", async () => { 
@@ -1471,18 +1635,18 @@
 
         function renderTablaReanudacionDocente() {
             const cont = document.getElementById("tabla-reanudacion-contenedor");
-            if (sesionesActivas.length === 0) return cont.innerHTML = '<p class="text-slate-400 py-3">No hay sesiones activas.</p>';
-            let h = `<table class="w-full border-collapse border"><thead><tr class="bg-slate-100"><th class="border p-2">Cédula</th><th class="border p-2">Estudiante</th><th class="border p-2">Eval</th><th class="border p-2">Estado</th><th class="border p-2">Acciones</th></tr></thead><tbody>`;
-            sesionesActivas.forEach(s => { h += `<tr><td class="border p-2">${s.cedula}</td><td class="border p-2">${s.estudianteNombre}</td><td class="border p-2">${s.objetivoNombre}</td><td class="border p-2 text-center">${s.estado}</td><td class="border p-2 text-center space-x-1"><button onclick="window.desbloquearReanudacionSesion('${s.id}')" class="bg-amber-600 text-white px-2 py-1 rounded text-[11px]">Desbloquear</button><button onclick="window.eliminarSesionExamen('${s.id}')" class="bg-red-600 text-white px-2 py-1 rounded text-[11px]">Reiniciar</button></td></tr>`; });
+            if (sesionesActivas.length === 0) return cont.innerHTML = '<div class="p-8 text-center text-slate-400 italic">La telemetría indica que no hay evaluaciones críticas retenidas.</div>';
+            let h = `<table class="w-full text-left"><thead class="bg-slate-50"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">ID</th><th class="p-3 font-semibold text-slate-600">Estudiante</th><th class="p-3 font-semibold text-slate-600">Instrumento</th><th class="p-3 font-semibold text-slate-600 text-center">Fallo Reportado</th><th class="p-3 font-semibold text-slate-600 text-center">Intervención</th></tr></thead><tbody class="divide-y divide-slate-100">`;
+            sesionesActivas.forEach(s => { h += `<tr class="hover:bg-slate-50 transition"><td class="p-3 font-mono text-slate-500">${s.cedula}</td><td class="p-3 font-medium text-slate-800">${s.estudianteNombre}</td><td class="p-3 text-slate-600">${s.objetivoNombre}</td><td class="p-3 text-center"><span class="bg-red-50 text-red-600 border border-red-200 px-2 py-1 rounded-md text-[10px] font-semibold">${s.estado}</span></td><td class="p-3 text-center flex justify-center gap-1.5"><button onclick="window.desbloquearReanudacionSesion('${s.id}')" class="bg-white border border-amber-200 hover:bg-amber-50 text-amber-600 px-2.5 py-1.5 rounded-lg text-[11px] font-medium shadow-sm transition">Otorgar Permiso</button><button onclick="window.eliminarSesionExamen('${s.id}')" class="bg-white border border-red-200 hover:bg-red-50 text-red-600 px-2.5 py-1.5 rounded-lg text-[11px] font-medium shadow-sm transition">Formatear Sesión</button></td></tr>`; });
             cont.innerHTML = h + '</tbody></table>';
         }
-        window.desbloquearReanudacionSesion = async (id) => { const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await updateDoc(doc(db, "sesiones_examen", id), { estado: "reanudacion_permitida", strikes: 0, calificado: false }); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Desbloqueado."); } };
-        window.eliminarSesionExamen = async (id) => { if(!confirm("¿Reiniciar intento?")) return; const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await deleteDoc(doc(db, "sesiones_examen", id)); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Reiniciado."); } };
+        window.desbloquearReanudacionSesion = async (id) => { const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await updateDoc(doc(db, "sesiones_examen", id), { estado: "reanudacion_permitida", strikes: 0, calificado: false }); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Reanudación autorizada."); } };
+        window.eliminarSesionExamen = async (id) => { if(!confirm("⚠️ ¿Destruir el intento almacenado en la nube? El estudiante tendrá que empezar desde cero.")) return; const sSnap = await getDoc(doc(db, "sesiones_examen", id)); if (sSnap.exists()) { await deleteDoc(doc(db, "sesiones_examen", id)); const qC = query(collection(db, "calificaciones"), where("cedula", "==", sSnap.data().cedula), where("objetivoId", "==", sSnap.data().objetivoId)); (await getDocs(qC)).forEach(async (d) => await deleteDoc(d.ref)); alert("Base de datos limpia para el usuario."); } };
 
         document.getElementById("filtro-calif-mat").addEventListener("change", (e) => {
             const matId = e.target.value; const objSel = document.getElementById("filtro-calif-obj");
-            if (matId === "TODAS") { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); } 
-            else { objSel.innerHTML = '<option value="TODOS">Todos los Objetivos</option>' + objetivos.filter(o=>o.materiaId===matId).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); }
+            if (matId === "TODAS") { objSel.innerHTML = '<option value="TODOS">Todas las actas</option>' + objetivos.map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); } 
+            else { objSel.innerHTML = '<option value="TODOS">Todas las actas de la materia</option>' + objetivos.filter(o=>o.materiaId===matId).map(o=>`<option value="${o.id}">${o.nombre}</option>`).join(''); }
             renderTablaCalificaciones();
         });
         document.getElementById("filtro-calif-obj").addEventListener("change", renderTablaCalificaciones);
@@ -1505,24 +1669,31 @@
                 }
             }
 
-            let h = `<table class="w-full border text-xs"><thead><tr class="bg-slate-100"><th class="border p-2">C.I</th><th class="border p-2">Alumno</th><th class="border p-2">Evaluación</th><th class="border p-2">Logrado %</th><th class="border p-2 text-center">🗑️</th></tr></thead><tbody>`;
+            let h = `<table class="w-full text-left"><thead class="bg-slate-50"><tr class="border-b border-slate-200"><th class="p-3 font-semibold text-slate-600">ID Identidad</th><th class="p-3 font-semibold text-slate-600">Alumno Evaluado</th><th class="p-3 font-semibold text-slate-600">Instrumento</th><th class="p-3 font-semibold text-slate-600 text-center">Nota Adjudicada</th><th class="p-3 font-semibold text-slate-600 text-center">Modificación</th></tr></thead><tbody class="divide-y divide-slate-100">`;
             const tabC = document.getElementById("tabla-calificaciones-final");
-            if(tabC) tabC.innerHTML = h + notasUnicas.map(c=>`<tr><td class="border p-2 font-mono">${c.cedula}</td><td class="border p-2 font-medium">${c.estudiante}</td><td class="border p-2">${c.objetivoNombre}</td><td class="border p-2 text-center font-bold text-blue-700">${c.nota} / ${c.ponderacionTotal}</td><td class="border p-2 text-center"><button onclick="window.eliminarNotaMasiva('${c.cedula}', '${c.objetivoId}')" class="text-red-500 font-bold bg-red-50 px-2 border rounded">X</button></td></tr>`).join('') + `</tbody></table>`;
+            if(tabC) tabC.innerHTML = h + notasUnicas.map(c=>`<tr class="hover:bg-slate-50 transition">
+                <td class="p-3 font-mono text-slate-500">${c.cedula}</td>
+                <td class="p-3 font-medium text-slate-800">${c.estudiante}</td>
+                <td class="p-3 text-slate-600">${c.objetivoNombre}</td>
+                <td class="p-3 text-center"><span class="font-bold text-blue-700 bg-blue-50 border border-blue-100 px-2 py-1 rounded-md shadow-sm">${c.nota} <span class="font-medium text-[10px] text-blue-500">/ ${c.ponderacionTotal}</span></span></td>
+                <td class="p-3 text-center"><button onclick="window.eliminarNotaMasiva('${c.cedula}', '${c.objetivoId}')" class="text-red-500 hover:text-red-700 bg-white hover:bg-red-50 border border-slate-200 p-1.5 rounded-lg shadow-sm transition" title="Revocar acta de evaluación">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button></td></tr>`).join('') + `</tbody></table>`;
         }
 
         window.eliminarNotaMasiva = async (cedula, objetivoId) => { 
-            if(confirm("¿Borrar definitivamente la calificación de este estudiante para esta evaluación?")) {
+            if(confirm("⚠️ PROCEDIMIENTO IRREVERSIBLE: ¿Eliminar la calificación asignada de este registro histórico?")) {
                 const qC = query(collection(db, "calificaciones"), where("cedula", "==", cedula), where("objetivoId", "==", objetivoId));
                 const snapshots = await getDocs(qC);
                 const batch = writeBatch(db);
                 snapshots.forEach(docSnap => batch.delete(docSnap.ref));
                 await batch.commit();
-                alert("Calificación eliminada limpiamente del registro.");
+                alert("Calificación purgada del sistema.");
             }
         };
 
         // --- Creadores de Materia/Sección ---
-        document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Materia creada"); document.getElementById("mat-nombre").value = ""; } });
+        document.getElementById("btn-crear-materia").addEventListener("click", async () => { const n = document.getElementById("mat-nombre").value; if(n) { await addDoc(collection(db, "materias"), { nombre: n, codigo: "MAT-"+Date.now() }); alert("Arquitectura curricular modificada: Materia creada."); document.getElementById("mat-nombre").value = ""; } });
         
         document.getElementById("btn-crear-seccion").addEventListener("click", async () => { 
             const m = document.getElementById("sec-mat-select").value; 
@@ -1530,10 +1701,10 @@
             
             if(m && n) { 
                 await addDoc(collection(db, "secciones"), { materiaId: m, nombre: n }); 
-                alert(`✅ Sección creada exitosamente.`); 
+                alert(`Dependencia añadida al sistema.`); 
                 document.getElementById("sec-nombre").value = ""; 
             } else {
-                alert("Complete Materia y Nombre de Sección.");
+                alert("El formulario lógico requiere un nombre y una dependencia padre.");
             }
         });
 
@@ -1542,23 +1713,29 @@
             const t = document.getElementById("tabla-materias-resumen"); 
             if(t) {
                 t.innerHTML = materias.map(m => `
-                <div class="border p-3 mb-3 bg-white rounded shadow-sm">
-                    <div class="font-bold text-sm text-blue-900 mb-2 border-b pb-2 flex flex-col sm:flex-row justify-between sm:items-center gap-2">
-                        <span>📚 ${m.nombre}</span>
-                        <div class="flex space-x-1">
-                            <button onclick="window.editarMateria('${m.id}')" class="bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded text-[10px] font-bold shadow-sm transition">✎ Editar Materia</button>
-                            <button onclick="window.eliminarMateria('${m.id}')" class="bg-red-100 hover:bg-red-200 text-red-700 px-2 py-1 rounded text-[10px] font-bold shadow-sm transition">🗑️ Borrar Materia</button>
+                <div class="bg-white border border-slate-200 p-4 mb-4 rounded-xl shadow-sm">
+                    <div class="font-semibold text-slate-800 mb-3 border-b border-slate-100 pb-3 flex flex-col sm:flex-row justify-between sm:items-center gap-3">
+                        <span class="flex items-center gap-2"><svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>${m.nombre}</span>
+                        <div class="flex space-x-2">
+                            <button onclick="window.editarMateria('${m.id}')" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">Modificar</button>
+                            <button onclick="window.eliminarMateria('${m.id}')" class="bg-white hover:bg-red-50 border border-red-100 text-red-600 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm transition">Destruir</button>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-2">
                         ${secciones.filter(s=>s.materiaId===m.id).map(x=>`
-                        <div class="border border-slate-200 p-1.5 bg-slate-50 text-xs rounded shadow-sm flex items-center">
-                            <span class="mr-2 font-medium">${x.nombre}</span> 
-                            <button onclick="window.editarSeccion('${x.id}')" class="text-blue-600 hover:bg-blue-200 px-1.5 py-0.5 rounded transition" title="Editar Sección">✎</button>
-                            <button onclick="window.eliminarSeccion('${x.id}')" class="text-white bg-red-500 hover:bg-red-600 px-1.5 py-0.5 ml-1 rounded font-bold transition" title="Borrar Sección">x</button>
+                        <div class="border border-slate-200 bg-slate-50 pl-3 pr-1.5 py-1.5 text-xs rounded-lg shadow-sm flex items-center justify-between min-w-[120px]">
+                            <span class="mr-3 font-medium text-slate-700">${x.nombre}</span> 
+                            <div class="flex items-center gap-1 border-l border-slate-200 pl-1.5">
+                                <button onclick="window.editarSeccion('${x.id}')" class="text-slate-400 hover:text-blue-600 hover:bg-blue-50 p-1 rounded transition" title="Editar Sección">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </button>
+                                <button onclick="window.eliminarSeccion('${x.id}')" class="text-slate-400 hover:text-red-600 hover:bg-red-50 p-1 rounded transition" title="Borrar Sección">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                </button>
+                            </div>
                         </div>
                         `).join('')}
-                        ${secciones.filter(s=>s.materiaId===m.id).length === 0 ? '<span class="text-xs text-slate-400 italic">Sin secciones registradas.</span>' : ''}
+                        ${secciones.filter(s=>s.materiaId===m.id).length === 0 ? '<span class="text-xs text-slate-400 italic py-2">Materia sin dependencias registradas en el clúster.</span>' : ''}
                     </div>
                 </div>`).join(''); 
             }
@@ -1568,24 +1745,23 @@
         window.editarMateria = async (id) => {
             const m = materias.find(x => x.id === id);
             if (!m) return;
-            const nuevoNombre = prompt("Editar nombre de la materia:", m.nombre);
+            const nuevoNombre = prompt("Nueva designación para la materia:", m.nombre);
             if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre !== m.nombre) {
                 await updateDoc(doc(db, "materias", id), { nombre: nuevoNombre.trim() });
-                alert("✅ Materia actualizada.");
+                alert("Atributos del documento centralizados.");
             }
         };
 
         window.eliminarMateria = async (id) => {
-            // Validaciones de Integridad Estricta
             const tieneSecciones = secciones.some(s => s.materiaId === id);
             const tieneObjetivos = objetivos.some(o => o.materiaId === id);
             
             if (tieneSecciones || tieneObjetivos) {
-                return alert("⛔ ACCIÓN DENEGADA: No puedes borrar esta materia porque tiene Secciones o Evaluaciones asociadas. Borra primero sus dependencias.");
+                return alert("⛔ SEGURIDAD RELACIONAL: La estructura no permite destruir un nodo padre (Materia) que aún conserve nodos hijos (Secciones o Evaluaciones). Borre las dependencias inferiores primero.");
             }
-            if(confirm("⚠️ ¿Estás totalmente seguro de borrar esta materia permanentemente?")) {
+            if(confirm("⚠️ ¿Autorizar orden de destrucción irrevocable para esta Materia?")) {
                 await deleteDoc(doc(db, "materias", id));
-                alert("🗑️ Materia eliminada del sistema.");
+                alert("Materia fragmentada y removida de Firestore.");
             }
         };
 
@@ -1593,22 +1769,21 @@
         window.editarSeccion = async (id) => {
             const s = secciones.find(x => x.id === id);
             if (!s) return;
-            const nuevoNombre = prompt("Editar nombre de la sección:", s.nombre);
+            const nuevoNombre = prompt("Nueva designación de control para la sección:", s.nombre);
             if (nuevoNombre && nuevoNombre.trim() !== "" && nuevoNombre !== s.nombre) {
                 await updateDoc(doc(db, "secciones", id), { nombre: nuevoNombre.trim() });
             }
         };
 
         window.eliminarSeccion = async (id) => { 
-            // Validar si la sección tiene alumnos inscritos
             const tieneAlumnos = estudiantes.some(e => (e.seccionesIds || []).includes(id));
             if (tieneAlumnos) {
-                if(!confirm("⚠️ ADVERTENCIA GRAVE: Hay estudiantes inscritos en esta sección. Si la borras, perderán el acceso a esta materia en su tablero. ¿Deseas destruirla de todas formas?")) return;
+                if(!confirm("⚠️ CRISIS DE INTEGRIDAD: El padrón detecta usuarios activos en este sector. Borrar la dependencia afectará sus tableros. ¿Forzar el proceso de todas formas?")) return;
             } else {
-                if(!confirm("¿Borrar sección permanentemente?")) return;
+                if(!confirm("¿Remover esta sección del esquema?")) return;
             }
             await deleteDoc(doc(db, "secciones", id)); 
-            alert("🗑️ Sección eliminada.");
+            alert("Operación completada.");
         };
 
     </script>
